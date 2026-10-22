@@ -1,6 +1,6 @@
 # Phase 02.11 — QA Matrix and Approval Gates
 
-**Status:** PROPOSED; ZERO tests marked PASS or FAIL.
+**Status:** SPECIFICATION APPROVED (ADR-A11Y-001); all 52 practical QA cases remain NOT RUN. No WCAG claim.
 **Companion artifacts:** `DEVFOLIO_Phase02_11_Responsive_A11y_Pack.zip` includes 52 planned cases in CSV/JSON, eight editable SVG references and an offline responsive lab. Demo is not actual application.
 
 ## Review matrix
