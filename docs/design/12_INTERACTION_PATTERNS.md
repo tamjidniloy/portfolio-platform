@@ -1,6 +1,6 @@
 # DEVFOLIO OS — Phase 02.12 Interaction Patterns and Microinteractions
 
-**Status:** PROPOSED for owner approval at design-specification level, not implemented.
+**Status:** OWNER APPROVED at DESIGN-SPECIFICATION LEVEL (ADR-IX-001, 2026-10-23); native Penpot, implementation and QA remain unverified.
 **Date:** 2026-10-23 (Asia/Dhaka)
 **Dependencies:** ADR-UI-001 / ADR-IA-001 / ADR-WF-001,002,003 / ADR-UX-002 / ADR-DS-001,002 / ADR-A11Y-001.
 **Still open:** Authoritative approved Phase 01 SRS missing from GitHub main; exact public brand/name and font family. Light palette future-ready only. Native Penpot work and tests NOT verified.
