@@ -1,0 +1,1249 @@
+{
+  "project": "DEVFOLIO OS",
+  "phase": "02.8",
+  "status": "PROVISIONAL_OLDER_PHASE01_DRAFT_NOT_APPROVED",
+  "source": "Historical draft Phase 01 CONTENT_FIELDS.md",
+  "approval": "ADR-WF-003 admin structural wireframes only",
+  "approvedSRS": "NOT_ON_GITHUB",
+  "brand": "OPEN",
+  "font": "OPEN",
+  "modules": [
+    {
+      "id": "profile",
+      "screen": "ADM-06",
+      "route": "/admin/profile",
+      "fields": [
+        {
+          "key": "display_name",
+          "component": "Text input",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "professional_title",
+          "component": "Text input",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "headline",
+          "component": "Textarea",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "tagline",
+          "component": "Textarea",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "short_bio",
+          "component": "Textarea",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "long_bio",
+          "component": "Rich-text (Tiptap) / text",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "photo",
+          "component": "Media picker",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "public_location",
+          "component": "Text input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "public_email",
+          "component": "Email input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "availability",
+          "component": "Select/Combobox",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "timezone",
+          "component": "Text input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        }
+      ],
+      "cross_field_rules": "Never make private email or precise location public by default; all public profile data must be owner approved.",
+      "actions": "Validate → Save changes; preview resulting public state where relevant",
+      "responsive": {
+        "desktop": "Two columns for short inputs; long text, media and repeated fields full width.",
+        "mobile": "Single column; safe button bar; keyboard and 320px reflow checks."
+      }
+    },
+    {
+      "id": "site_settings",
+      "screen": "ADM-26",
+      "route": "/admin/settings",
+      "fields": [
+        {
+          "key": "brand_name",
+          "component": "Text input",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "navigation_items",
+          "component": "Sortable route/section IDs",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "hero_cta_label",
+          "component": "Text input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "hero_cta_href",
+          "component": "URL / safe route input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "home_sections",
+          "component": "Sortable route/section IDs",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "theme_preset",
+          "component": "Select/Combobox",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "site_default_title",
+          "component": "Text input",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "site_description",
+          "component": "Textarea",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "default_og_image",
+          "component": "Media picker",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        }
+      ],
+      "cross_field_rules": "Whitelist navigation/home section IDs; public brand name is still open; no arbitrary HTML/unsafe destination.",
+      "actions": "Validate → Save changes; preview resulting public state where relevant",
+      "responsive": {
+        "desktop": "Two columns for short inputs; long text, media and repeated fields full width.",
+        "mobile": "Single column; safe button bar; keyboard and 320px reflow checks."
+      }
+    },
+    {
+      "id": "projects",
+      "screen": "ADM-08/09",
+      "route": "/admin/projects/new | /admin/projects/:id/edit",
+      "fields": [
+        {
+          "key": "title",
+          "component": "Text input",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "slug",
+          "component": "Slug input",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "summary",
+          "component": "Textarea",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "problem",
+          "component": "Rich-text (Tiptap) / text",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "solution",
+          "component": "Rich-text (Tiptap) / text",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "role",
+          "component": "Text input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "status",
+          "component": "Select/Combobox",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "category",
+          "component": "Select/Combobox",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "tech_ids",
+          "component": "Tag list / repeatable array",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "repository_url",
+          "component": "URL / safe route input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "live_url",
+          "component": "URL / safe route input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "cover_media_id",
+          "component": "Media picker",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "gallery_media_ids",
+          "component": "Tag list / repeatable array",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "started_on",
+          "component": "Date input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "ended_on",
+          "component": "Date input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "is_featured",
+          "component": "Switch",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "sort_order",
+          "component": "Number input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "published_at",
+          "component": "Read-only timestamp",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": false
+        }
+      ],
+      "cross_field_rules": "Unique lower-case slug; ended_on >= started_on; selected skills/media must exist and be authorized; feature only if published.",
+      "actions": "Save Draft → Private Preview → Validate → Publish / Unpublish / Archive → Revisions",
+      "responsive": {
+        "desktop": "Two columns for short inputs; long text, media and repeated fields full width.",
+        "mobile": "Single column; safe button bar; keyboard and 320px reflow checks."
+      }
+    },
+    {
+      "id": "research",
+      "screen": "ADM-11/12",
+      "route": "/admin/research/new | /admin/research/:id/edit",
+      "fields": [
+        {
+          "key": "title",
+          "component": "Text input",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "slug",
+          "component": "Slug input",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "research_status",
+          "component": "Select/Combobox",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "abstract",
+          "component": "Rich-text (Tiptap) / text",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "research_question",
+          "component": "Textarea",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "hypothesis",
+          "component": "Textarea",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "methodology",
+          "component": "Rich-text (Tiptap) / text",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "models_frameworks",
+          "component": "Tag list / repeatable array",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "datasets",
+          "component": "Tag list / repeatable array",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "metrics",
+          "component": "Tag list / repeatable array",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "results",
+          "component": "Rich-text (Tiptap) / text",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "limitations",
+          "component": "Rich-text (Tiptap) / text",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "authors_or_collaborators",
+          "component": "Tag list / repeatable array",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "code_url",
+          "component": "URL / safe route input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "paper_url",
+          "component": "URL / safe route input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "media",
+          "component": "Tag list / repeatable array",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "status",
+          "component": "Select/Combobox",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        }
+      ],
+      "cross_field_rules": "Keep research_status (science) separate from status (CMS); don't imply peer review; verify authorship, datasets and metrics.",
+      "actions": "Save Draft → Private Preview → Validate → Publish / Unpublish / Archive → Revisions",
+      "responsive": {
+        "desktop": "Two columns for short inputs; long text, media and repeated fields full width.",
+        "mobile": "Single column; safe button bar; keyboard and 320px reflow checks."
+      }
+    },
+    {
+      "id": "publications",
+      "screen": "ADM-13",
+      "route": "/admin/publications",
+      "fields": [
+        {
+          "key": "title",
+          "component": "Text input",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "authors",
+          "component": "Tag list / repeatable array",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "venue",
+          "component": "Text input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "doi",
+          "component": "Text input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "arxiv_id",
+          "component": "Entity reference",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "published_on",
+          "component": "Date input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "abstract",
+          "component": "Rich-text (Tiptap) / text",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "pdf",
+          "component": "Media picker",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "related_research_id",
+          "component": "Entity reference",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "publication_type",
+          "component": "Select/Combobox",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "status",
+          "component": "Select/Combobox",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        }
+      ],
+      "cross_field_rules": "At least one author; valid DOI/arXiv if supplied; peer-reviewed claims and venue must be genuine.",
+      "actions": "Save Draft → Private Preview → Validate → Publish / Unpublish / Archive → Revisions",
+      "responsive": {
+        "desktop": "Two columns for short inputs; long text, media and repeated fields full width.",
+        "mobile": "Single column; safe button bar; keyboard and 320px reflow checks."
+      }
+    },
+    {
+      "id": "education",
+      "screen": "ADM-18",
+      "route": "/admin/education",
+      "fields": [
+        {
+          "key": "institution",
+          "component": "Text input",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "degree",
+          "component": "Text input",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "field",
+          "component": "Text input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "start_date",
+          "component": "Date input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "end_date",
+          "component": "Date input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "is_current",
+          "component": "Switch",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "grade",
+          "component": "Text input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "thesis",
+          "component": "Text input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "description",
+          "component": "Rich-text (Tiptap) / text",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "sort_order",
+          "component": "Number input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "status",
+          "component": "Select/Combobox",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        }
+      ],
+      "cross_field_rules": "Date order consistency and optional private grade/thesis; no fake qualifications.",
+      "actions": "Save Draft → Private Preview → Validate → Publish / Unpublish / Archive → Revisions",
+      "responsive": {
+        "desktop": "Two columns for short inputs; long text, media and repeated fields full width.",
+        "mobile": "Single column; safe button bar; keyboard and 320px reflow checks."
+      }
+    },
+    {
+      "id": "experience",
+      "screen": "ADM-17",
+      "route": "/admin/experience",
+      "fields": [
+        {
+          "key": "organization",
+          "component": "Text input",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "role_title",
+          "component": "Text input",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "employment_type",
+          "component": "Select/Combobox",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "start_date",
+          "component": "Date input",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "end_date",
+          "component": "Date input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "is_current",
+          "component": "Switch",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "location",
+          "component": "Text input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "responsibilities",
+          "component": "Rich-text (Tiptap) / text",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "outcomes",
+          "component": "Rich-text (Tiptap) / text",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "skills",
+          "component": "Tag list / repeatable array",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "status",
+          "component": "Select/Combobox",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        }
+      ],
+      "cross_field_rules": "Current role excludes incompatible end date; outcomes and claims should be accurate.",
+      "actions": "Save Draft → Private Preview → Validate → Publish / Unpublish / Archive → Revisions",
+      "responsive": {
+        "desktop": "Two columns for short inputs; long text, media and repeated fields full width.",
+        "mobile": "Single column; safe button bar; keyboard and 320px reflow checks."
+      }
+    },
+    {
+      "id": "skills",
+      "screen": "ADM-19",
+      "route": "/admin/skills",
+      "fields": [
+        {
+          "key": "name",
+          "component": "Text input",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "category",
+          "component": "Select/Combobox",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "evidence_summary",
+          "component": "Textarea",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "icon",
+          "component": "Text input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "sort_order",
+          "component": "Number input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "is_featured",
+          "component": "Switch",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        }
+      ],
+      "cross_field_rules": "Avoid invented proficiency percentages; allow evidence links to actual published work.",
+      "actions": "Validate → Save changes; preview resulting public state where relevant",
+      "responsive": {
+        "desktop": "Two columns for short inputs; long text, media and repeated fields full width.",
+        "mobile": "Single column; safe button bar; keyboard and 320px reflow checks."
+      }
+    },
+    {
+      "id": "achievements",
+      "screen": "ADM-20",
+      "route": "/admin/achievements",
+      "fields": [
+        {
+          "key": "title",
+          "component": "Text input",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "issuer",
+          "component": "Text input",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "issued_on",
+          "component": "Date input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "expires_on",
+          "component": "Date input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "credential_id",
+          "component": "Entity reference",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "verification_url",
+          "component": "URL / safe route input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "description",
+          "component": "Rich-text (Tiptap) / text",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "evidence_media",
+          "component": "Media picker",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "status",
+          "component": "Select/Combobox",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        }
+      ],
+      "cross_field_rules": "Never expose sensitive credential ID; verification URL optional but claims must be authentic.",
+      "actions": "Save Draft → Private Preview → Validate → Publish / Unpublish / Archive → Revisions",
+      "responsive": {
+        "desktop": "Two columns for short inputs; long text, media and repeated fields full width.",
+        "mobile": "Single column; safe button bar; keyboard and 320px reflow checks."
+      }
+    },
+    {
+      "id": "writing",
+      "screen": "ADM-15/16",
+      "route": "/admin/writing/new | /admin/writing/:id/edit",
+      "fields": [
+        {
+          "key": "title",
+          "component": "Text input",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "slug",
+          "component": "Slug input",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "excerpt",
+          "component": "Textarea",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "body",
+          "component": "Rich-text (Tiptap) / text",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "tags",
+          "component": "Tag list / repeatable array",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "cover_image",
+          "component": "Media picker",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "references",
+          "component": "Tag list / repeatable array",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "published_at",
+          "component": "Read-only timestamp",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": false
+        },
+        {
+          "key": "status",
+          "component": "Select/Combobox",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        }
+      ],
+      "cross_field_rules": "Rich text must be sanitized and previewed safely; links/references valid; publish required body cannot be empty.",
+      "actions": "Save Draft → Private Preview → Validate → Publish / Unpublish / Archive → Revisions",
+      "responsive": {
+        "desktop": "Two columns for short inputs; long text, media and repeated fields full width.",
+        "mobile": "Single column; safe button bar; keyboard and 320px reflow checks."
+      }
+    },
+    {
+      "id": "open_source",
+      "screen": "ADM-21",
+      "route": "/admin/open-source",
+      "fields": [
+        {
+          "key": "title",
+          "component": "Text input",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "repository_url",
+          "component": "URL / safe route input",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "contribution_type",
+          "component": "Select/Combobox",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "description",
+          "component": "Rich-text (Tiptap) / text",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "evidence_url",
+          "component": "URL / safe route input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "status",
+          "component": "Select/Combobox",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        }
+      ],
+      "cross_field_rules": "Verified public repo/PR evidence where provided; no fabricated contributions.",
+      "actions": "Save Draft → Private Preview → Validate → Publish / Unpublish / Archive → Revisions",
+      "responsive": {
+        "desktop": "Two columns for short inputs; long text, media and repeated fields full width.",
+        "mobile": "Single column; safe button bar; keyboard and 320px reflow checks."
+      }
+    },
+    {
+      "id": "social_links",
+      "screen": "ADM-06",
+      "route": "/admin/profile",
+      "fields": [
+        {
+          "key": "platform",
+          "component": "Select/Combobox",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "label",
+          "component": "Text input",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "url",
+          "component": "URL / safe route input",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "sort_order",
+          "component": "Number input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "is_public",
+          "component": "Switch",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        }
+      ],
+      "cross_field_rules": "Safe schemes (https/http) only; private flag defaults off for sensitive accounts.",
+      "actions": "Validate → Save changes; preview resulting public state where relevant",
+      "responsive": {
+        "desktop": "Two columns for short inputs; long text, media and repeated fields full width.",
+        "mobile": "Single column; safe button bar; keyboard and 320px reflow checks."
+      }
+    },
+    {
+      "id": "resume",
+      "screen": "ADM-23",
+      "route": "/admin/resume",
+      "fields": [
+        {
+          "key": "file",
+          "component": "Media picker",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "display_name",
+          "component": "Text input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "is_public",
+          "component": "Switch",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "updated_at",
+          "component": "Read-only timestamp",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": false
+        }
+      ],
+      "cross_field_rules": "PDF only, server checks signatures/size/ownership, private until explicitly published.",
+      "actions": "Upload PDF → Preview privately → Publish or unpublish",
+      "responsive": {
+        "desktop": "Two columns for short inputs; long text, media and repeated fields full width.",
+        "mobile": "Single column; safe button bar; keyboard and 320px reflow checks."
+      }
+    },
+    {
+      "id": "contact_message",
+      "screen": "ADM-24/25",
+      "route": "/admin/messages",
+      "fields": [
+        {
+          "key": "sender_name",
+          "component": "Text input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": false
+        },
+        {
+          "key": "sender_email",
+          "component": "Email input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": false
+        },
+        {
+          "key": "subject",
+          "component": "Text input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": false
+        },
+        {
+          "key": "message",
+          "component": "Textarea",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": false
+        },
+        {
+          "key": "consent",
+          "component": "Text input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": false
+        },
+        {
+          "key": "created_at",
+          "component": "Read-only timestamp",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": false
+        },
+        {
+          "key": "handling_status",
+          "component": "Status display/action",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": false
+        }
+      ],
+      "cross_field_rules": "Inbound visitor-submitted records are READ-ONLY in admin; only review status, retention and delete confirmation editable. Consent rules depend on privacy policy.",
+      "actions": "Read → Mark Reviewed → Archive / Delete with confirmation",
+      "responsive": {
+        "desktop": "Two columns for short inputs; long text, media and repeated fields full width.",
+        "mobile": "Single column; safe button bar; keyboard and 320px reflow checks."
+      }
+    },
+    {
+      "id": "seo",
+      "screen": "ADM-27",
+      "route": "/admin/settings/seo",
+      "fields": [
+        {
+          "key": "page_ref",
+          "component": "Entity reference",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "meta_title",
+          "component": "Text input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "meta_description",
+          "component": "Textarea",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "og_image",
+          "component": "Media picker",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "canonical_override",
+          "component": "URL / safe route input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "old_slug",
+          "component": "Slug input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "new_path",
+          "component": "URL / safe route input",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": true
+        }
+      ],
+      "cross_field_rules": "Safe canonical host and approved published route IDs; redirects must not lead to private previews or loops.",
+      "actions": "Validate → Save changes; preview resulting public state where relevant",
+      "responsive": {
+        "desktop": "Two columns for short inputs; long text, media and repeated fields full width.",
+        "mobile": "Single column; safe button bar; keyboard and 320px reflow checks."
+      }
+    },
+    {
+      "id": "security",
+      "screen": "ADM-01/02/28",
+      "route": "/admin/login | /admin/verify | /admin/security",
+      "fields": [
+        {
+          "key": "email",
+          "component": "Email input",
+          "required_at_publish_provisional": true,
+          "draft_required": false,
+          "editable": true
+        },
+        {
+          "key": "password_hash",
+          "component": "SERVER ONLY",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": false
+        },
+        {
+          "key": "email_code_digest",
+          "component": "SERVER ONLY",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": false
+        },
+        {
+          "key": "session_id",
+          "component": "SERVER ONLY",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": false
+        },
+        {
+          "key": "created_at",
+          "component": "Read-only timestamp",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": false
+        },
+        {
+          "key": "audit_event",
+          "component": "SERVER ONLY",
+          "required_at_publish_provisional": false,
+          "draft_required": false,
+          "editable": false
+        }
+      ],
+      "cross_field_rules": "password_hash, OTP digest, session ID and audit data are SERVER-ONLY; actual forms include password, email code, reset passwords and session revoke, none of which leak to logs.",
+      "actions": "Login → Verify email challenge; recover password; revoke sessions",
+      "responsive": {
+        "desktop": "Two columns for short inputs; long text, media and repeated fields full width.",
+        "mobile": "Single column; safe button bar; keyboard and 320px reflow checks."
+      }
+    }
+  ]
+}
