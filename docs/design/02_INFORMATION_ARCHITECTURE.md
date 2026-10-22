@@ -1,6 +1,6 @@
 # Phase 02.4 — Information Architecture & Navigation
 
-**Status:** DRAFT FOR OWNER REVIEW (not yet signed off)
+**Status:** SEVEN IA DECISIONS APPROVED — REQUIREMENTS CROSSWALK PENDING (see ADR-IA-001)
 **Updated:** 2026-10-23
 **Repository:** tamjidniloy/portfolio-platform
 **Visual baseline:** ADR-UI-001 (approved). Brand and exact fonts remain open.
