@@ -1,6 +1,6 @@
 # Phase 02.6 — Public Page Template Design Specification
 
-**Status:** DESIGN PROPOSAL — owner review required
+**Status:** OWNER APPROVED AT WIREFRAME LEVEL — see ADR-WF-002; SRS reconciliation and Penpot/accessibility checks remain open
 **Last updated:** 2026-10-23
 **Parent approvals:** ADR-UI-001 (visual); ADR-IA-001 (navigation and IA); ADR-WF-001 (homepage PUB-01 at wireframe level)
 **Source dependency:** Approved Phase 01 SRS synchronization is still OPEN; do not declare final Phase 02 sign-off.
