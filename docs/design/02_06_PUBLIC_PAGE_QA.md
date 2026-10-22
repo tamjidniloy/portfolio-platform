@@ -1,6 +1,6 @@
 # Phase 02.6 — Public Template Review & Acceptance Checklist
 
-**Status:** AWAITING OWNER REVIEW
+**Status:** OWNER APPROVED WIREFRAME DIRECTION on 2026-10-23 (ADR-WF-002); verification checklist remains open for native Penpot and SRS mapping
 **Design foundation:** ADR-UI-001 approved; ADR-IA-001 approved; ADR-WF-001 homepage approved at wireframe level.
 **SRS gate:** Still OPEN; approved Phase 01 SRS missing from GitHub.
 
@@ -36,7 +36,7 @@
 - [ ] Desktop/mobile native Penpot boards made (SVG import alone does not fulfill this)
 - [ ] Actual Penpot prototype navigation checked in View mode
 - [ ] Actual approved Phase 01 SRS reconciled and route/field IDs verified
-- [ ] Owner approval decision recorded with date/version
+- [x] Owner approved wireframe-level proposal on 2026-10-23 (ADR-WF-002).
 
 ## Design decisions still intentionally open
 - Exact public brand/name and font family.
