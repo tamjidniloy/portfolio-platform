@@ -1,6 +1,6 @@
 # Phase 02.8 — Field, Validation, Component and Responsive Matrix
 
-**Status:** DESIGN PROPOSAL — NOT APPROVED FIELD CONTRACT
+**Status:** UX DESIGN SPECIFICATION APPROVED SUBJECT TO SRS RECONCILIATION (ADR-UX-002); this field matrix remains provisional, NOT an approved final field contract
 **Date:** 2026-10-23
 **Inherited approval:** ADR-WF-003 approves Phase 02.7 admin WIREFRAMES only.
 **Source:** Historical Phase 01 **draft** field dictionary; authoritative approved SRS is still missing on GitHub. Reconcile names, lengths and rules before coding.
