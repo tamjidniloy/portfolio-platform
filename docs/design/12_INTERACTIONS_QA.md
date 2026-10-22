@@ -1,6 +1,6 @@
 # Phase 02.12 — Interaction Patterns Review / QA
 
-**Status:** DRAFT FOR REVIEW — ZERO UX tests passed or failed
+**Status:** Interaction design specification OWNER APPROVED (ADR-IX-001); 42 planned UX tests remain NOT RUN; native Penpot not verified.
 **Parent approval:** ADR-A11Y-001 Phase 02.11 specification approval.
 **Open:** Native Penpot prototypes, SRS, font, public brand; light future-only.
 
