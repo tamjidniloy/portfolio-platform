@@ -1,6 +1,6 @@
 # DEVFOLIO OS — Phase 02.9 Design System v0.1
 
-**Status:** DESIGN SYSTEM PROPOSAL — owner approval pending. The overall dark-first navy/teal/blue visual direction was approved in ADR-UI-001; exact hex values, font, component variants and high-fidelity design are not yet approved.
+**Status:** OWNER APPROVED dark tokens, scale, radii, principles and component direction at DESIGN-SPECIFICATION LEVEL on 2026-10-23 (ADR-DS-001). Exact font, brand, native Penpot implementation, accessibility QA and SRS reconciliation remain OPEN.
 **Date:** 2026-10-23 (Asia/Dhaka)
 **Dependencies:** ADR-UI-001, ADR-IA-001, ADR-WF-001/002/003, ADR-UX-002. Approved Phase 01 SRS still missing on GitHub `main`; `docs/phase01/SRS_RECONCILIATION.md` remains OPEN.
 **Public brand/name:** OPEN. **Exact font:** OPEN.
@@ -11,7 +11,7 @@
 - Primitive values -> semantic tokens -> reusable component variants. Components consume semantic names, never hard-coded hex.
 - Dark-first; optional light-mode candidate values are prepared but a production toggle is NOT approved.
 
-## Candidate semantic colors (hex NOT YET owner approved)
+## Approved dark semantic colors (HEX approved at specification level; light palette is future-only)
 | Role | Dark | Light candidate |
 |---|---|---|
 | background | #10151D | #F8FAFC |
