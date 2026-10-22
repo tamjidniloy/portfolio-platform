@@ -1,6 +1,6 @@
 # Phase 02.7 — Full Admin CMS Wireframes
 
-**Status:** PROPOSED / AWAITING OWNER WIREFRAME REVIEW
+**Status:** OWNER APPROVED AT WIREFRAME LEVEL on 2026-10-23 (see ADR-WF-003); native Penpot, working behavior and approved-SRS traceability remain unverified
 **Date:** 2026-10-23 (Asia/Dhaka)
 **Audience:** Single owner administrator, no public user signup.
 **Dependencies:** ADR-UI-001 (approved visual direction), ADR-IA-001 (approved navigation), ADR-WF-001 (approved homepage wireframes), ADR-WF-002 (approved public templates).
