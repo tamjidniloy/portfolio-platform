@@ -1,6 +1,6 @@
 # Phase 02.4 — Content Model & Internal Link Relationships
 
-**Status:** PROPOSED, NOT DATABASE ERD.** Phase 03 defines final PostgreSQL schema.
+**Status:** PROPOSED, NOT DATABASE ERD. Phase 03 defines final PostgreSQL schema.
 
 ## Public hubs and child items
 - Home curates featured **published** Projects, Research, Skills, Writing and Career highlights.
