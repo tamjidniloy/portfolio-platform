@@ -1,24 +1,24 @@
 # Phase 02.4 — Information Architecture Approval Checklist
 
-**Status:** DRAFT — awaiting owner approval
+**Status:** Seven proposed IA decisions explicitly approved on 2026-10-23; detailed design acceptance and SRS traceability still pending. See ADR-IA-001.
 **Visual foundation:** ADR-UI-001 approved.
 **SRS gate:** not complete until the approved Phase 01 document is identified in GitHub and compared with proposed routes.
 
 ## Review checklist
 - [ ] All required public page routes exist in screen inventory.
-- [ ] Primary nav Work, Research, About, conditional Writing, Contact is approved.
-- [ ] About subpages and contextual/footer links are approved.
-- [ ] Research includes publications without requiring a separate /publications route.
+- [x] Primary nav Work, Research, About, conditional Writing, Contact is approved.
+- [x] About subpages and contextual/footer links are approved.
+- [x] Research includes publications without requiring a separate /publications route.
 - [ ] Homepage section order and dynamic empty-state behavior are approved.
 - [ ] Project/Research/Writing slugs and breadcrumb rules are approved.
-- [ ] Private CMS routes and admin sidebar groups are approved.
-- [ ] Preview/draft/unpublished content cannot be publicly accessed.
+- [x] Private CMS route groupings and six admin sidebar groups are approved at the information-architecture level.
+- [x] Owner approved rule: Preview/draft/unpublished content cannot be publicly accessed (implementation/testing pending).
 - [ ] Admin login, email challenge and account recovery screens have proper gates.
 - [ ] Mobile nav, focus, skip links and access to primary actions are reviewed.
 - [ ] All important routes map to a Penpot board or a documented shared template.
 - [ ] Search indexing, sitemap/robots and public 404 policies are defined.
 - [ ] Actual approved SRS compared against route inventory; mismatches resolved.
-- [ ] Owner formally approves Phase 02.4, with a recorded date/version.
+- [x] Owner approved seven Phase 02.4 IA decisions on 2026-10-23 (not final requirements sign-off).
 
 ## Proposed decisions for explicit sign-off
 1. Main menu: Work / Research / About / Writing (conditional) / Contact.
