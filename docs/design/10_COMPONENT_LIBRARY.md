@@ -1,6 +1,6 @@
 # Phase 02.10 — Reusable UI Component Library v0.1
 
-**Status:** PROPOSED — awaiting owner review; no native Penpot components implemented or verified.
+**Status:** APPROVED AT DESIGN-SPECIFICATION LEVEL on 2026-10-23 (ADR-DS-002); no native Penpot components or accessibility tests have been verified.
 **Date:** 2026-10-23 (Asia/Dhaka)
 **Approved foundation:** ADR-DS-001 — exact dark semantic HEX palette, type scale, spacing, radii and accessibility principles approved at specification level.
 **Previous approvals:** ADR-UI-001, ADR-IA-001, ADR-WF-001/002/003, ADR-UX-002.
