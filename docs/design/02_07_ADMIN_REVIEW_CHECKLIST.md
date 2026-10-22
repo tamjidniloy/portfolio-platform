@@ -1,6 +1,6 @@
 # Phase 02.7 — Admin CMS Wireframe Review Checklist
 
-**Status:** DRAFT — waiting for owner review and Penpot verification
+**Status:** Owner approved wireframe direction on 2026-10-23 (ADR-WF-003). This QA checklist remains OPEN for detailed functionality, Penpot/accessibility verification and approved-SRS reconciliation.
 **Approvals inherited:** ADR-UI-001, ADR-IA-001, ADR-WF-001, ADR-WF-002.
 **Unresolved gate:** Approved Phase 01 SRS absent from GitHub; `docs/phase01/SRS_RECONCILIATION.md` remains OPEN.
 
@@ -33,7 +33,7 @@
 - [ ] Desktop and mobile views reviewed (including 320px, zoom, keyboard)
 - [ ] Prototype flows connected and tested in View mode
 - [ ] Approved SRS fields and routes reconciled against all admin modules
-- [ ] Owner decision recorded: approve/revise wireframe-level proposal
+- [x] Owner approved the proposed wireframes at wireframe level (ADR-WF-003, 2026-10-23).
 - [ ] Actual design file/prototype links saved (when available)
 
 ## Npm-first implementation mapping (later)
