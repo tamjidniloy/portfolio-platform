@@ -1,6 +1,6 @@
 # Phase 02.5 — Homepage Wireframes (PUB-01)
 
-**Status:** DRAFT for owner review, not approved or implemented
+**Status:** APPROVED AT WIREFRAME LEVEL by owner on 2026-10-23; not implemented or confirmed as native Penpot boards (see ADR-WF-001)
 **Updated:** 2026-10-23
 **Parent:** ADR-UI-001 (approved visual direction) and ADR-IA-001 (seven approved information-architecture decisions)
 **Dependency:** Phase 01 owner-approved SRS has not yet been synchronized to GitHub; do not declare final design sign-off.
