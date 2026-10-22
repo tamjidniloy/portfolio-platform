@@ -1,6 +1,6 @@
 # Phase 02.11 — Responsive Layout Specifications (Public + Admin)
 
-**Status:** PROPOSED FOR OWNER REVIEW; no responsive QA run/verified.
+**Status:** APPROVED AT DESIGN-SPECIFICATION LEVEL on 2026-10-23 (ADR-A11Y-001); no actual responsive QA or native Penpot implementation verified.
 **Date:** 2026-10-23 (Asia/Dhaka).
 **Parent approval:** ADR-DS-002 Phase 02.10 component library approved at design-specification level (NOT native Penpot completion).
 **Preserve:** ADR-UI-001 dark visual direction; ADR-IA-001 nav; ADR-WF-001/002/003 wireframes; ADR-UX-002 forms; ADR-DS-001 tokens.
