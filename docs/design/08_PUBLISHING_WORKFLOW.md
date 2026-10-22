@@ -1,6 +1,6 @@
 # Phase 02.8 — CMS Validation & Publishing Interaction Contract
 
-**Status:** DESIGN PROPOSAL — not implementation, final server contract, or owner approval
+**Status:** UX INTERACTION DESIGN APPROVED SUBJECT TO SRS RECONCILIATION (ADR-UX-002); not implemented or a final server/API contract
 **Parent approval:** ADR-WF-003 approves the admin wireframe direction.
 **Outstanding:** Approved Phase 01 SRS is absent from GitHub main. Historical draft constraints must be reconciled before Phase 03 schema/API commitments.
 
