@@ -1,0 +1,575 @@
+{
+  "Global": {
+    "palette": {
+      "navy950": {
+        "$value": "#10151D",
+        "$type": "color"
+      },
+      "navy900": {
+        "$value": "#121C26",
+        "$type": "color"
+      },
+      "navy850": {
+        "$value": "#17212D",
+        "$type": "color"
+      },
+      "navy800": {
+        "$value": "#213042",
+        "$type": "color"
+      },
+      "teal400": {
+        "$value": "#70D9C3",
+        "$type": "color"
+      },
+      "blue300": {
+        "$value": "#9CC0FF",
+        "$type": "color"
+      },
+      "neutral50": {
+        "$value": "#F8FAFC",
+        "$type": "color"
+      },
+      "neutral100": {
+        "$value": "#F1F5F9",
+        "$type": "color"
+      },
+      "neutral500": {
+        "$value": "#64748B",
+        "$type": "color"
+      }
+    },
+    "spacing": {
+      "s0": {
+        "$value": "0px",
+        "$type": "dimension"
+      },
+      "s1": {
+        "$value": "4px",
+        "$type": "dimension"
+      },
+      "s2": {
+        "$value": "8px",
+        "$type": "dimension"
+      },
+      "s3": {
+        "$value": "12px",
+        "$type": "dimension"
+      },
+      "s4": {
+        "$value": "16px",
+        "$type": "dimension"
+      },
+      "s5": {
+        "$value": "20px",
+        "$type": "dimension"
+      },
+      "s6": {
+        "$value": "24px",
+        "$type": "dimension"
+      },
+      "s8": {
+        "$value": "32px",
+        "$type": "dimension"
+      },
+      "s10": {
+        "$value": "40px",
+        "$type": "dimension"
+      },
+      "s12": {
+        "$value": "48px",
+        "$type": "dimension"
+      },
+      "s16": {
+        "$value": "64px",
+        "$type": "dimension"
+      },
+      "s20": {
+        "$value": "80px",
+        "$type": "dimension"
+      },
+      "s24": {
+        "$value": "96px",
+        "$type": "dimension"
+      }
+    },
+    "radius": {
+      "none": {
+        "$value": "0px",
+        "$type": "dimension"
+      },
+      "sm": {
+        "$value": "6px",
+        "$type": "dimension"
+      },
+      "md": {
+        "$value": "10px",
+        "$type": "dimension"
+      },
+      "lg": {
+        "$value": "14px",
+        "$type": "dimension"
+      },
+      "xl": {
+        "$value": "20px",
+        "$type": "dimension"
+      },
+      "pill": {
+        "$value": "999px",
+        "$type": "dimension"
+      }
+    },
+    "font": {
+      "display": {
+        "$value": "system-ui, -apple-system, \"Segoe UI\", Arial, sans-serif",
+        "$type": "fontFamily",
+        "$description": "Placeholder font stack: exact font selection remains open"
+      },
+      "body": {
+        "$value": "system-ui, -apple-system, \"Segoe UI\", Arial, sans-serif",
+        "$type": "fontFamily",
+        "$description": "Placeholder font stack: exact font selection remains open"
+      },
+      "mono": {
+        "$value": "ui-monospace, SFMono-Regular, Consolas, \"Liberation Mono\", monospace",
+        "$type": "fontFamily",
+        "$description": "Placeholder font stack: exact font selection remains open"
+      }
+    },
+    "type": {
+      "caption": {
+        "size": {
+          "$value": "12px",
+          "$type": "dimension"
+        },
+        "lineHeight": {
+          "$value": 1.45,
+          "$type": "number"
+        },
+        "weight": {
+          "$value": 500,
+          "$type": "number"
+        }
+      },
+      "small": {
+        "size": {
+          "$value": "14px",
+          "$type": "dimension"
+        },
+        "lineHeight": {
+          "$value": 1.55,
+          "$type": "number"
+        },
+        "weight": {
+          "$value": 400,
+          "$type": "number"
+        }
+      },
+      "body": {
+        "size": {
+          "$value": "16px",
+          "$type": "dimension"
+        },
+        "lineHeight": {
+          "$value": 1.65,
+          "$type": "number"
+        },
+        "weight": {
+          "$value": 400,
+          "$type": "number"
+        }
+      },
+      "lead": {
+        "size": {
+          "$value": "18px",
+          "$type": "dimension"
+        },
+        "lineHeight": {
+          "$value": 1.6,
+          "$type": "number"
+        },
+        "weight": {
+          "$value": 400,
+          "$type": "number"
+        }
+      },
+      "h3": {
+        "size": {
+          "$value": "24px",
+          "$type": "dimension"
+        },
+        "lineHeight": {
+          "$value": 1.28,
+          "$type": "number"
+        },
+        "weight": {
+          "$value": 600,
+          "$type": "number"
+        }
+      },
+      "h2": {
+        "size": {
+          "$value": "36px",
+          "$type": "dimension"
+        },
+        "lineHeight": {
+          "$value": 1.18,
+          "$type": "number"
+        },
+        "weight": {
+          "$value": 600,
+          "$type": "number"
+        }
+      },
+      "h1": {
+        "size": {
+          "$value": "52px",
+          "$type": "dimension"
+        },
+        "lineHeight": {
+          "$value": 1.1,
+          "$type": "number"
+        },
+        "weight": {
+          "$value": 650,
+          "$type": "number"
+        }
+      },
+      "display": {
+        "size": {
+          "$value": "64px",
+          "$type": "dimension"
+        },
+        "lineHeight": {
+          "$value": 1.04,
+          "$type": "number"
+        },
+        "weight": {
+          "$value": 650,
+          "$type": "number"
+        }
+      }
+    },
+    "layout": {
+      "controlMinHeight": {
+        "$value": "44px",
+        "$type": "dimension"
+      },
+      "contentMax": {
+        "$value": "1248px",
+        "$type": "dimension"
+      },
+      "sidebarWidth": {
+        "$value": "240px",
+        "$type": "dimension"
+      }
+    }
+  },
+  "Mode/Dark": {
+    "color": {
+      "background": {
+        "$value": "#10151D",
+        "$type": "color",
+        "$description": "Candidate dark semantic token; contrast tested for selected pairings only"
+      },
+      "foreground": {
+        "$value": "#F1F5F9",
+        "$type": "color",
+        "$description": "Candidate dark semantic token; contrast tested for selected pairings only"
+      },
+      "card": {
+        "$value": "#17212D",
+        "$type": "color",
+        "$description": "Candidate dark semantic token; contrast tested for selected pairings only",
+        "foreground": {
+          "$value": "#F1F5F9",
+          "$type": "color",
+          "$description": "Candidate dark semantic token; contrast tested for selected pairings only"
+        }
+      },
+      "popover": {
+        "$value": "#213042",
+        "$type": "color",
+        "$description": "Candidate dark semantic token; contrast tested for selected pairings only",
+        "foreground": {
+          "$value": "#F1F5F9",
+          "$type": "color",
+          "$description": "Candidate dark semantic token; contrast tested for selected pairings only"
+        }
+      },
+      "primary": {
+        "$value": "#70D9C3",
+        "$type": "color",
+        "$description": "Candidate dark semantic token; contrast tested for selected pairings only",
+        "foreground": {
+          "$value": "#10151D",
+          "$type": "color",
+          "$description": "Candidate dark semantic token; contrast tested for selected pairings only"
+        }
+      },
+      "secondary": {
+        "$value": "#243141",
+        "$type": "color",
+        "$description": "Candidate dark semantic token; contrast tested for selected pairings only",
+        "foreground": {
+          "$value": "#F1F5F9",
+          "$type": "color",
+          "$description": "Candidate dark semantic token; contrast tested for selected pairings only"
+        }
+      },
+      "muted": {
+        "$value": "#243141",
+        "$type": "color",
+        "$description": "Candidate dark semantic token; contrast tested for selected pairings only",
+        "foreground": {
+          "$value": "#B0BECC",
+          "$type": "color",
+          "$description": "Candidate dark semantic token; contrast tested for selected pairings only"
+        }
+      },
+      "accent": {
+        "$value": "#213042",
+        "$type": "color",
+        "$description": "Candidate dark semantic token; contrast tested for selected pairings only",
+        "foreground": {
+          "$value": "#F1F5F9",
+          "$type": "color",
+          "$description": "Candidate dark semantic token; contrast tested for selected pairings only"
+        }
+      },
+      "destructive": {
+        "$value": "#FDA4AF",
+        "$type": "color",
+        "$description": "Candidate dark semantic token; contrast tested for selected pairings only",
+        "foreground": {
+          "$value": "#10151D",
+          "$type": "color",
+          "$description": "Candidate dark semantic token; contrast tested for selected pairings only"
+        }
+      },
+      "border": {
+        "$value": "#46586B",
+        "$type": "color",
+        "$description": "Candidate dark semantic token; contrast tested for selected pairings only"
+      },
+      "input": {
+        "$value": "#788BA2",
+        "$type": "color",
+        "$description": "Candidate dark semantic token; contrast tested for selected pairings only"
+      },
+      "ring": {
+        "$value": "#70D9C3",
+        "$type": "color",
+        "$description": "Candidate dark semantic token; contrast tested for selected pairings only"
+      },
+      "link": {
+        "$value": "#9CC0FF",
+        "$type": "color",
+        "$description": "Candidate dark semantic token; contrast tested for selected pairings only"
+      },
+      "success": {
+        "$value": "#86EFAC",
+        "$type": "color",
+        "$description": "Candidate dark semantic token; contrast tested for selected pairings only",
+        "foreground": {
+          "$value": "#10151D",
+          "$type": "color",
+          "$description": "Candidate dark semantic token; contrast tested for selected pairings only"
+        }
+      },
+      "warning": {
+        "$value": "#FCD34D",
+        "$type": "color",
+        "$description": "Candidate dark semantic token; contrast tested for selected pairings only",
+        "foreground": {
+          "$value": "#10151D",
+          "$type": "color",
+          "$description": "Candidate dark semantic token; contrast tested for selected pairings only"
+        }
+      },
+      "sidebar": {
+        "$value": "#121C26",
+        "$type": "color",
+        "$description": "Candidate dark semantic token; contrast tested for selected pairings only",
+        "foreground": {
+          "$value": "#F1F5F9",
+          "$type": "color",
+          "$description": "Candidate dark semantic token; contrast tested for selected pairings only"
+        },
+        "accent": {
+          "$value": "#243141",
+          "$type": "color",
+          "$description": "Candidate dark semantic token; contrast tested for selected pairings only",
+          "foreground": {
+            "$value": "#F1F5F9",
+            "$type": "color",
+            "$description": "Candidate dark semantic token; contrast tested for selected pairings only"
+          }
+        },
+        "border": {
+          "$value": "#46586B",
+          "$type": "color",
+          "$description": "Candidate dark semantic token; contrast tested for selected pairings only"
+        },
+        "ring": {
+          "$value": "#70D9C3",
+          "$type": "color",
+          "$description": "Candidate dark semantic token; contrast tested for selected pairings only"
+        }
+      }
+    }
+  },
+  "Mode/Light": {
+    "color": {
+      "background": {
+        "$value": "#F8FAFC",
+        "$type": "color",
+        "$description": "Candidate light semantic token; contrast tested for selected pairings only"
+      },
+      "foreground": {
+        "$value": "#182331",
+        "$type": "color",
+        "$description": "Candidate light semantic token; contrast tested for selected pairings only"
+      },
+      "card": {
+        "$value": "#FFFFFF",
+        "$type": "color",
+        "$description": "Candidate light semantic token; contrast tested for selected pairings only",
+        "foreground": {
+          "$value": "#182331",
+          "$type": "color",
+          "$description": "Candidate light semantic token; contrast tested for selected pairings only"
+        }
+      },
+      "popover": {
+        "$value": "#FFFFFF",
+        "$type": "color",
+        "$description": "Candidate light semantic token; contrast tested for selected pairings only",
+        "foreground": {
+          "$value": "#182331",
+          "$type": "color",
+          "$description": "Candidate light semantic token; contrast tested for selected pairings only"
+        }
+      },
+      "primary": {
+        "$value": "#116B61",
+        "$type": "color",
+        "$description": "Candidate light semantic token; contrast tested for selected pairings only",
+        "foreground": {
+          "$value": "#FFFFFF",
+          "$type": "color",
+          "$description": "Candidate light semantic token; contrast tested for selected pairings only"
+        }
+      },
+      "secondary": {
+        "$value": "#E9EFF5",
+        "$type": "color",
+        "$description": "Candidate light semantic token; contrast tested for selected pairings only",
+        "foreground": {
+          "$value": "#182331",
+          "$type": "color",
+          "$description": "Candidate light semantic token; contrast tested for selected pairings only"
+        }
+      },
+      "muted": {
+        "$value": "#E9EFF5",
+        "$type": "color",
+        "$description": "Candidate light semantic token; contrast tested for selected pairings only",
+        "foreground": {
+          "$value": "#475569",
+          "$type": "color",
+          "$description": "Candidate light semantic token; contrast tested for selected pairings only"
+        }
+      },
+      "accent": {
+        "$value": "#DCEFED",
+        "$type": "color",
+        "$description": "Candidate light semantic token; contrast tested for selected pairings only",
+        "foreground": {
+          "$value": "#182331",
+          "$type": "color",
+          "$description": "Candidate light semantic token; contrast tested for selected pairings only"
+        }
+      },
+      "destructive": {
+        "$value": "#A3172D",
+        "$type": "color",
+        "$description": "Candidate light semantic token; contrast tested for selected pairings only",
+        "foreground": {
+          "$value": "#FFFFFF",
+          "$type": "color",
+          "$description": "Candidate light semantic token; contrast tested for selected pairings only"
+        }
+      },
+      "border": {
+        "$value": "#64748B",
+        "$type": "color",
+        "$description": "Candidate light semantic token; contrast tested for selected pairings only"
+      },
+      "input": {
+        "$value": "#64748B",
+        "$type": "color",
+        "$description": "Candidate light semantic token; contrast tested for selected pairings only"
+      },
+      "ring": {
+        "$value": "#116B61",
+        "$type": "color",
+        "$description": "Candidate light semantic token; contrast tested for selected pairings only"
+      },
+      "link": {
+        "$value": "#1D4ED8",
+        "$type": "color",
+        "$description": "Candidate light semantic token; contrast tested for selected pairings only"
+      },
+      "success": {
+        "$value": "#11663A",
+        "$type": "color",
+        "$description": "Candidate light semantic token; contrast tested for selected pairings only",
+        "foreground": {
+          "$value": "#FFFFFF",
+          "$type": "color",
+          "$description": "Candidate light semantic token; contrast tested for selected pairings only"
+        }
+      },
+      "warning": {
+        "$value": "#8D4D07",
+        "$type": "color",
+        "$description": "Candidate light semantic token; contrast tested for selected pairings only",
+        "foreground": {
+          "$value": "#FFFFFF",
+          "$type": "color",
+          "$description": "Candidate light semantic token; contrast tested for selected pairings only"
+        }
+      },
+      "sidebar": {
+        "$value": "#EEF3F7",
+        "$type": "color",
+        "$description": "Candidate light semantic token; contrast tested for selected pairings only",
+        "foreground": {
+          "$value": "#182331",
+          "$type": "color",
+          "$description": "Candidate light semantic token; contrast tested for selected pairings only"
+        },
+        "accent": {
+          "$value": "#DCEFED",
+          "$type": "color",
+          "$description": "Candidate light semantic token; contrast tested for selected pairings only",
+          "foreground": {
+            "$value": "#182331",
+            "$type": "color",
+            "$description": "Candidate light semantic token; contrast tested for selected pairings only"
+          }
+        },
+        "border": {
+          "$value": "#64748B",
+          "$type": "color",
+          "$description": "Candidate light semantic token; contrast tested for selected pairings only"
+        },
+        "ring": {
+          "$value": "#116B61",
+          "$type": "color",
+          "$description": "Candidate light semantic token; contrast tested for selected pairings only"
+        }
+      }
+    }
+  }
+}
