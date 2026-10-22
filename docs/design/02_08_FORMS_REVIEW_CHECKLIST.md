@@ -1,6 +1,6 @@
 # Phase 02.8 — CMS Form Design Review Checklist
 
-**Status:** AWAITING OWNER REVIEW — Not approved
+**Status:** Owner approved Phase 02.8 DESIGN-SPECIFICATION approach on 2026-10-23 (ADR-UX-002); SRS traceability, native Penpot board verification, accessibility QA and implementation remain OPEN
 **Inherited approval:** ADR-WF-003 (admin wireframe structure) and earlier ADR decisions.
 **Open gate:** Approved Phase 01 SRS absent from GitHub main.
 
@@ -35,7 +35,7 @@
 ## Engineering & approval
 - [ ] Component mapping favors established JavaScript/npm packages without installing now
 - [ ] Owner-approved Phase 01 SRS reconciled against provisional field registry
-- [ ] Owner reviewed and approved Phase 02.8; version, date and Penpot links recorded
+- [x] Owner approved Phase 02.8 design specification on 2026-10-23 (ADR-UX-002). Penpot links and SRS reconciliation remain pending.
 - [ ] Public brand/name and exact font remain open where intended
 
 **Do not merge as finished Phase 02 designs or mark Phase 02 complete until outstanding gates are resolved.**
