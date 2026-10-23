@@ -5,7 +5,7 @@
 | Milestone | Roadmap tasks | State | Required signoff/evidence |
 |---|---|---|---|
 | 04.0 | P4-001–008 | Native Windows/CI implementation verified; formal owner gates remain open | Branch-specific CI, owner acceptance of P4-001/P4-008 |
-| 04.1 | P4-009–016 | Candidate-only persistence and 04.1 DB tests **verified**; live migration not approved | Exact SRS/MFA/DB/API/retention approval + reviewed migration tool/schema |
+| 04.1 | P4-009–016 | Candidate persistence and isolated versioned migration ledger under test; **not formally approved** | Explicit SRS/MFA/DB/API/retention owner approval + real final migrations/release signoff |
 | 04.2 | P4-017–025 | Candidate-only session/cookie/CSRF/authorization work under test; no live sign-in | Explicit MFA/recovery ADR, final auth schema, owner enrollment, brute force and browser security tests |
 | 04.3 | P4-026–035 | NOT IMPLEMENTED | Approved API/schema; private CMS, publish atomicity, no draft leak |
 | 04.4 | P4-036–044 | NOT IMPLEMENTED | Media/email provider, privacy rules, integration tests |
@@ -43,3 +43,11 @@ Source and approval documents: [identity handoff](04.2_IDENTITY_AND_AUTHORIZATIO
 - Tested commit `52746fe780d270f1c5931cbc777238f09edf0ff2` — [CI run #40000108905](https://github.com/tamjidniloy/portfolio-platform/actions/runs/40000108905), SUCCESS.
 - 29 unit tests, 1 native DB test, 7 candidate DDL/transaction tests, 5 candidate session/authorization subtests passed. SSR build and unauthenticated admin-login negative HTTP smoke passed. `npm ci` restored as install step.
 - **No production MFA/sign-in/recovery is implemented or approved**. Full Phase 04.2 is blocked by owner choice and subsequent real browser security testing.
+
+## Phase 04.1 migration engineering follow-up
+
+- Candidate-only checked-in SQL migration baseline under `db/candidate_migrations/`, with recorded SHA-256 migration ledger, atomic transaction, transactional advisory lock, replay/drift/missing-version/out-of-order safety.
+- **Migration CLI refuses production or remote/normal developer databases**; `npm run db:migrate:candidate` only accepts `CANDIDATE_MIGRATION_DATABASE_URL` with an explicitly disposable loopback PostgreSQL database named `devfolio_candidate_migration_ci` or `devfolio_candidate_test`.
+- Phase03 SRS, DDL and OpenAPI are reference candidates until **owner exact-text approval**. No application migrations should be run via `npm run dev` / `npm start`.
+- Automated metadata reconciliation checks SRS catalog 76 IDs, 18 candidate SQL tables, API operations 29, routes 41, and tracks the open `/work` versus `/projects` route and email-MFA contract conflicts.
+- Use [04.1 migration review](04.1_MIGRATION_RECONCILIATION.md) to understand decision gates and CI test evidence.

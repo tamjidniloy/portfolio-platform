@@ -12,16 +12,19 @@
     "start": "cross-env NODE_ENV=production node server.js",
     "test": "node --test tests/*.test.js",
     "lint": "eslint app domain server tests scripts server.js vite.config.js react-router.config.js eslint.config.js",
-    "check:syntax": "node --check server.js && node --check server/config.js && node --check server/database.js && node --check server/probes.js && node --check domain/public-projection.js && node --check scripts/check-secrets.mjs && node --check scripts/check-no-docker.mjs && node --check scripts/doctor.mjs && node --check server/persistence/candidate-commands.js && node --check server/persistence/published-reader.js && node --check server/persistence/candidate-only.js && node --check server/persistence/unit-of-work.js && node --check server/identity/session-tokens.js && node --check server/identity/session-store.js && node --check server/identity/csrf.js && node --check server/identity/owner-access.js",
+    "check:syntax": "node --check server.js && node --check server/config.js && node --check server/database.js && node --check server/probes.js && node --check domain/public-projection.js && node --check scripts/check-secrets.mjs && node --check scripts/check-no-docker.mjs && node --check scripts/doctor.mjs && node --check server/persistence/candidate-commands.js && node --check server/persistence/published-reader.js && node --check server/persistence/candidate-only.js && node --check server/persistence/unit-of-work.js && node --check server/identity/session-tokens.js && node --check server/identity/session-store.js && node --check server/identity/csrf.js && node --check server/identity/owner-access.js && node --check server/persistence/candidate-migrator.js && node --check server/persistence/candidate-plan.js && node --check scripts/db-migrate-candidate.mjs && node --check scripts/check-contract-consistency.mjs",
     "check:secrets": "node scripts/check-secrets.mjs",
     "format": "prettier --write app domain server tests scripts server.js vite.config.js react-router.config.js eslint.config.js package.json",
     "format:check": "prettier --check app domain server tests scripts server.js vite.config.js react-router.config.js eslint.config.js package.json",
-    "check": "npm run check:syntax && npm run lint && npm test && npm run check:no-docker && npm run check:secrets && npm run build",
+    "check": "npm run check:syntax && npm run lint && npm test && npm run check:no-docker && npm run check:secrets && npm run build && npm run check:contracts",
     "check:no-docker": "node scripts/check-no-docker.mjs",
     "doctor": "node --env-file-if-exists=.env scripts/doctor.mjs",
     "verify:db": "node --env-file-if-exists=.env --test tests/integration/*.test.js",
     "db:test:candidate": "node --test tests/candidate-db/*.test.js",
-    "auth:test:candidate": "node --test tests/candidate-auth/*.test.js"
+    "auth:test:candidate": "node --test tests/candidate-auth/*.test.js",
+    "db:migrate:candidate": "node --env-file-if-exists=.env scripts/db-migrate-candidate.mjs",
+    "db:test:migrations": "node --test tests/migrations/*.test.js",
+    "check:contracts": "node scripts/check-contract-consistency.mjs"
   },
   "dependencies": {
     "@react-router/express": "7.18.4",
