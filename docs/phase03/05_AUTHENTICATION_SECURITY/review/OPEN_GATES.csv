@@ -1,0 +1,14 @@
+gate_id,priority,decision_or_evidence,owner,blocking,status
+G-SEC-01,P0,Resolve FR-040 conflict: email code vs WebAuthn/TOTP with owner-approved SRS version,Owner,Before binding auth/OpenAPI,OPEN
+G-SEC-02,P0,Approve authoritative SRS v1.1 / exact reviewed requirements catalog,Owner,Before final DB/API/security contracts,OPEN
+G-SEC-03,P0,Approve security architecture 03.5 at design scope,Owner,Before formally accepted 03.5,OPEN
+G-SEC-04,P0,Approve recovery and re-enrollment requirements,Owner,Before auth implementation,OPEN
+G-SEC-05,P0,"Finalize contact privacy, analytics and retention",Owner,Before final data/privacy architecture,OPEN
+G-SEC-06,P1,"Choose session store, SMTP, object storage, hosting, region, key management",Owner/Engineer,Before scaffold/provider integration,OPEN
+G-SEC-07,P0,Approve physical PostgreSQL and final API contracts; 03.3/03.4 remain candidates,Owner/Engineer,Before production migrations/API lock,OPEN
+G-SEC-08,P0,Execute security test register with actual results,Security/Engineer,Before production,NOT_RUN
+G-SEC-09,P0,Complete native Penpot and 142 Phase 02 design checks,Design/Owner,Before overall design acceptance,NOT_VERIFIED
+G-SEC-10,P0,Run WCAG 2.2 AA/keyboard/screen-reader manual and automated audits,QA,Before conformance claim,NOT_RUN
+G-SEC-11,P0,Run backup restore and incident response drills,Operator,Before production,NOT_RUN
+G-SEC-12,P1,Complete dependency security and supply chain review,Engineer,Before package choices,OPEN
+G-SEC-13,P1,Select public brand/name and exact font for public launch,Owner,Before public launch,OPEN
