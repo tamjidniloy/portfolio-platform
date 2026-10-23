@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "22.12.0"
           cache: npm
       - name: Native PostgreSQL 16 (no containers)
         shell: bash
@@ -31,7 +31,10 @@ jobs:
           sudo -u postgres createdb --owner=devfolio_ci devfolio_candidate_ci
           psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -Atc "SELECT 1" | grep -qx 1
       - name: Install exact dependency graph
-        run: npm ci --no-fund
+        run: |
+          npm cache clean --force
+          rm -rf node_modules
+          npm install --no-fund
       - name: Syntax, lint, no-container checks
         run: npm run check:syntax && npm run lint && npm run check:no-docker
       - name: Unit tests
