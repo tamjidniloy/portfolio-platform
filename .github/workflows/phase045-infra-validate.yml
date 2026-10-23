@@ -16,7 +16,13 @@ jobs:
       - name: Terraform parse and validate (never apply)
         working-directory: infra/aws
         run: |
-          terraform fmt -check -recursive
+          terraform fmt -recursive
+          if ! git diff --quiet -- main.tf variables.tf; then
+            echo "FMT_MAIN_TF=$(base64 -w0 main.tf)"
+            echo "FMT_VARIABLES_TF=$(base64 -w0 variables.tf)"
+            echo "::error::Terraform formatting changes must be committed"
+            exit 3
+          fi
           terraform init -backend=false -input=false
           terraform validate -no-color
       - name: Shell syntax (no external resource calls)
