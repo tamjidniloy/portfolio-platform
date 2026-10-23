@@ -158,11 +158,19 @@ resource "aws_s3_bucket_versioning" "media" {
 }
 resource "aws_s3_bucket_server_side_encryption_configuration" "artifacts" {
   bucket = aws_s3_bucket.artifacts.id
-  rule { apply_server_side_encryption_by_default { sse_algorithm = "AES256" } }
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
 }
 resource "aws_s3_bucket_server_side_encryption_configuration" "media" {
   bucket = aws_s3_bucket.media.id
-  rule { apply_server_side_encryption_by_default { sse_algorithm = "AES256" } }
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
 }
 resource "aws_s3_bucket_cors_configuration" "media" {
   bucket = aws_s3_bucket.media.id
@@ -277,7 +285,11 @@ resource "aws_lb_listener" "redirect" {
   protocol = "HTTP"
   default_action {
     type = "redirect"
-    redirect { port = "443", protocol = "HTTPS", status_code = "HTTP_301" }
+    redirect {
+      port = "443"
+      protocol = "HTTPS"
+      status_code = "HTTP_301"
+    }
   }
 }
 resource "aws_lb_listener" "tls" {
