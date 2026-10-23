@@ -1,0 +1,18 @@
+digraph Publish {
+graph [rankdir=TB,bgcolor="#10151D",pad=".32",fontname="Arial",fontcolor="#F1F5F9",label="Publication & Revision Consistency  |  Candidate",labelloc=t,fontsize=20];
+node [shape=box,style="rounded,filled",fillcolor="#17212D",color="#46586B",fontcolor="#F1F5F9",fontname="Arial"];
+edge [color="#70D9C3",fontcolor="#B0BECC",fontsize=10];
+a [label="OWNER ACTION\nauthorized session + CSRF + version check"];
+b [label="PRIVATE REVISION\nimmutable JSONB + linked media"];
+c [label="VALIDATE FOR PUBLISH\ntruthful content + safe public DTO"];
+d [label="ONE PG TRANSACTION\npublic snapshot + editorial state\nredacted audit + durable outbox",fillcolor="#164739"];
+e [label="COMMIT SUCCESS\nserver-confirmed publication"];
+f [label="OUTBOX RETRY WORKER\ncache/sitemap/notifications"];
+g [label="PUBLIC SSR\nquery published snapshot only",fillcolor="#164739"];
+x [label="REJECT / CONFLICT\nNO publicly visible change",fillcolor="#552b37"];
+a->b->c->d->e->f;
+e->g;
+a->x [label="unauthorized / stale"];
+c->x [label="invalid / media unsafe"];
+d->x [label="failed SQL; rollback"];
+}
