@@ -46,7 +46,14 @@ CREATE TABLE auth_challenges (
 CREATE TABLE admin_sessions (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   admin_user_id uuid NOT NULL REFERENCES admin_users(id) ON DELETE CASCADE,
-  token_digest text NOT NULL UNIQUE CHECK (token_digest ~ '^[a-f0-9]{64}
+  token_digest text NOT NULL UNIQUE CHECK (token_digest ~ '^[a-f0-9]{64}$'),
+  issued_at timestamptz NOT NULL DEFAULT now(),
+  expires_at timestamptz NOT NULL,
+  last_seen_at timestamptz,
+  last_authenticated_at timestamptz NOT NULL DEFAULT now(),
+  revoked_at timestamptz,
+  CHECK (expires_at > issued_at)
+);
 CREATE TABLE recovery_codes (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   admin_user_id uuid NOT NULL REFERENCES admin_users(id) ON DELETE CASCADE,
