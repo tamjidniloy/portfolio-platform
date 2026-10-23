@@ -72,6 +72,15 @@ export function createCmsApiRouter({pool,publicOrigin,csrfSecret,isProduction=fa
     res.set("X-Content-Type-Options","nosniff");
     next();
   });
+  r.get("/public/site",guarded(async(_req,res)=>{
+    const site=await getPublicSnapshot(pool,"/");
+    const profile=await getPublicSnapshot(pool,"/about");
+    json(res,{
+      title:site?.title??profile?.title??"DEVFOLIO OS",
+      description:site?.summary??profile?.summary??"",
+      socialLinks:[],
+    });
+  }));
   r.get("/public/projects",guarded(async(req,res)=>{
     const limit=parseLimit(req),offset=parseOffset(req);
     const items=await getPublicList(pool,{type:"project",limit,offset});

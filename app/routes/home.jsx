@@ -1,25 +1,31 @@
-import { Link } from "react-router";
+import { Link, useLoaderData } from "react-router";
+import { getCmsPool } from "../../server/cms/pool.js";
+import { getPublicSnapshot } from "../../server/cms/public-reader.js";
 import { PublicShell } from "../components/public-shell.jsx";
 
-export function meta() {
+export async function loader(){
+  const pool=getCmsPool();
+  const site=pool?await getPublicSnapshot(pool,"/"):null;
+  const profile=pool?await getPublicSnapshot(pool,"/about"):null;
+  return Response.json({site,profile},{headers:{"Cache-Control":"no-store"}});
+}
+export function meta({data}) {
   return [
-    { title: "DEVFOLIO OS — Development foundation" },
-    { name: "description", content: "Prelaunch engineering foundation for a published-only portfolio." },
-    { name: "robots", content: "noindex, nofollow" },
+    { title: data?.site?.title ? `${data.site.title} — DEVFOLIO OS` : "DEVFOLIO OS — Development foundation" },
+    { name: "description", content: data?.site?.summary || data?.profile?.summary || "Prelaunch engineering foundation for a published-only portfolio." },
+    ...(data?.site || data?.profile ? [] : [{ name: "robots", content: "noindex, nofollow" }]),
   ];
 }
 
 export default function Home() {
+  const {site,profile}=useLoaderData();
   return (
     <PublicShell>
       <div className="intro-grid">
         <section className="intro">
           <p className="eyebrow"><span className="status-dot" aria-hidden="true" /> FOUNDATION IN PROGRESS</p>
-          <h1>Built for work that speaks for itself.</h1>
-          <p className="lede">
-            A dark-first foundation for a truthful software, AI and research portfolio.
-            Only owner-approved published content will become publicly visible.
-          </p>
+          <h1>{site?.title || profile?.title || "Built for work that speaks for itself."}</h1>
+          <p className="lede">{site?.summary || profile?.summary || "A dark-first foundation for a truthful software, AI and research portfolio. Only owner-approved published content will become publicly visible."}</p>
           <div className="foundation-note" role="note">
             This is an engineering starter, not a launched portfolio. Release 1 contracts are approved. Real passkey login and CMS release tests remain outstanding.
           </div>
