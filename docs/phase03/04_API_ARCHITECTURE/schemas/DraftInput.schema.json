@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:devfolio:phase03-04:proposal:DraftInput",
+  "title": "DraftInput",
+  "description": "UNAPPROVED contract proposal, not deployed.",
+  "type": "object",
+  "properties": {
+    "kind": {
+      "type": "string",
+      "enum": [
+        "project",
+        "research",
+        "publication",
+        "article",
+        "profile",
+        "education",
+        "experience",
+        "skill",
+        "achievement",
+        "settings"
+      ]
+    },
+    "payload": {
+      "type": "object",
+      "description": "Candidate CMS draft payload. Final field/length contracts blocked by SRS approval; server allowlists by kind."
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "payload"
+  ]
+}

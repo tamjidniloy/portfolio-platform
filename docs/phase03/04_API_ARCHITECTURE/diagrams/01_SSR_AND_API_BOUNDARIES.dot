@@ -1,0 +1,19 @@
+digraph API_Boundaries {
+  graph [rankdir=LR, bgcolor="#0f1722", pad="0.3", nodesep="0.55", ranksep="0.8", fontname="Arial"];
+  node [shape=box, style="rounded,filled", fillcolor="#1e293b", color="#4f687c", fontcolor="#e7f2f3", fontname="Arial", margin="0.16,0.10"];
+  edge [color="#70d9c3", fontcolor="#d4dee7", arrowsize=0.7, fontname="Arial"];
+  visitor [label="Anonymous Browser / Crawler"];
+  owner [label="Verified Owner Browser"];
+  router [label="HTTPS + React Router SSR / Express", fillcolor="#194050"];
+  public [label="Public-only loaders / resource JSON"];
+  ownerui [label="Owner loaders + actions / JSON"];
+  policy [label="Session, CSRF, Object Policy",fillcolor="#315261"];
+  service [label="Application ports / use cases",fillcolor="#194050"];
+  dto [label="Explicit DTO allowlist",fillcolor="#315261"];
+  dbpub [label="Postgres: published snapshots",shape=cylinder,fillcolor="#254559"];
+  dbpriv [label="Postgres: drafts / revisions / contacts",shape=cylinder,fillcolor="#3f2b4f"];
+  visitor -> router;owner -> router;router -> public;router -> ownerui;
+  ownerui -> policy -> service;public -> dto -> dbpub;
+  service -> dbpriv; service -> dbpub;
+  { rank=same; dbpub;dbpriv; }
+}
