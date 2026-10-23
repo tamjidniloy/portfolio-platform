@@ -132,6 +132,12 @@ export function projectPublicRevision(type, raw) {
     throw badInput("Research published status requires verifiable HTTPS evidence");
   if(type==="resume")checkedUuid(payload.mediaAssetId);
   const extra = {};
+  // Include only vetted published fields needed by their versioned public schema.
+  for (const field of REQUIRED[type]) {
+    if(field!=="mediaAssetId"&&typeof payload[field]==="string"&&payload[field].length<=(LIMITS[field]||4000)){
+      extra[field]=payload[field];
+    }
+  }
   if (type === "research") {
     extra.researchStatus = payload.researchStatus;
     for (const key of ["researchQuestion","methods","results","limitations","evidenceUrl"]) {
