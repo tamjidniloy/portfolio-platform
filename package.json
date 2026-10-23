@@ -16,7 +16,8 @@
     "check:secrets": "node scripts/check-secrets.mjs",
     "format": "prettier --write app server tests scripts server.js vite.config.js react-router.config.js eslint.config.js package.json",
     "format:check": "prettier --check app server tests scripts server.js vite.config.js react-router.config.js eslint.config.js package.json",
-    "check": "npm run check:syntax && npm run lint && npm test && npm run check:secrets && npm run build"
+    "check": "npm run check:syntax && npm run lint && npm test && npm run check:no-docker && npm run check:secrets && npm run build",
+    "check:no-docker": "node scripts/check-no-docker.mjs"
   },
   "dependencies": {
     "@react-router/express": "7.18.4",

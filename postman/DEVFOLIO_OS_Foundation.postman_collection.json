@@ -1,0 +1,196 @@
+{
+  "info": {
+    "name": "DEVFOLIO OS - Foundation",
+    "description": "Native Windows/PostgreSQL foundation tests. No owner API/MFA declared active. Import Local environment. No passwords embedded.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Homepage SSR",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": []
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test('no secret leakage', function () { pm.expect(pm.response.text()).to.not.include('DATABASE_URL='); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Liveness",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/healthz",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "healthz"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test('no secret leakage', function () { pm.expect(pm.response.text()).to.not.include('DATABASE_URL='); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "PostgreSQL readiness",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/readyz",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "readyz"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test('no secret leakage', function () { pm.expect(pm.response.text()).to.not.include('DATABASE_URL='); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Work prelaunch",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/work",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "work"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test('no secret leakage', function () { pm.expect(pm.response.text()).to.not.include('DATABASE_URL='); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Research prelaunch",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/research",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "research"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test('no secret leakage', function () { pm.expect(pm.response.text()).to.not.include('DATABASE_URL='); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "No admin access",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/admin",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 404\", function () { pm.response.to.have.status(404); });",
+              "pm.test('no secret leakage', function () { pm.expect(pm.response.text()).to.not.include('DATABASE_URL='); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Missing route",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/not-a-real-route",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "not-a-real-route"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 404\", function () { pm.response.to.have.status(404); });",
+              "pm.test('no secret leakage', function () { pm.expect(pm.response.text()).to.not.include('DATABASE_URL='); });"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
