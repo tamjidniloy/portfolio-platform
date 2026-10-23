@@ -8,7 +8,7 @@ import { getCmsPool, getCmsPublicPool, closeCmsPool, closeCmsPublicPool } from "
 import { publishedSitemapPaths } from "./server/cms/public-reader.js";
 import { readConfig } from "./server/config.js";
 import { createDatabaseReadiness } from "./server/database.js";
-import { createReadinessHandler, livenessHandler } from "./server/probes.js";
+import { createReadinessHandler, createApplicationReadiness, livenessHandler } from "./server/probes.js";
 
 const config = readConfig(process.env);
 const database = createDatabaseReadiness(config.databaseUrl);
@@ -26,12 +26,12 @@ app.use((_request, response, next) => {
 });
 
 app.get("/healthz", livenessHandler);
-app.get("/readyz", createReadinessHandler(database.check));
 
 const cmsPool = getCmsPool();
 const storage = cmsPool && process.env.MEDIA_ENABLED === "true" ?
   createPrivateObjectStorage(process.env) : null;
 const publicPool = getCmsPublicPool();
+app.get("/readyz", createReadinessHandler(createApplicationReadiness({baseCheck:database.check, cmsPool, publicPool})));
 if (cmsPool) {
   if (process.env.CMS_AUTH_ENABLED === "true") {
     app.use("/api/v1", createOwnerAuthRouter({

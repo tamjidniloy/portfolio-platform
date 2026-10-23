@@ -12,7 +12,8 @@ command -v aws >/dev/null
 command -v node-22 >/dev/null
 command -v systemctl >/dev/null
 source /etc/devfolio/host.env
-test -n "$ENV_SECRET_ARN" && test -n "$AWS_REGION"
+export AWS_DEFAULT_REGION="$AWS_REGION" AWS_REGION
+test -n "$ENV_SECRET_ARN" && test -n "$AWS_REGION" && test -n "$RELEASE_SIGNING_KEY_ARN"
 aws secretsmanager get-secret-value --region "$AWS_REGION" --secret-id "$ENV_SECRET_ARN" \
   --query SecretString --output text > /etc/devfolio/runtime.env.next
 test -s /etc/devfolio/runtime.env.next || { echo "Runtime secret is unset" >&2; exit 3; }
@@ -33,6 +34,17 @@ temp="$(mktemp -d)"
 trap 'rm -rf "$temp"' EXIT
 aws s3 cp "s3://$artifact_bucket/releases/$environment/$release_sha.tgz" "$temp/release.tgz" --only-show-errors
 echo "$release_sha  $temp/release.tgz" | sha256sum --check --status
+aws s3 cp "s3://$artifact_bucket/releases/$environment/$release_sha.sig" "$temp/release.sig" --only-show-errors
+python3 - "$release_sha" "$temp/release.digest" <<'PY'
+import sys
+with open(sys.argv[2], "wb") as target:
+    target.write(bytes.fromhex(sys.argv[1]))
+PY
+verified="$(aws kms verify --region "$AWS_REGION" --key-id "$RELEASE_SIGNING_KEY_ARN" \
+  --message-type DIGEST --signing-algorithm RSASSA_PSS_SHA_256 \
+  --message "fileb://$temp/release.digest" --signature "fileb://$temp/release.sig" \
+  --query SignatureValid --output text)"
+test "$verified" = True || { echo "KMS artifact signature mismatch" >&2; exit 5; }
 mkdir -p "$directory"
 if [[ -e "$directory/.ready" ]]; then
   echo "Reusing previously verified release"

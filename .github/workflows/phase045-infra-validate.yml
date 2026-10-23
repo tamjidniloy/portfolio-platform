@@ -16,8 +16,8 @@ jobs:
       - name: Terraform parse and validate (never apply)
         working-directory: infra/aws
         run: |
-          terraform fmt -recursive
-          terraform init -backend=false -input=false
+          terraform fmt -check -recursive
+          terraform init -backend=false -input=false -lockfile=readonly
           terraform validate -no-color
       - name: Shell syntax (no external resource calls)
         run: |
@@ -27,4 +27,4 @@ jobs:
           bash -n infra/aws/user-data.sh.tftpl
       - name: Redacted telemetry tests
         run: |
-          node --test tests/observability.test.js
+          node --test tests/observability.test.js tests/phase045-hardening.test.js
