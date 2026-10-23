@@ -1,0 +1,80 @@
+name: Phase 04.5 AWS release (manual, protected environment)
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Approved AWS environment; GitHub environment protection is mandatory
+        type: choice
+        required: true
+        options: [staging, production]
+permissions:
+  contents: read
+concurrency:
+  group: devfolio-deploy-${{ inputs.environment }}
+  cancel-in-progress: false
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    environment: ${{ inputs.environment }}
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      TARGET_ENV: ${{ inputs.environment }}
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      AWS_RELEASE_BUCKET: ${{ vars.AWS_RELEASE_BUCKET }}
+      AWS_EC2_INSTANCE_ID: ${{ vars.AWS_EC2_INSTANCE_ID }}
+      SITE_ORIGIN: ${{ vars.SITE_ORIGIN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.12.0"
+          cache: npm
+      - name: Refuse missing reviewed release configuration
+        shell: bash
+        env:
+          AWS_OIDC_ROLE_ARN: ${{ vars.AWS_OIDC_ROLE_ARN }}
+        run: |
+          set -euo pipefail
+          for name in AWS_REGION AWS_RELEASE_BUCKET AWS_EC2_INSTANCE_ID SITE_ORIGIN AWS_OIDC_ROLE_ARN; do
+            test -n "${!name}" || { echo "::error::Required GitHub Environment variable $name not configured"; exit 2; }
+          done
+          [[ "$SITE_ORIGIN" =~ ^https://[a-zA-Z0-9.-]+$ ]] || exit 2
+      - name: Verify exact source and build with no container
+        run: |
+          npm ci --no-fund
+          npm run check
+          npm run build
+          npm sbom --sbom-format cyclonedx > release-sbom.json
+          npm prune --omit=dev --no-fund
+          tar -czf release.tgz build server domain app scripts db ops node_modules package.json package-lock.json server.js
+          sha256sum release.tgz | tee release.sha256
+          sha256sum release-sbom.json > release-sbom.sha256
+      - name: Configure short-lived AWS OIDC credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_OIDC_ROLE_ARN }}
+          role-session-name: devfolio-release
+      - name: Upload content-addressed artifact, deploy by SSM and verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha="$(sha256sum release.tgz | cut -d' ' -f1)"
+          key="releases/$TARGET_ENV/$sha.tgz"
+          aws s3api put-object --bucket "$AWS_RELEASE_BUCKET" --key "$key" \
+            --body release.tgz --server-side-encryption AES256 --if-none-match '*' >/dev/null
+          cmd="set -euo pipefail; tmp=\$(mktemp -d); aws s3 cp s3://$AWS_RELEASE_BUCKET/$key \$tmp/release.tgz --only-show-errors; echo '$sha  '\$tmp'/release.tgz' | sha256sum --check --status; tar -xOzf \$tmp/release.tgz ops/aws/deploy-host.sh > \$tmp/deploy-host.sh; bash \$tmp/deploy-host.sh $sha $AWS_RELEASE_BUCKET $TARGET_ENV; rm -rf \$tmp"
+          params="$(jq -n --arg command "$cmd" '{commands: [$command]}')"
+          id="$(aws ssm send-command --document-name AWS-RunShellScript \
+            --instance-ids "$AWS_EC2_INSTANCE_ID" --parameters "$params" \
+            --comment "DEVFOLIO reviewed immutable release" --query 'Command.CommandId' --output text)"
+          aws ssm wait command-executed --command-id "$id" --instance-id "$AWS_EC2_INSTANCE_ID"
+          status="$(aws ssm get-command-invocation --command-id "$id" --instance-id "$AWS_EC2_INSTANCE_ID" --query Status --output text)"
+          test "$status" = Success
+          bash ops/aws/health-smoke.sh "$SITE_ORIGIN"
+          echo "Release SHA-256: $sha"

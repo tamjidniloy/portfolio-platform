@@ -1,7 +1,7 @@
 name: Phase 04 Native PostgreSQL CI
 on:
   push:
-    branches: [feat/phase04-windows-native-development, feat/phase04-1-database-candidate, feat/phase04-2-identity-security-foundation, feat/phase04-1-migration-reconciliation, docs/release1-owner-approved-contracts, feat/phase04-3-cms-publishing, feat/phase04-release1-unblock, feat/phase04-4-media-contact-integrations]
+    branches: [feat/phase04-windows-native-development, feat/phase04-1-database-candidate, feat/phase04-2-identity-security-foundation, feat/phase04-1-migration-reconciliation, docs/release1-owner-approved-contracts, feat/phase04-3-cms-publishing, feat/phase04-release1-unblock, feat/phase04-4-media-contact-integrations, feat/phase04-5-deployment-observability, main]
   pull_request:
 permissions:
   contents: read

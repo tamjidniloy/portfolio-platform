@@ -11,7 +11,17 @@ if [[ ! "$environment" =~ ^(staging|production)$ ]]; then echo "Invalid environm
 command -v aws >/dev/null
 command -v node-22 >/dev/null
 command -v systemctl >/dev/null
-test -s /etc/devfolio/runtime.env || { echo "Reviewed runtime environment missing" >&2; exit 3; }
+source /etc/devfolio/host.env
+test -n "$ENV_SECRET_ARN" && test -n "$AWS_REGION"
+aws secretsmanager get-secret-value --region "$AWS_REGION" --secret-id "$ENV_SECRET_ARN" \
+  --query SecretString --output text > /etc/devfolio/runtime.env.next
+test -s /etc/devfolio/runtime.env.next || { echo "Runtime secret is unset" >&2; exit 3; }
+grep -q '^DATABASE_URL=postgres' /etc/devfolio/runtime.env.next || { echo "DATABASE_URL missing" >&2; exit 3; }
+grep -q '^CMS_DATABASE_URL=postgres' /etc/devfolio/runtime.env.next || { echo "CMS_DATABASE_URL missing" >&2; exit 3; }
+grep -q '^CMS_PUBLIC_DATABASE_URL=postgres' /etc/devfolio/runtime.env.next || { echo "Public DB credentials missing" >&2; exit 3; }
+chown root:devfolio /etc/devfolio/runtime.env.next
+chmod 0640 /etc/devfolio/runtime.env.next
+mv -f /etc/devfolio/runtime.env.next /etc/devfolio/runtime.env
 grep -q '^CMS_API_ENABLED=true$' /etc/devfolio/runtime.env || { echo "CMS not explicitly enabled" >&2; exit 3; }
 directory="/opt/devfolio/releases/$release_sha"
 temp="$(mktemp -d)"

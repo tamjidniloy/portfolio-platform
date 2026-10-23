@@ -63,7 +63,7 @@ resource "aws_security_group" "alb" {
     from_port = 3000
     to_port = 3000
     protocol = "tcp"
-    security_groups = [aws_security_group.app.id]
+    cidr_blocks = [aws_vpc.app.cidr_block]
   }
 }
 resource "aws_security_group" "app" {
