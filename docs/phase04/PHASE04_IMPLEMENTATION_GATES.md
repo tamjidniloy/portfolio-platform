@@ -6,7 +6,7 @@
 |---|---|---|---|
 | 04.0 | P4-001–008 | Native Windows/CI implementation verified; formal owner gates remain open | Branch-specific CI, owner acceptance of P4-001/P4-008 |
 | 04.1 | P4-009–016 | Candidate-only persistence and 04.1 DB tests **verified**; live migration not approved | Exact SRS/MFA/DB/API/retention approval + reviewed migration tool/schema |
-| 04.2 | P4-017–025 | NOT IMPLEMENTED | Approved MFA/fallback; owner session/CSRF tests |
+| 04.2 | P4-017–025 | Candidate-only session/cookie/CSRF/authorization work under test; no live sign-in | Explicit MFA/recovery ADR, final auth schema, owner enrollment, brute force and browser security tests |
 | 04.3 | P4-026–035 | NOT IMPLEMENTED | Approved API/schema; private CMS, publish atomicity, no draft leak |
 | 04.4 | P4-036–044 | NOT IMPLEMENTED | Media/email provider, privacy rules, integration tests |
 | 04.5 | P4-045–053 | NOT IMPLEMENTED | Cloud/provider/region/budget, staging, real backups and restore |
@@ -33,3 +33,13 @@ Phase 04.1 test-only database work is maintained in `docs/phase04/04.1_DATABASE_
 - Source code `fbf06e41d6216b13aee955ced99129e8783cd721`: [CI run #39992176512](https://github.com/tamjidniloy/portfolio-platform/actions/runs/39992176512), successful. PostgreSQL 16 installed natively on Ubuntu without Docker.
 - 21 unit tests PASS, 1 normal PostgreSQL connectivity test PASS and 7 isolated candidate-schema integration tests PASS (using dedicated disposable `devfolio_candidate_ci`). Existing SSR build/HTTP smoke, lint, npm ci, heuristic secret scan and dependency audit PASS.
 - No approved migration has been created or run. A successful candidate-schema test is **not** owner approval of SRS, MFA, schema or API contract.
+
+## 04.2 candidate session security work
+
+Source and approval documents: [identity handoff](04.2_IDENTITY_AND_AUTHORIZATION_HANDOFF.md) and [owner MFA decision sheet](04.2_OWNER_MFA_DECISION.md). Pending final CI evidence. No owner login endpoint is active; future session issuance requires a verified authenticator adapter. Approving a feature branch is not approval of FR-040 or production security posture.
+
+## Verified Phase 04.2 candidate authentication primitives
+
+- Tested commit `52746fe780d270f1c5931cbc777238f09edf0ff2` — [CI run #40000108905](https://github.com/tamjidniloy/portfolio-platform/actions/runs/40000108905), SUCCESS.
+- 29 unit tests, 1 native DB test, 7 candidate DDL/transaction tests, 5 candidate session/authorization subtests passed. SSR build and unauthenticated admin-login negative HTTP smoke passed. `npm ci` restored as install step.
+- **No production MFA/sign-in/recovery is implemented or approved**. Full Phase 04.2 is blocked by owner choice and subsequent real browser security testing.
