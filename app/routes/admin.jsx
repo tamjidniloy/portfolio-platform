@@ -35,7 +35,7 @@ export default function Admin(){
   <h2>Create draft</h2>
   <Form method="post">
    <input type="hidden" name="csrfToken" value={csrfToken}/>
-   <input type="hidden" name="key" value={crypto.randomUUID()}/>
+   <input type="hidden" name="key" defaultValue=""/>
    <label htmlFor="new-content-type">Content type</label>
    <select id="new-content-type" name="contentType">{CONTENT_TYPES.map(type=><option key={type} value={type}>{type}</option>)}</select>
    <label htmlFor="new-title">Title</label><input id="new-title" name="title" maxLength={200} required/>

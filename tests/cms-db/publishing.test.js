@@ -48,6 +48,7 @@ test("CMS 04.3 approved DB-R1 draft/publish lifecycle in isolated native Postgre
   assert.equal(await getPublicSnapshot(pool,"/projects/private-project"),null);
   assert.deepEqual(await getPublicList(pool,{type:"project"}),[]);
   assert.deepEqual(await publishedSitemapPaths(pool),[]);
+  assert.equal((await listDrafts(pool,session)).length,1);
   await assert.rejects(getDraft(pool,foreign,id),error=>error.status===404);
   await assert.rejects(createDraft(pool,{},request),error=>error.name==="OwnerNotAuthorized");
   await assert.rejects(createDraft(pool,session,{...request,payload:{title:"different"}}),error=>error.status===409);
@@ -96,9 +97,39 @@ test("CMS 04.3 approved DB-R1 draft/publish lifecycle in isolated native Postgre
   assert.equal(await getPublicSnapshot(pool,"/projects/secret-new-slug"),null);
  });
 
+ await t.test("restore creates another private revision but does not overwrite published snapshot",async()=>{
+  const restored=await restoreRevision(pool,session,{id,revisionNo:1,expectedVersion:4,key:"restore_test_key_001"});
+  assert.equal(restored.revisionNo,4);
+  assert.equal(restored.lockVersion,5);
+  assert.equal((await getDraft(pool,session,id)).payload.title,"Project one");
+  assert.equal((await getPublicSnapshot(pool,"/projects/private-project")).title,"Project revised");
+ });
+
+ await t.test("slug republish writes redirect provenance and public DTO contains no private notes",async()=>{
+  const updated=await saveDraft(pool,session,{id,expectedVersion:5,payload:{title:"Public new title",summary:"New summary",slug:"new-project-slug",privateNote:"DO_NOT_SHARE"}});
+  assert.equal(updated.revisionNo,5);
+  const changed=await publishRevision(pool,session,{id,revisionNo:5,expectedVersion:6,key:"publish_slug_change_001"});
+  assert.equal(changed.publicPath,"/projects/new-project-slug");
+  assert.equal(await getPublicSnapshot(pool,"/projects/private-project"),null);
+  const redirect=await pool.query("SELECT to_path,is_active FROM slug_redirects WHERE from_path=$1",["/projects/private-project"]);
+  assert.equal(redirect.rows[0].to_path,"/projects/new-project-slug");
+  assert.equal(redirect.rows[0].is_active,true);
+  assert.equal((await getPublicSnapshot(pool,"/projects/new-project-slug")).privateNote,undefined);
+ });
+
+ await t.test("unpublish revokes public snapshot and replays only matching receipt",async()=>{
+  const done=await unpublishRevision(pool,session,{id,expectedVersion:7,key:"unpublish_test_key_001"});
+  assert.equal(done.status,"unpublished");
+  assert.equal(await getPublicSnapshot(pool,"/projects/new-project-slug"),null);
+  assert.deepEqual(await publishedSitemapPaths(pool),[]);
+  assert.deepEqual(await unpublishRevision(pool,session,{id,expectedVersion:7,key:"unpublish_test_key_001"}),done);
+  await assert.rejects(unpublishRevision(pool,session,{id,expectedVersion:8,key:"unpublish_new_key_002"}),e=>e.status===409);
+  assert.equal((await pool.query("SELECT is_active FROM slug_redirects WHERE from_path=$1",["/projects/private-project"])).rows[0].is_active,false);
+ });
+
  await t.test("invalid publish fails transaction with no snapshot, audit or outbox side effect",async()=>{
   const before=await pool.query("SELECT count(*)::int AS n FROM audit_events WHERE target_id=$1::uuid",[id]);
-  await assert.rejects(publishRevision(pool,session,{id,revisionNo:3,expectedVersion:4,key:"publish_invalid_001"}),e=>e.status!==undefined || e.code==="INVALID_CONTENT");
+  await assert.rejects(publishRevision(pool,session,{id,revisionNo:3,expectedVersion:8,key:"publish_invalid_001"}),e=>e.status===422);
   const after=await pool.query("SELECT count(*)::int AS n FROM audit_events WHERE target_id=$1::uuid",[id]);
   // The draft itself is syntactically valid; this actually *can* publish if title/summary/slug are valid.
   assert.equal(after.rows[0].n,before.rows[0].n);

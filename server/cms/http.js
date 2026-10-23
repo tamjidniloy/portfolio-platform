@@ -93,7 +93,7 @@ export function createCmsApiRouter({pool,publicOrigin,csrfSecret,isProduction=fa
     json(res,data);
   }));
 
-  r.use("/admin",guarded(async(req,res)=>{
+  r.use("/admin",guarded(async(req)=>{
     const token=readSessionCookie(req.headers.cookie,{isProduction});
     const session=await resolveOwnerSession(pool,token);
     if(!session)throw new CmsError("AUTH_REQUIRED",401,"Authentication required");
@@ -176,6 +176,6 @@ export function createCmsApiRouter({pool,publicOrigin,csrfSecret,isProduction=fa
     json(res,data,201);
   }));
 
-  r.use((err,_req,res,_next)=>problem(res,err));
+  r.use((err,req,res,next)=>{ void req; void next; problem(res,err); });
   return r;
 }
