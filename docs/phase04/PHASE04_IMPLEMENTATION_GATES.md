@@ -5,9 +5,9 @@
 | Milestone | Roadmap tasks | State | Required signoff/evidence |
 |---|---|---|---|
 | 04.0 | P4-001–008 | Native Windows/CI implementation verified; formal owner gates remain open | Branch-specific CI, owner acceptance of P4-001/P4-008 |
-| 04.1 | P4-009–016 | Owner-approved 19-table DB-R1 **specification**; executable final migrations, grants and integration pending | Approved specs recorded 2026-10-24; real migration, staging/restore and evidence required |
-| 04.2 | P4-017–025 | Owner-approved AUTH-R1 **specification**, candidate session helpers, no live passkey login | Approved MFA contract; WebAuthn enrollment/login/recovery, abuse, browser tests outstanding |
-| 04.3 | P4-026–035 | Candidate CMS service and guarded APIs/UI under implementation; not formally accepted | Real DB-R1 executable migrations, passkey integration and browser/staging tests |
+| 04.1 | P4-009–016 | DB-R1: 4 versioned migrations, public role ACL and encrypted restore CI VERIFIED; real staging pending | Approved specs recorded 2026-10-24; real migration, staging/restore and evidence required |
+| 04.2 | P4-017–025 | AUTH-R1: verified WebAuthn P-256 crypto, sessions, bootstrap and recovery code/CLI in CI; owner hardware ceremony pending | Approved MFA contract; WebAuthn enrollment/login/recovery, abuse, browser tests outstanding |
+| 04.3 | P4-026–035 | CMS: per-type publish validators, immutable revisions, guarded UI/SSR/API, staging-style CI passed; browser/hosting QA pending | Real DB-R1 executable migrations, passkey integration and browser/staging tests |
 | 04.4 | P4-036–044 | NOT IMPLEMENTED | Media/email provider, privacy rules, integration tests |
 | 04.5 | P4-045–053 | NOT IMPLEMENTED | Cloud/provider/region/budget, staging, real backups and restore |
 | 04.6 | P4-054–062 | NOT EXECUTED | 76-requirement traceability, security, WCAG, performance, launch go/no-go |
@@ -63,3 +63,9 @@ Source handoff: [04.3 CMS implementation](04.3_CMS_IMPLEMENTATION.md). The CMS i
 ### Phase 04.3 evidence and next gates
 
 Phase 04.3 branch `feat/phase04-3-cms-publishing` implements draft save, revisions, private preview, published-only SSR/API/read models, transactional publish/unpublish/redirect metadata, owner-only settings and interface skeleton. Native PostgreSQL DB-R1 tests + HTTP/SSR CI prove the candidate behavior. **P4-026..035 are not all signed off** until the browser passkey ceremony, full per-type publish schemas, least-privilege migrations/grants, editor accessibility, CDN cache revocation and staging tests finish. No developer/user DB migration is auto-run.
+
+## October 2026 unblock evidence
+
+Native PostgreSQL 16 CI covers **4 numbered/checksummed DB-R1 migrations**, rollback/drift, restrictive public-reader ACL checks, AES256-encrypted disposable restore, signed P-256 WebAuthn registration/login/replay/wrong-origin tests, independently privileged owner recovery, 13 CMS publish schemas and legal-hold retention. See [Release migration runbook](04.1_RELEASE_MIGRATIONS_RUNBOOK.md), [passkeys](04.2_OWNER_PASSKEY_RUNBOOK.md), [CMS](04.3_CMS_IMPLEMENTATION.md) and [retention](04.3_RETENTION_OPERATIONS.md).
+
+**Unverified real-world gates:** owner's physical Windows Hello/backup passkey enrollment, authentic Windows 11/staging setup, trusted TLS/host/RP ID, browser accessibility and CDN cache behavior, provider/media/contact flows, real backups/retention scheduler and production release approval. CI success MUST NOT be described as completion of these external checks.
