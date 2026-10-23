@@ -1,0 +1,13 @@
+digraph ROADMAP {
+ graph [label="Phase 04 Implementation Dependencies / Decision Gates",labelloc=t,fontsize=22,bgcolor="#0f1724",fontcolor="#e4eaf2",pad=.5,ranksep=.6,rankdir=LR];node[shape=box,style="rounded,filled",color="#607d90",fillcolor="#203041",fontcolor="#eef7ff",fontname="DejaVu Sans",fontsize=10];edge[color="#70d9c3",fontsize=9,arrowsize=.7];
+ SRS[label="G-01 Approved SRS\n(required for final DB/API locks)",fillcolor="#613b28"];
+ MFA[label="G-02 MFA method\nsecurity decision",fillcolor="#613b28"];
+ INF[label="G-06/08 Providers\nregion + recovery targets",fillcolor="#613b28"];
+ CORE[label="04.0 Scaffold / 04.1 data",fillcolor="#17423f"];
+ ID[label="04.2 Auth / owner sessions"];
+ CMS[label="04.3 CMS + publishing"];
+ EXT[label="04.4 Media / contact / SEO"];
+ OPS[label="04.5 Staging / deployment / backup"];
+ QA[label="04.6 Full QA + launch gate",fillcolor="#413248"];
+ SRS->CORE;SRS->CMS;SRS->EXT;MFA->ID;INF->OPS;CORE->ID;CORE->CMS;ID->CMS;CMS->EXT;CMS->QA;EXT->QA;OPS->QA;
+}

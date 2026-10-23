@@ -1,0 +1,9 @@
+stage,description,github_source,github_pr,source_branch,tracked_design_files,approval_or_review,implementation,runtime_qa
+03.0,Architecture planning,docs/phase03/00_ARCHITECTURE_PLAN.md,N/A,main,5,DESIGN_PREPARED,NOT_IMPLEMENTED,NOT_RUN
+03.1,System context / baseline,docs/phase03/01_ARCHITECTURE_BASELINE/,https://github.com/tamjidniloy/portfolio-platform/pull/23,main,19,DESIGN_PREPARED,NOT_IMPLEMENTED,NOT_RUN
+03.2,Detailed component architecture,docs/phase03/02_DETAILED_COMPONENT_ARCHITECTURE/,https://github.com/tamjidniloy/portfolio-platform/pull/24,main,15,OWNER_APPROVED_SPEC_ONLY,NOT_IMPLEMENTED,NOT_RUN
+03.3,Data architecture and candidate ERD,docs/phase03/03_DATABASE_ARCHITECTURE/,https://github.com/tamjidniloy/portfolio-platform/pull/26,main,29,DESIGN_PREPARED_NOT_SCHEMA_APPROVED,NOT_IMPLEMENTED,NOT_RUN
+03.4,API architecture and interface contracts,docs/phase03/04_API_ARCHITECTURE/,https://github.com/tamjidniloy/portfolio-platform/pull/28,main,54,DESIGN_PREPARED_NOT_API_APPROVED,NOT_IMPLEMENTED,NOT_RUN
+03.5,Authentication and security architecture,docs/phase03/05_AUTHENTICATION_SECURITY/,https://github.com/tamjidniloy/portfolio-platform/pull/29,docs/phase03-06-devsecops-infrastructure-20261023,38,DESIGN_PREPARED_OWNER_APPROVAL_PENDING,NOT_IMPLEMENTED,NOT_RUN
+03.6,Infrastructure and DevSecOps architecture,docs/phase03/06_DEPLOYMENT_INFRASTRUCTURE/,https://github.com/tamjidniloy/portfolio-platform/pull/30,docs/phase03-06-devsecops-infrastructure-20261023,52,DESIGN_PREPARED_OWNER_APPROVAL_PENDING,NOT_IMPLEMENTED,NOT_RUN
+03.7,Integrated architecture and Phase04 handoff,docs/phase03/07_FINAL_ARCHITECTURE_HANDOFF/,N/A,docs/phase03-06-devsecops-infrastructure-20261023,0,CANDIDATE_HANDOFF_OWNER_REVIEW_PENDING,NOT_IMPLEMENTED,NOT_RUN
