@@ -37,3 +37,15 @@ export async function publishedSitemapPaths(pool) {
   const r=await pool.query("SELECT public_path FROM published_snapshots ORDER BY public_path");
   return Object.freeze(r.rows.map(x=>x.public_path).filter(x=>typeof x==="string"&&publicPath.test(x)));
 }
+
+/** Redirect only when the destination is still actively published. */
+export async function publishedRedirect(pool, fromPath) {
+  if (typeof fromPath !== "string" || !publicPath.test(fromPath)) return null;
+  const r = await pool.query(
+    `SELECT sr.to_path FROM slug_redirects sr
+     JOIN published_snapshots ps ON ps.public_path=sr.to_path
+     WHERE sr.from_path=$1 AND sr.is_active=true AND sr.from_path<>sr.to_path LIMIT 1`,
+    [fromPath],
+  );
+  return r.rows.length && publicPath.test(r.rows[0].to_path) ? r.rows[0].to_path : null;
+}

@@ -1,12 +1,16 @@
-import { useLoaderData } from "react-router";
+import { redirect, useLoaderData } from "react-router";
 import { PublicShell } from "../components/public-shell.jsx";
 import { getCmsPool } from "../../server/cms/pool.js";
-import { getPublicSnapshot } from "../../server/cms/public-reader.js";
+import { getPublicSnapshot, publishedRedirect } from "../../server/cms/public-reader.js";
 
 export async function loader({request,params}){
   const area=new URL(request.url).pathname.startsWith("/research/")?"research":"projects";
   const pool=getCmsPool();
   const item=pool?await getPublicSnapshot(pool,`/${area}/${params.slug}`):null;
+  if(!item && pool) {
+    const destination=await publishedRedirect(pool,`/${area}/${params.slug}`);
+    if(destination)throw redirect(destination,308);
+  }
   if(!item || item.contentType !== (area==="research"?"research":"project")) {
     throw new Response("Not found",{status:404,headers:{"Cache-Control":"no-store"}});
   }

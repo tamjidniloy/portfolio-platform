@@ -45,7 +45,7 @@ function json(response,result,status=200) {
   response.status(status).set("Cache-Control","no-store").json(result);
 }
 function guarded(fn) {
-  return (req,res,next) => Promise.resolve().then(()=>fn(req,res)).catch(next);
+  return (req,res,next) => Promise.resolve().then(()=>fn(req,res,next)).catch(next);
 }
 
 /**
@@ -93,7 +93,7 @@ export function createCmsApiRouter({pool,publicOrigin,csrfSecret,isProduction=fa
     json(res,data);
   }));
 
-  r.use("/admin",guarded(async(req)=>{
+  r.use("/admin",guarded(async(req,res,next)=>{ void res;
     const token=readSessionCookie(req.headers.cookie,{isProduction});
     const session=await resolveOwnerSession(pool,token);
     if(!session)throw new CmsError("AUTH_REQUIRED",401,"Authentication required");
@@ -115,6 +115,7 @@ export function createCmsApiRouter({pool,publicOrigin,csrfSecret,isProduction=fa
     }
     req.cmsSession=session;
     req.cmsToken=token;
+    next();
   }));
 
   r.get("/admin/session",guarded(async(req,res)=>{
