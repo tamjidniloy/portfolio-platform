@@ -37,8 +37,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Resolve dependencies (lockfile pending)
-        run: npm install --no-fund
+          cache: "npm"
+      - name: Reproducible dependency install
+        run: npm ci --no-fund
       - name: Syntax and lint
         run: npm run check:syntax && npm run lint
       - name: Unit tests
