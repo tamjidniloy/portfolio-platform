@@ -55,7 +55,7 @@ function guarded(fn) {
  * an exact public origin and a high-entropy CSRF secret. Session issuance is
  * not exposed here; Phase 04.2 must first verify a real passkey.
  */
-export function createCmsApiRouter({pool,publicOrigin,csrfSecret,isProduction=false}={}) {
+export function createCmsApiRouter({pool,publicPool=pool,publicOrigin,csrfSecret,isProduction=false}={}) {
   if(!pool||typeof pool.query!=="function"||typeof publicOrigin!=="string"||
      typeof csrfSecret!=="string"||Buffer.byteLength(csrfSecret)<32) {
     throw new TypeError("CMS router requires database, origin and strong CSRF configuration");
@@ -73,8 +73,8 @@ export function createCmsApiRouter({pool,publicOrigin,csrfSecret,isProduction=fa
     next();
   });
   r.get("/public/site",guarded(async(_req,res)=>{
-    const site=await getPublicSnapshot(pool,"/");
-    const profile=await getPublicSnapshot(pool,"/about");
+    const site=await getPublicSnapshot(publicPool,"/");
+    const profile=await getPublicSnapshot(publicPool,"/about");
     json(res,{
       title:site?.title??profile?.title??"DEVFOLIO OS",
       description:site?.summary??profile?.summary??"",
@@ -83,21 +83,21 @@ export function createCmsApiRouter({pool,publicOrigin,csrfSecret,isProduction=fa
   }));
   r.get("/public/projects",guarded(async(req,res)=>{
     const limit=parseLimit(req),offset=parseOffset(req);
-    const items=await getPublicList(pool,{type:"project",limit,offset});
+    const items=await getPublicList(publicPool,{type:"project",limit,offset});
     json(res,envelope(items,limit,offset));
   }));
   r.get("/public/projects/:slug",guarded(async(req,res)=>{
-    const data=await getPublicSnapshot(pool,"/projects/"+req.params.slug);
+    const data=await getPublicSnapshot(publicPool,"/projects/"+req.params.slug);
     if(!data)throw new CmsError("NOT_FOUND",404,"Not found");
     json(res,data);
   }));
   r.get("/public/research",guarded(async(req,res)=>{
     const limit=parseLimit(req),offset=parseOffset(req);
-    const items=await getPublicList(pool,{type:"research",limit,offset});
+    const items=await getPublicList(publicPool,{type:"research",limit,offset});
     json(res,envelope(items,limit,offset));
   }));
   r.get("/public/research/:slug",guarded(async(req,res)=>{
-    const data=await getPublicSnapshot(pool,"/research/"+req.params.slug);
+    const data=await getPublicSnapshot(publicPool,"/research/"+req.params.slug);
     if(!data)throw new CmsError("NOT_FOUND",404,"Not found");
     json(res,data);
   }));

@@ -101,10 +101,19 @@ jobs:
             sleep 1
           done
           node scripts/smoke.mjs
+      - name: Grant CMS test database public read facade and deny private access
+        shell: bash
+        run: |
+          psql "$CMS_TEST_DATABASE_URL" -v ON_ERROR_STOP=1 -f db/roles/grants.sql
+          publicurl=postgresql://devfolio_public_reader:ci_public_ephemeral@127.0.0.1:5432/devfolio_cms_ci
+          psql "$publicurl" -v ON_ERROR_STOP=1 -Atc 'SELECT count(*) FROM published_snapshots'
+          if psql "$publicurl" -v ON_ERROR_STOP=1 -Atc 'SELECT count(*) FROM content_revisions'; then
+            echo 'SECURITY FAILURE: public reader may read drafts'; exit 1
+          fi
       - name: Start CMS-enabled production SSR on isolated fixture database
         shell: bash
         run: |
-          CMS_API_ENABLED=true CMS_DATABASE_URL="$CMS_TEST_DATABASE_URL" CMS_PUBLIC_ORIGIN=https://portfolio.example.test CMS_CSRF_SECRET=ci-only-secret-thirty-two-bytes-minimum-do-not-use-in-production NODE_ENV=production PORT=3001 node server.js >/tmp/devfolio-cms-ssr.log 2>&1 &
+          CMS_API_ENABLED=true CMS_DATABASE_URL="$CMS_TEST_DATABASE_URL" CMS_PUBLIC_DATABASE_URL=postgresql://devfolio_public_reader:ci_public_ephemeral@127.0.0.1:5432/devfolio_cms_ci CMS_PUBLIC_ORIGIN=https://portfolio.example.test CMS_CSRF_SECRET=ci-only-secret-thirty-two-bytes-minimum-do-not-use-in-production NODE_ENV=production PORT=3001 node server.js >/tmp/devfolio-cms-ssr.log 2>&1 &
           for i in $(seq 1 30); do
             if curl -fsS http://127.0.0.1:3001/healthz >/dev/null; then break; fi
             sleep 1

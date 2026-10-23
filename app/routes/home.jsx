@@ -1,10 +1,10 @@
 import { Link, useLoaderData } from "react-router";
-import { getCmsPool } from "../../server/cms/pool.js";
+import { getCmsPublicPool } from "../../server/cms/pool.js";
 import { getPublicSnapshot } from "../../server/cms/public-reader.js";
 import { PublicShell } from "../components/public-shell.jsx";
 
 export async function loader(){
-  const pool=getCmsPool();
+  const pool=getCmsPublicPool();
   const site=pool?await getPublicSnapshot(pool,"/"):null;
   const profile=pool?await getPublicSnapshot(pool,"/about"):null;
   return Response.json({site,profile},{headers:{"Cache-Control":"no-store"}});

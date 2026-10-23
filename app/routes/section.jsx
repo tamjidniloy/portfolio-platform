@@ -1,13 +1,13 @@
 import { Link, useLoaderData } from "react-router";
 import { PublicShell } from "../components/public-shell.jsx";
 import { getPublicSection } from "../features/public-pages/sections.js";
-import { getCmsPool } from "../../server/cms/pool.js";
+import { getCmsPublicPool } from "../../server/cms/pool.js";
 import { getPublicList, getPublicSnapshot } from "../../server/cms/public-reader.js";
 
 export async function loader({ params }) {
   const section = getPublicSection(params.section);
   if (!section) throw new Response("Not found", { status: 404 });
-  const pool=getCmsPool();
+  const pool=getCmsPublicPool();
   const sectionTypes={research:"research",experience:"experience",education:"education",skills:"skill",achievements:"achievement"};
   const type=sectionTypes[section.slug];
   const items=type&&pool ? await getPublicList(pool,{type}):[];
