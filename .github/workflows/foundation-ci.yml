@@ -71,6 +71,16 @@ jobs:
             sleep 1
           done
           node scripts/smoke.mjs
+      - name: Start CMS-enabled production SSR on isolated fixture database
+        shell: bash
+        run: |
+          CMS_API_ENABLED=true CMS_DATABASE_URL="$CMS_TEST_DATABASE_URL" CMS_PUBLIC_ORIGIN=https://portfolio.example.test CMS_CSRF_SECRET=ci-only-secret-thirty-two-bytes-minimum-do-not-use-in-production NODE_ENV=production PORT=3001 node server.js >/tmp/devfolio-cms-ssr.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:3001/healthz >/dev/null; then break; fi
+            sleep 1
+          done
+      - name: CMS-enabled SSR, published snapshot, sitemap and anonymous negative smoke
+        run: node scripts/cms-smoke.mjs
       - name: Dependency audit
         run: npm audit --omit=dev --audit-level=high
       - name: Troubleshooting on failure
