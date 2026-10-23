@@ -13,7 +13,7 @@ npm install
 npm run dev
 ```
 
-Browse `http://127.0.0.1:3000/`. Probes: `/healthz` (liveness) and `/readyz` (DB readiness). Note: Node does not read `.env` implicitly. Use `node --env-file=.env server.js` for development, or export `DATABASE_URL` and other values in your terminal. Without the database URL, readiness correctly returns 503.
+Browse `http://127.0.0.1:3000/`. Probes: `/healthz` (liveness) and `/readyz` (DB readiness). The `dev` script loads the optional ignored `.env` through Node 22. Without `DATABASE_URL`, readiness correctly returns 503.
 
 ```sh
 npm run check:syntax
