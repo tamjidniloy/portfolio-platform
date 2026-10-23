@@ -9,7 +9,7 @@
 | 04.2 | P4-017–025 | AUTH-R1: verified WebAuthn P-256 crypto, sessions, bootstrap and recovery code/CLI in CI; owner hardware ceremony pending | Approved MFA contract; WebAuthn enrollment/login/recovery, abuse, browser tests outstanding |
 | 04.3 | P4-026–035 | CMS: per-type publish validators, immutable revisions, guarded UI/SSR/API, staging-style CI passed; browser/hosting QA pending | Real DB-R1 executable migrations, passkey integration and browser/staging tests |
 | 04.4 | P4-036–044 | Private media/contact/outbox/SEO/retention implementation under native CI review | Real provider credentials and staging delivery/asset/notification acceptance |
-| 04.5 | P4-045–053 | NOT IMPLEMENTED | Cloud/provider/region/budget, staging, real backups and restore |
+| 04.5 | P4-045–053 | AWS reference IaC, OIDC release workflow, redacted telemetry, backup/restore tools and runbooks IMPLEMENTED; operator/cloud verification PENDING | Owner provider/region/budget decision, real staging, artifact/provenance, alarms, measured restore, ops acceptance |
 | 04.6 | P4-054–062 | NOT EXECUTED | 76-requirement traceability, security, WCAG, performance, launch go/no-go |
 
 **Owner approval received 2026-10-24:** authoritative SRS-R1 + 76 requirements, AUTH-R1/passkey and controlled recovery, DB-R1 19-table target, API-R1 37 ops/canonical routes and retention defaults. See `docs/phase04/RELEASE1_OWNER_ACCEPTANCE.md` and `contracts/phase04-baselines.json`. **Engineering gates still OPEN:** apply/test final migrations, real passkey & CMS implementation, retention jobs, provider/hosting and legal/privacy checks, backup/restore, accessibility/security/staging and launch signoff. Approval of a specification is not successful execution.
@@ -78,3 +78,8 @@ Native PostgreSQL 16 CI covers **4 numbered/checksummed DB-R1 migrations**, roll
 - P4-042–043: canonical/OG SSR metadata, published-only sitemap, robots, no-store public content and optional exact Cloudflare purge provider with retry on failure.
 - P4-044: operator retention sweep, legal holds and queued orphan object storage deletion.
 - Integration CI uses native isolated PostgreSQL 16, fake S3/email/CDN provider port and negative HTTP tests. **No real vendor account delivery, domain verification, staging bucket CORS, WAF or backup provider lifecycle was executed.** Production signoff remains open until real integrations and legal notice reviewed.
+
+
+## Phase 04.5 reference implementation (engineering only)
+
+[04.5 deployment/infrastructure/observability handoff](04.5_DEPLOYMENT_INFRA_OBSERVABILITY.md), [runbooks](04.5_OPERATIONS_RUNBOOKS.md), and [acceptance matrix](04.5_ACCEPTANCE_MATRIX.md) describe the reviewable no-container AWS Terraform reference, manual OIDC deploy/rollback, safe request telemetry, CloudWatch/SNS/Budgets alerts, managed RDS PITR and isolated restore rehearsal script. All are subject to owner/provider/budget/region and operational acceptance; no AWS account, GitHub deployment environment, live domain or cloud database was provisioned as part of the implementation.
