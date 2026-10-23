@@ -1,0 +1,20 @@
+digraph C4Context {
+  graph [bgcolor="#10151D",pad=0.4,rankdir=LR,nodesep=0.7,ranksep=1.0,labelloc=t,label="DEVFOLIO OS  |  03.1 SYSTEM CONTEXT (CANDIDATE)",fontcolor="#F1F5F9",fontname="Arial",fontsize=22];
+  node [shape=box,style="rounded,filled",color="#50647A",fontcolor="#F1F5F9",fillcolor="#17212D",fontname="Arial",fontsize=13,margin="0.20,0.13"];
+  edge [fontname="Arial",color="#70D9C3",fontcolor="#B0BECC",fontsize=10,arrowsize=.65];
+  Visitor [label="Visitor / Recruiter\nResearch Collaborator",fillcolor="#243141"];
+  Crawler [label="Search Crawler",fillcolor="#243141"];
+  Owner [label="Sole Owner / Admin",fillcolor="#243141"];
+  Platform [label="DEVFOLIO OS\nPublic SSR + Private Owner CMS",fillcolor="#194A4B",color="#70D9C3",penwidth=2,fontsize=15];
+  Storage [label="Media Object Storage\nprivate staging + approved public"];
+  Email [label="Transactional Email\nchallenge, recovery, notification"];
+  DB [label="PostgreSQL\nrevisions, published snapshots, sessions"];
+  Ops [label="Monitoring / Backups\noperator-only"];
+  Visitor -> Platform [label="published pages / contact"];
+  Crawler -> Platform [label="published HTML / sitemap"];
+  Owner -> Platform [label="authenticated admin"];
+  Platform -> DB [label="read / write policy"];
+  Platform -> Storage [label="controlled media"];
+  Platform -> Email [label="send / result"];
+  Platform -> Ops [label="redacted telemetry"];
+}
