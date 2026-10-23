@@ -1,0 +1,11 @@
+output "app_url" { value = format("https://%s", var.site_domain) }
+output "alb_dns" { value = aws_lb.app.dns_name }
+output "rds_endpoint" { value = aws_db_instance.app.endpoint }
+output "rds_subnet_group" { value = aws_db_subnet_group.app.name }
+output "rds_private_security_group" { value = aws_security_group.database.id }
+output "media_bucket" { value = aws_s3_bucket.media.bucket }
+output "release_bucket" { value = aws_s3_bucket.artifacts.bucket }
+output "instance_id" { value = aws_instance.host.id }
+output "github_deploy_role_arn" { value = aws_iam_role.deploy.arn }
+output "runtime_secret_arn" { value = aws_secretsmanager_secret.runtime.arn }
+output "incident_topic_arn" { value = aws_sns_topic.alerts.arn }
