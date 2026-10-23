@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:devfolio:phase03-04:proposal:PublicContent",
+  "title": "PublicContent",
+  "description": "UNAPPROVED contract proposal, not deployed.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "canonicalPath": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "project",
+        "research",
+        "article",
+        "other"
+      ]
+    },
+    "publishedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "researchStage": {
+      "type": "string",
+      "enum": [
+        "idea",
+        "ongoing",
+        "completed",
+        "published"
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "slug",
+    "canonicalPath",
+    "title",
+    "kind",
+    "publishedAt"
+  ]
+}

@@ -1,0 +1,30 @@
+operation_id,method,path,actor,auth_policy,response_contract,requirements,notes,status
+API-001,GET,/api/v1/public/projects,public,ANONYMOUS_READ,PublicProjectsPage,"FR-003,FR-045,FR-051",published only; bounded cursor,CANDIDATE_NOT_APPROVED
+API-002,GET,/api/v1/public/projects/{slug},public,ANONYMOUS_READ,PublicContent,"FR-004,FR-045",404 for unpublished and nonexistent,CANDIDATE_NOT_APPROVED
+API-003,GET,/api/v1/public/research,public,ANONYMOUS_READ,PublicResearchPage,"FR-005,FR-045",honest scientific stage,CANDIDATE_NOT_APPROVED
+API-004,GET,/api/v1/public/research/{slug},public,ANONYMOUS_READ,PublicContent,"FR-006,FR-045",only published snapshots,CANDIDATE_NOT_APPROVED
+API-005,GET,/api/v1/public/site,public,ANONYMOUS_READ,PublicSite,"FR-002,FR-014,FR-029",approved public fields only,CANDIDATE_NOT_APPROVED
+API-006,POST,/api/v1/contact,anonymous-write,ANONYMOUS_RATE_LIMITED,ContactReceipt,"FR-013,FR-046,FR-052",store receipt not notification delivery,CANDIDATE_NOT_APPROVED
+API-007,POST,/api/v1/auth/password,auth-limited,ANONYMOUS_RATE_LIMITED,PendingChallenge,"FR-038,FR-039,FR-040",password check never creates full owner session,CANDIDATE_NOT_APPROVED
+API-008,POST,/api/v1/auth/email/verify,auth-limited,ANONYMOUS_RATE_LIMITED,SessionCreated,"FR-040,FR-041",single-use email OTP; rotate session,CANDIDATE_NOT_APPROVED
+API-009,POST,/api/v1/auth/email/resend,auth-limited,ANONYMOUS_RATE_LIMITED,PendingChallenge,FR-040,cooldown and enumeration protection,CANDIDATE_NOT_APPROVED
+API-010,POST,/api/v1/auth/logout,owner-write,OWNER_AUTH_CSRF,NoContent,FR-041,revoke server session; CSRF,CANDIDATE_NOT_APPROVED
+API-011,POST,/api/v1/auth/recovery/start,auth-limited,ANONYMOUS_RATE_LIMITED,GenericAccepted,FR-042,generic response; do not leak identity,CANDIDATE_NOT_APPROVED
+API-012,POST,/api/v1/auth/recovery/finish,auth-limited,ANONYMOUS_RATE_LIMITED,GenericAccepted,FR-042,one-use recovery token + verified out-of-band flow,CANDIDATE_NOT_APPROVED
+API-013,GET,/api/v1/admin/session,owner-read,OWNER_AUTH,SessionInfo,"FR-018,FR-041,FR-043",minimal owner identity safe for owner UI,CANDIDATE_NOT_APPROVED
+API-014,GET,/api/v1/admin/content,owner-read,OWNER_AUTH,ContentPage,"FR-019,FR-021,FR-022,FR-025",filtered private owner list,CANDIDATE_NOT_APPROVED
+API-015,POST,/api/v1/admin/content,owner-write,OWNER_AUTH_CSRF,DraftSaved,"FR-021,FR-027",idempotent draft create,CANDIDATE_NOT_APPROVED
+API-016,GET,/api/v1/admin/content/{id},owner-read,OWNER_AUTH,PrivateDraft,"FR-021,FR-027",owner-only revision content,CANDIDATE_NOT_APPROVED
+API-017,PATCH,/api/v1/admin/content/{id},owner-write,OWNER_AUTH_CSRF,DraftSaved,"FR-027,FR-028",If-Match expected revision mandatory,CANDIDATE_NOT_APPROVED
+API-018,GET,/api/v1/admin/content/{id}/revisions,owner-read,OWNER_AUTH,RevisionsPage,FR-028,owner only bounded history,CANDIDATE_NOT_APPROVED
+API-019,POST,/api/v1/admin/content/{id}/publish,owner-write,OWNER_AUTH_CSRF,PublishReceipt,"FR-027,FR-045",transaction and server-confirmed generation,CANDIDATE_NOT_APPROVED
+API-020,POST,/api/v1/admin/content/{id}/unpublish,owner-write,OWNER_AUTH_CSRF,PublishReceipt,"FR-027,FR-045",remove public snapshot atomically,CANDIDATE_NOT_APPROVED
+API-021,POST,/api/v1/admin/content/{id}/restore,owner-write,OWNER_AUTH_CSRF,DraftSaved,FR-028,restores as new private draft,CANDIDATE_NOT_APPROVED
+API-022,GET,/api/v1/admin/content/{id}/preview,owner-read,OWNER_AUTH,PrivatePreview,"FR-027,FR-045",no-store and noindex,CANDIDATE_NOT_APPROVED
+API-023,POST,/api/v1/admin/media/intents,owner-write,OWNER_AUTH_CSRF,UploadIntent,"FR-026,FR-047","private staged upload, bounded size/mime",CANDIDATE_NOT_APPROVED
+API-024,POST,/api/v1/admin/media/{id}/finalize,owner-write,OWNER_AUTH_CSRF,MediaReady,"FR-026,FR-047",server re-check actual signature and ownership,CANDIDATE_NOT_APPROVED
+API-025,GET,/api/v1/admin/messages,owner-read,OWNER_AUTH,ContactInbox,"FR-032,FR-052",PII admin only,CANDIDATE_NOT_APPROVED
+API-026,DELETE,/api/v1/admin/messages/{id},owner-write,OWNER_AUTH_CSRF,NoContent,"FR-032,FR-052",retention authorization and audit,CANDIDATE_NOT_APPROVED
+API-027,GET,/api/v1/admin/site-settings,owner-read,OWNER_AUTH,SiteSettingsPrivate,"FR-029,FR-031",private settings,CANDIDATE_NOT_APPROVED
+API-028,PATCH,/api/v1/admin/site-settings,owner-write,OWNER_AUTH_CSRF,SiteSettingsPrivate,"FR-029,FR-031","allowlisted nav routes, If-Match",CANDIDATE_NOT_APPROVED
+API-029,GET,/api/v1/admin/audit,owner-read,OWNER_AUTH,AuditPage,FR-035,redacted records,CANDIDATE_NOT_APPROVED

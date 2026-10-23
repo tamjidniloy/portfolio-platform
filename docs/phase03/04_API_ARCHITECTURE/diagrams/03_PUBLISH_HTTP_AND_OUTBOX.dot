@@ -1,0 +1,17 @@
+digraph Publish_Flow {
+ graph [rankdir=LR,bgcolor="#10151d",pad="0.30",fontname="Arial"];node [shape=box,style="rounded,filled",fontname="Arial",fillcolor="#1f2c39",color="#5a7685",fontcolor="#eef5f7"];
+ edge [color="#70d9c3",fontcolor="#dbe8ef",fontname="Arial"];
+ post [label="POST /publish
+Session CSRF If-Match"];
+ validate [label="Authorize, revision,
+publish-validation"];
+ tx [label="Postgres transaction",fillcolor="#315261"];
+ snapshot [label="Published snapshot
++ revision + audit"];
+ outbox [label="Durable outbox event"];
+ ack [label="200 confirmed DB state",fillcolor="#214f48"];
+ worker [label="Async cache/sitemap
+invalidation + retries",fillcolor="#3a394f"];
+ public [label="Public published-only reads",fillcolor="#214f48"];
+ post->validate->tx; tx->snapshot->ack;tx->outbox->worker; snapshot->public;
+}

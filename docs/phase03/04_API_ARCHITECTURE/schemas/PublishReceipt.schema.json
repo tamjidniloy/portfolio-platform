@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:devfolio:phase03-04:proposal:PublishReceipt",
+  "title": "PublishReceipt",
+  "description": "UNAPPROVED contract proposal, not deployed.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "revision": {
+      "type": "integer"
+    },
+    "publicationState": {
+      "type": "string",
+      "enum": [
+        "published",
+        "unpublished"
+      ]
+    },
+    "generation": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "confirmed": {
+      "type": "boolean",
+      "const": true
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "revision",
+    "publicationState",
+    "generation",
+    "confirmed"
+  ]
+}

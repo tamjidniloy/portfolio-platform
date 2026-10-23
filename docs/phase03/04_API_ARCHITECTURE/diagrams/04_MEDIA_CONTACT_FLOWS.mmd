@@ -1,0 +1,11 @@
+flowchart TD
+  Owner[Authenticated owner] --> Intent[Private upload intent]
+  Intent --> Staging[(Private staged object)]
+  Staging --> Verify[Finalize: inspect real MIME, size, digest, ownership]
+  Verify --> Linked[Ready asset attached to exact revision]
+  Linked --> Publish[Approved published snapshot]
+  Publish --> PublicMedia[Public derivative / authorized delivery]
+  Visitor[Anonymous visitor] --> Contact[Validated, rate-limited contact]
+  Contact --> Store[(Private stored message + outbox)]
+  Store --> Receipt[Stored receipt: no email delivery promise]
+  Store --> Notify[Retryable notification worker]

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:devfolio:phase03-04:proposal:ContactReceipt",
+  "title": "ContactReceipt",
+  "description": "UNAPPROVED contract proposal, not deployed.",
+  "type": "object",
+  "properties": {
+    "receiptId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "accepted": {
+      "type": "boolean",
+      "const": true
+    },
+    "notificationDeliveryConfirmed": {
+      "type": "boolean",
+      "const": false
+    },
+    "message": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "receiptId",
+    "accepted",
+    "notificationDeliveryConfirmed",
+    "message"
+  ]
+}
