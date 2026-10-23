@@ -6,7 +6,7 @@ JavaScript React Router Framework Mode SSR + Express + PostgreSQL. Professional 
 
 Install Node 22, Git for Windows, WebStorm, native PostgreSQL 16 and pgAdmin, and Postman. No Docker is needed locally or in CI. For the complete beginner-friendly walkthrough see [Windows setup](docs/phase04/WINDOWS11_WEBSTORM_SETUP.md).
 
-Clone GitHub `tamjidniloy/portfolio-platform` inside WebStorm and switch to `feat/phase04-windows-native-development` to review this unmerged work. In WebStorm PowerShell:
+Clone GitHub `tamjidniloy/portfolio-platform` inside WebStorm and switch to `feat/phase04-1-database-candidate` to review the unmerged database candidate. In WebStorm PowerShell:
 
 ```powershell
 Copy-Item .env.example .env
@@ -21,3 +21,9 @@ Open http://127.0.0.1:3000/; import checked-in [Postman collection](postman/DEVF
 **Never run proposed schema DDL or implement sign-in/MFA as final contracts before explicit owner approvals.** Read [the owner gates](docs/phase04/PHASE04_IMPLEMENTATION_GATES.md), [updated architecture](docs/phase04/PHASE04_REVISED_ARCHITECTURE.md), and [Phase 03 master handoff](docs/phase03/PHASE03_MASTER_HANDOFF/PHASE03_MASTER_ARCHITECTURE_AND_HANDOFF.md).
 
 Verification scripts: `npm run check:syntax`, `npm run lint`, `npm test`, `npm run check:no-docker`, `npm run check:secrets`, `npm run build`. Use `npm ci` for reproducible dependency installs.
+
+## Phase 04.1 persistence work (candidate only)
+
+The [database implementation review packet](docs/phase04/04.1_DATABASE_IMPLEMENTATION.md) and [owner approval decision sheet](docs/phase04/04.1_OWNER_APPROVAL_DECISION_SHEET.md) explain the 18-table proposal and what requires explicit signoff. A transaction helper, public-only read facade and prototype draft/publish/unpublish commands are implemented **only as isolated test code**. They are not wired to live HTTP routes or deployed migrations.
+
+`npm run db:test:candidate` must **only** be run with `CANDIDATE_DATABASE_URL` pointing to a separately created disposable local database named `devfolio_candidate_test` or `devfolio_candidate_ci`. It deliberately fails on your normal `devfolio_dev` database, remote hosts and production. Do not copy the Phase 03 proposed DDL to production migration directories or execute it against real app data.
