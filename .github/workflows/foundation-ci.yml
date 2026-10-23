@@ -1,0 +1,61 @@
+name: Phase 04.0 Foundation CI
+
+on:
+  push:
+    branches:
+      - feat/phase04-0-foundation
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16.10
+        env:
+          POSTGRES_USER: devfolio
+          POSTGRES_PASSWORD: devfolio_local_only
+          POSTGRES_DB: devfolio
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U devfolio -d devfolio"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://devfolio:devfolio_local_only@127.0.0.1:5432/devfolio
+      HOST: 127.0.0.1
+      PORT: "3000"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - name: Reproducible dependency install
+        run: npm ci --no-fund
+      - name: Syntax and lint
+        run: npm run check:syntax && npm run lint
+      - name: Unit tests
+        run: npm test
+      - name: Heuristic secret scan
+        run: npm run check:secrets
+      - name: Server-side production build
+        run: npm run build
+      - name: Start SSR server
+        run: NODE_ENV=production node server.js > /tmp/devfolio-server.log 2>&1 &
+      - name: HTTP smoke checks
+        run: |
+          for n in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:3000/healthz >/dev/null; then break; fi
+            sleep 1
+          done
+          node scripts/smoke.mjs
+      - name: Dependency security audit
+        run: npm audit --omit=dev --audit-level=high
