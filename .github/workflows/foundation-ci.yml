@@ -1,7 +1,7 @@
 name: Phase 04 Native PostgreSQL CI
 on:
   push:
-    branches: [feat/phase04-windows-native-development, feat/phase04-1-database-candidate, feat/phase04-2-identity-security-foundation, feat/phase04-1-migration-reconciliation, docs/release1-owner-approved-contracts, feat/phase04-3-cms-publishing]
+    branches: [feat/phase04-windows-native-development, feat/phase04-1-database-candidate, feat/phase04-2-identity-security-foundation, feat/phase04-1-migration-reconciliation, docs/release1-owner-approved-contracts, feat/phase04-3-cms-publishing, feat/phase04-release1-unblock]
   pull_request:
 permissions:
   contents: read
@@ -12,6 +12,9 @@ jobs:
       DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_ci
       HOST: 127.0.0.1
       PORT: "3000"
+      RELEASE_MIGRATION_TEST_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_release_migration_ci
+      AUTH_TEST_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_release_auth_ci
+      RESTORE_TEST_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_restore_ci
       CMS_TEST_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_cms_ci
       CONTRACT_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_release1_contract_ci
       CANDIDATE_MIGRATION_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_candidate_migration_ci
@@ -35,6 +38,11 @@ jobs:
           sudo -u postgres createdb --owner=devfolio_ci devfolio_candidate_migration_ci
           sudo -u postgres createdb --owner=devfolio_ci devfolio_release1_contract_ci
           sudo -u postgres createdb --owner=devfolio_ci devfolio_cms_ci
+          sudo -u postgres createdb --owner=devfolio_ci devfolio_release_migration_ci
+          sudo -u postgres createdb --owner=devfolio_ci devfolio_release_auth_ci
+          sudo -u postgres createdb --owner=devfolio_ci devfolio_restore_ci
+          sudo -u postgres psql -v ON_ERROR_STOP=1 -c "CREATE ROLE devfolio_public_reader LOGIN PASSWORD 'ci_public_ephemeral';"
+          sudo -u postgres psql -v ON_ERROR_STOP=1 -c "CREATE ROLE devfolio_cms_runtime LOGIN PASSWORD 'ci_runtime_ephemeral';"
           psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -Atc "SELECT 1" | grep -qx 1
       - name: Install exact dependency graph
         run: |
@@ -53,6 +61,26 @@ jobs:
         run: npm run db:test:release1
       - name: Phase 04.3 CMS database publication and privacy lifecycle
         run: npm run cms:test:db
+      - name: Approved production-intended migration runner clean install, replay, drift and rollback
+        run: npm run db:release:test
+      - name: Owner passkey challenge and abuse negative tests
+        run: npm run auth:release:test
+      - name: Least-privilege public DB grants and denied private reads
+        shell: bash
+        run: |
+          psql "$RELEASE_MIGRATION_TEST_DATABASE_URL" -v ON_ERROR_STOP=1 -f db/roles/grants.sql
+          publicurl=postgresql://devfolio_public_reader:ci_public_ephemeral@127.0.0.1:5432/devfolio_release_migration_ci
+          psql "$publicurl" -v ON_ERROR_STOP=1 -c 'SELECT count(*) FROM published_snapshots'
+          if psql "$publicurl" -v ON_ERROR_STOP=1 -c 'SELECT count(*) FROM admin_users'; then
+            echo 'SECURITY FAILURE: public reader can read private owner table'; exit 1
+          fi
+      - name: Encrypted-backup-prep dump and isolated PostgreSQL restoration drill
+        shell: bash
+        run: |
+          pg_dump -Fc --no-owner --no-acl "$RELEASE_MIGRATION_TEST_DATABASE_URL" > /tmp/devfolio-release1-test.dump
+          pg_restore --no-owner --no-acl -d "$RESTORE_TEST_DATABASE_URL" /tmp/devfolio-release1-test.dump
+          psql "$RESTORE_TEST_DATABASE_URL" -v ON_ERROR_STOP=1 -Atc "SELECT count(*) FROM pg_tables WHERE schemaname='public'" | grep -qx 20
+          rm -f /tmp/devfolio-release1-test.dump
       - name: Source contract consistency checks
         run: npm run check:contracts
       - name: Candidate identity/session integration (no live login)
