@@ -13,8 +13,8 @@ const researchStages = new Set(["idea", "in_progress", "preprint", "submitted", 
 const roots = Object.freeze({
   project: "/projects", research: "/research", article: "/writing",
   profile: "/about", site_settings: "/", education: "/education", experience: "/experience",
-  skill: "/skills", achievement: "/achievements", publication: "/research",
-  resume: "/resume", open_source: "/projects", social_link: "/about",
+  skill: "/skills", achievement: "/achievements", publication: "/research/publications",
+  resume: "/resume", open_source: "/projects/open-source", social_link: "/about/links",
 });
 const MAX_PAYLOAD_BYTES = 256 * 1024;
 
@@ -79,10 +79,9 @@ export function publicPathFor(type, slug) {
   const base = roots[type];
   if (!base) throw badInput("Unsupported public content type");
   if (["profile", "site_settings", "resume"].includes(type)) return base;
-  if (["project", "research", "article"].includes(type)) return base + "/" + slug;
-  // Secondary content contributes to collections; the route family, not a fabricated
-  // detail URL, is the canonical published document for these types.
-  return base;
+  // Non-singleton records need globally distinct paths. Secondary content remains
+  // a listing member; storing an individual path does not guarantee a detail UI route.
+  return base + "/" + slug;
 }
 function safeString(value, max) {
   return string(value, max) ? value.trim() : null;

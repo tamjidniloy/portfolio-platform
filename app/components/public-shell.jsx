@@ -1,7 +1,8 @@
-import { NavLink } from "react-router";
+import { NavLink, useRouteLoaderData } from "react-router";
 import { primaryNavigation, secondaryNavigation } from "../features/public-pages/sections.js";
 
 export function PublicShell({ children }) {
+  const showWriting=useRouteLoaderData("root")?.showWriting===true;
   return (
     <div className="site">
       <a className="skip-link" href="#main">Skip to content</a>
@@ -12,10 +13,11 @@ export function PublicShell({ children }) {
         </NavLink>
         <nav className="primary-nav" aria-label="Main navigation">
           {primaryNavigation.map(({ slug, label }) => (
-            <NavLink key={slug} to={`/${slug}`} className={({ isActive }) => `nav-link${isActive ? " is-active" : ""}`}>
+            <NavLink key={slug} to={slug==="work"?"/projects":`/${slug}`} className={({ isActive }) => `nav-link${isActive ? " is-active" : ""}`}>
               {label}
             </NavLink>
           ))}
+          {showWriting && <NavLink to="/writing" className="nav-link">Writing</NavLink>}
         </nav>
       </header>
       <main id="main" className="main-content">{children}</main>

@@ -1,8 +1,8 @@
 import { projectPublicRevision } from "../../domain/cms/content-contract.js";
 
 // ALL public queries touch ONLY published_snapshots. No draft join or actor table.
-const publicPath = /^\/[a-z0-9]+(?:\/[a-z0-9]+(?:-[a-z0-9]+)*)?$/;
-const whitelist = new Set(["project", "research", "article"]);
+const publicPath = /^\/(?:[a-z0-9]+(?:-[a-z0-9]+)*)(?:\/[a-z0-9]+(?:-[a-z0-9]+)*){0,3}$|^\/$/;
+const whitelist = new Set(["project", "research", "article", "education", "experience", "skill", "achievement", "publication", "open_source", "social_link"]);
 export function safePublicDto(payload) {
   if (!payload || typeof payload !== "object" || Array.isArray(payload)) return null;
   try {
@@ -23,7 +23,7 @@ export async function getPublicList(pool, { type, limit = 20, offset = 0 } = {})
       !Number.isInteger(offset) || offset < 0 || offset > 10000) {
     throw new RangeError("Invalid list pagination");
   }
-  const base = { project: "/projects/", research: "/research/", article: "/writing/" }[type];
+  const base = {project:"/projects/",research:"/research/",article:"/writing/",education:"/education/",experience:"/experience/",skill:"/skills/",achievement:"/achievements/",publication:"/research/publications/",open_source:"/projects/open-source/",social_link:"/about/links/"}[type];
   const rows = await pool.query(
     "SELECT public_payload, published_at FROM published_snapshots WHERE left(public_path,length($1))=$1 ORDER BY published_at DESC, item_id ASC LIMIT $2 OFFSET $3",
     [base, limit, offset],
