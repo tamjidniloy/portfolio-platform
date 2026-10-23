@@ -2,6 +2,7 @@ import { createRequestHandler } from "@react-router/express";
 import express from "express";
 import { createCmsApiRouter } from "./server/cms/http.js";
 import { createOwnerAuthRouter } from "./server/identity/auth-http.js";
+import { createPrivateObjectStorage } from "./server/integrations/object-storage.js";
 import { getCmsPool, getCmsPublicPool, closeCmsPool, closeCmsPublicPool } from "./server/cms/pool.js";
 import { publishedSitemapPaths } from "./server/cms/public-reader.js";
 import { readConfig } from "./server/config.js";
@@ -26,6 +27,8 @@ app.get("/healthz", livenessHandler);
 app.get("/readyz", createReadinessHandler(database.check));
 
 const cmsPool = getCmsPool();
+const storage = cmsPool && process.env.MEDIA_ENABLED === "true" ?
+  createPrivateObjectStorage(process.env) : null;
 const publicPool = getCmsPublicPool();
 if (cmsPool) {
   if (process.env.CMS_AUTH_ENABLED === "true") {
@@ -40,6 +43,12 @@ if (cmsPool) {
   app.use("/api/v1", createCmsApiRouter({
     pool: cmsPool,
     publicPool,
+    storage,
+    contactConfig:{
+      enabled:process.env.CONTACT_ENABLED==="true",
+      noticeVersion:process.env.CONTACT_NOTICE_VERSION,
+      ipPepper:process.env.CONTACT_IP_PEPPER,
+    },
     publicOrigin: process.env.CMS_PUBLIC_ORIGIN,
     csrfSecret: process.env.CMS_CSRF_SECRET,
     isProduction: config.isProduction,
@@ -86,7 +95,7 @@ const server = app.listen(config.port, config.host, () => {
 
 async function shutdown() {
   server.close();
-  await Promise.allSettled([database.close(), closeCmsPool(), closeCmsPublicPool(), vite?.close()]);
+  await Promise.allSettled([database.close(), closeCmsPool(), closeCmsPublicPool(), storage?.close(), vite?.close()]);
 }
 
 process.once("SIGINT", () => void shutdown());

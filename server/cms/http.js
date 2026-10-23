@@ -9,6 +9,8 @@ import {
 } from "./service.js";
 import { getPublicSnapshot, getPublicList } from "./public-reader.js";
 import { getPrivateSiteSettings, updatePrivateSiteSettings } from "./settings.js";
+import { createMediaIntent, listMedia, finalizeMedia, retireMedia } from "../integrations/media-service.js";
+import { createContactRouter, listMessages, deleteMessage } from "../integrations/contact.js";
 
 function problem(response, error) {
   let status=error instanceof CmsError ? error.status : 500;
@@ -55,7 +57,7 @@ function guarded(fn) {
  * an exact public origin and a high-entropy CSRF secret. Session issuance is
  * not exposed here; Phase 04.2 must first verify a real passkey.
  */
-export function createCmsApiRouter({pool,publicPool=pool,publicOrigin,csrfSecret,isProduction=false}={}) {
+export function createCmsApiRouter({pool,publicPool=pool,publicOrigin,csrfSecret,storage=null,contactConfig={},isProduction=false}={}) {
   if(!pool||typeof pool.query!=="function"||typeof publicOrigin!=="string"||
      typeof csrfSecret!=="string"||Buffer.byteLength(csrfSecret)<32) {
     throw new TypeError("CMS router requires database, origin and strong CSRF configuration");
@@ -72,6 +74,10 @@ export function createCmsApiRouter({pool,publicPool=pool,publicOrigin,csrfSecret
     res.set("X-Content-Type-Options","nosniff");
     next();
   });
+  r.use("/contact",createContactRouter({
+    pool,publicOrigin,noticeVersion:contactConfig.noticeVersion,
+    ipPepper:contactConfig.ipPepper,enabled:contactConfig.enabled===true,
+  }));
   r.get("/public/site",guarded(async(_req,res)=>{
     const site=await getPublicSnapshot(publicPool,"/");
     const profile=await getPublicSnapshot(publicPool,"/about");
@@ -127,6 +133,37 @@ export function createCmsApiRouter({pool,publicPool=pool,publicOrigin,csrfSecret
     next();
   }));
 
+  r.get("/admin/media",guarded(async(req,res)=>{
+    json(res,await listMedia(pool,req.cmsSession,{limit:parseLimit(req)}));
+  }));
+  r.post("/admin/media/intents",guarded(async(req,res)=>{
+    json(res,await createMediaIntent(pool,req.cmsSession,storage,req.body),201);
+  }));
+  r.post("/admin/media/:id/finalize",guarded(async(req,res)=>{
+    json(res,await finalizeMedia(pool,req.cmsSession,storage,req.params.id));
+  }));
+  r.delete("/admin/media/:id",guarded(async(req,res)=>{
+    await retireMedia(pool,req.cmsSession,req.params.id);
+    res.status(204).end();
+  }));
+  r.get("/admin/messages",guarded(async(req,res)=>{
+    json(res,await listMessages(pool,req.cmsSession,{limit:parseLimit(req)}));
+  }));
+  r.delete("/admin/messages/:id",guarded(async(req,res)=>{
+    await deleteMessage(pool,req.cmsSession,req.params.id);
+    res.status(204).end();
+  }));
+  r.get("/admin/audit",guarded(async(req,res)=>{
+    const limit=parseLimit(req);
+    const result=await pool.query(
+      `SELECT id,action,target_kind,target_id,created_at
+       FROM audit_events ORDER BY created_at DESC,id DESC LIMIT $1`,[limit],
+    );
+    json(res,{items:result.rows.map(row=>({
+      id:row.id,action:row.action,targetKind:row.target_kind,
+      targetId:row.target_id,createdAt:row.created_at,
+    }))});
+  }));
   r.get("/admin/site-settings",guarded(async(req,res)=>{
     const data=await getPrivateSiteSettings(pool,req.cmsSession);
     res.set("ETag",`"lock-v${data.lockVersion}"`);

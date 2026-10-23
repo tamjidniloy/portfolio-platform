@@ -1,7 +1,7 @@
 name: Sync Release1 dependency lock
 on:
   push:
-    branches: [feat/phase04-release1-unblock]
+    branches: [feat/phase04-4-media-contact-integrations]
     paths: [package.json]
 permissions:
   contents: write
@@ -25,6 +25,6 @@ jobs:
             git config user.name 'github-actions[bot]'
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
             git add package-lock.json
-            git commit -m 'build: synchronize pinned WebAuthn lockfile'
-            git push origin HEAD:feat/phase04-release1-unblock
+            git commit -m 'build: synchronize pinned media storage dependencies'
+            git push origin HEAD:feat/phase04-4-media-contact-integrations
           fi
