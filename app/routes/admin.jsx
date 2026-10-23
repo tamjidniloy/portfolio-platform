@@ -5,7 +5,7 @@ import { CONTENT_TYPES } from "../../domain/cms/content-contract.js";
 
 export async function loader({request}){
   const {pool,session,csrfToken}=await requireOwnerRoute(request);
-  return Response.json({csrfToken,items:await listDrafts(pool,session)},{headers:{"Cache-Control":"no-store"}});
+  return Response.json({csrfToken,newDraftKey:crypto.randomUUID(),items:await listDrafts(pool,session)},{headers:{"Cache-Control":"no-store"}});
 }
 export async function action({request}){
   const form=await request.formData();
@@ -23,12 +23,12 @@ export async function action({request}){
 }
 export function meta(){return [{title:"Private CMS — DEVFOLIO OS"},{name:"robots",content:"noindex,nofollow"}];}
 export default function Admin(){
- const {items,csrfToken}=useLoaderData(); const result=useActionData();
+ const {items,csrfToken,newDraftKey}=useLoaderData(); const result=useActionData();
  return <main className="section-content">
   <p className="eyebrow">PRIVATE / DEVFOLIO OS</p>
   <h1>Content workspace</h1>
   <p>All edits are private until published. Only validated owner sessions can access this page.</p>
-  <p><Link to="/admin/settings">Edit site settings</Link></p>
+  <p><Link to="/admin/settings">Edit site settings</Link> · <Link to="/admin/security">Passkeys, recovery and sign-out</Link></p>
   <h2>Content</h2>
   {items.length?<ul>{items.map(x=><li key={x.id}><Link to={`/admin/content/${x.id}`}>
    {x.payload?.title||x.contentType}</Link> — {x.publicationState} (revision {x.latestRevisionNo})</li>)}</ul>:
@@ -36,7 +36,7 @@ export default function Admin(){
   <h2>Create draft</h2>
   <Form method="post">
    <input type="hidden" name="csrfToken" value={csrfToken}/>
-   <input type="hidden" name="key" defaultValue=""/>
+   <input type="hidden" name="key" value={newDraftKey}/>
    <label htmlFor="new-content-type">Content type</label>
    <select id="new-content-type" name="contentType">{CONTENT_TYPES.map(type=><option key={type} value={type}>{type}</option>)}</select>
    <label htmlFor="new-title">Title</label><input id="new-title" name="title" maxLength={200} required/>

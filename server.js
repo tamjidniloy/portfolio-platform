@@ -1,6 +1,7 @@
 import { createRequestHandler } from "@react-router/express";
 import express from "express";
 import { createCmsApiRouter } from "./server/cms/http.js";
+import { createOwnerAuthRouter } from "./server/identity/auth-http.js";
 import { getCmsPool, closeCmsPool } from "./server/cms/pool.js";
 import { publishedSitemapPaths } from "./server/cms/public-reader.js";
 import { readConfig } from "./server/config.js";
@@ -26,6 +27,15 @@ app.get("/readyz", createReadinessHandler(database.check));
 
 const cmsPool = getCmsPool();
 if (cmsPool) {
+  if (process.env.CMS_AUTH_ENABLED === "true") {
+    app.use("/api/v1", createOwnerAuthRouter({
+      pool: cmsPool,
+      publicOrigin: process.env.CMS_PUBLIC_ORIGIN,
+      rpID: process.env.WEBAUTHN_RP_ID,
+      csrfSecret: process.env.CMS_CSRF_SECRET,
+      isProduction: config.isProduction,
+    }));
+  }
   app.use("/api/v1", createCmsApiRouter({
     pool: cmsPool,
     publicOrigin: process.env.CMS_PUBLIC_ORIGIN,
