@@ -1,0 +1,43 @@
+id,check,status
+ARC32-001,"Public loader uses only published reader",NOT_RUN
+ARC32-002,"Anonymous draft slug response indistinguishable from missing",NOT_RUN
+ARC32-003,"Public SSR excludes private fields",NOT_RUN
+ARC32-004,"Public hydration JSON excludes private fields",NOT_RUN
+ARC32-005,"Sitemap excludes unpublished records",NOT_RUN
+ARC32-006,"Public media cannot access private staging",NOT_RUN
+ARC32-007,"Conditional Writing menu hides when no published articles",NOT_RUN
+ARC32-008,"Research stage not misrepresented",NOT_RUN
+ARC32-009,"Owner read requires authorization",NOT_RUN
+ARC32-010,"Admin mutation denies expired session",NOT_RUN
+ARC32-011,"CSRF guard denies forged mutation",NOT_RUN
+ARC32-012,"Overposted admin fields rejected",NOT_RUN
+ARC32-013,"Draft accepts safe incomplete content",NOT_RUN
+ARC32-014,"Publish validates public required fields",NOT_RUN
+ARC32-015,"Revision + publish + outbox commit together",NOT_RUN
+ARC32-016,"Failed SQL publish leaves public projection unchanged",NOT_RUN
+ARC32-017,"Concurrent edits yield CONFLICT",NOT_RUN
+ARC32-018,"Unpublish excludes public immediately",NOT_RUN
+ARC32-019,"Cache failure cannot resurrect unpublished content",NOT_RUN
+ARC32-020,"Preview uses no-store/noindex",NOT_RUN
+ARC32-021,"Shared preview URL alone cannot grant access",NOT_RUN
+ARC32-022,"Password stage cannot issue full session",NOT_RUN
+ARC32-023,"Expired or replayed OTP denied",NOT_RUN
+ARC32-024,"Session revocation enforced",NOT_RUN
+ARC32-025,"Contact accepted separate from notification delivery",NOT_RUN
+ARC32-026,"Contact deduplicates relevant retries",NOT_RUN
+ARC32-027,"Upload validates observed MIME signature",NOT_RUN
+ARC32-028,"Referenced published media cannot be silently deleted",NOT_RUN
+ARC32-029,"Failed staged upload not publicly served",NOT_RUN
+ARC32-030,"Validation errors avoid leaking private data",NOT_RUN
+ARC32-031,"Server failure does not trigger successful save toast",NOT_RUN
+ARC32-032,"Audit logs redact OTP and contact data",NOT_RUN
+ARC32-033,"Outbox retry idempotent",NOT_RUN
+ARC32-034,"Restore drill isolated",NOT_RUN
+ARC32-035,"All 26 module responsibilities reviewed",NOT_RUN
+ARC32-036,"All 27 dependency rules reviewed",NOT_RUN
+ARC32-037,"All 18 contract ports reviewed",NOT_RUN
+ARC32-038,"Provider choices explicitly unresolved",NOT_RUN
+ARC32-039,"Public DTO mapping awaits owner-approved SRS",NOT_RUN
+ARC32-040,"Reduced motion/keyboard handling designed",NOT_RUN
+ARC32-041,"Original Phase 02 142 QA cases not misrepresented as run",NOT_RUN
+ARC32-042,"Design approval and implementation distinguished",NOT_RUN
