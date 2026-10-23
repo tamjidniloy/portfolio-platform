@@ -1,0 +1,13 @@
+id,decision,alternatives,decision_owner,status,reference
+ADR-36-01,Hosting model and region,Managed PaaS vs managed container vs VPS,ASSIGNED_OWNER_PENDING,PROPOSED_NOT_APPROVED,docs/01_DEPLOYMENT_ARCHITECTURE_AND_HOSTING.md
+ADR-36-02,Runtime worker topology,Same process vs separate worker,ASSIGNED_OWNER_PENDING,PROPOSED_NOT_APPROVED,docs/02_ENVIRONMENTS_IDENTITY_AND_SECRETS.md
+ADR-36-03,Environment isolation and production approval,GitHub env gate vs independent audited approval,ASSIGNED_OWNER_PENDING,PROPOSED_NOT_APPROVED,docs/03_CI_CD_RELEASE_AND_SUPPLY_CHAIN.md
+ADR-36-04,Federated CI deploy identity,OIDC vs scoped static secret exception,ASSIGNED_OWNER_PENDING,PROPOSED_NOT_APPROVED,docs/04_RUNTIME_NETWORK_DATA_AND_STORAGE.md
+ADR-36-05,"Immutable artifacts, SBOM and provenance",Digest promotion + provenance vs per-stage build,ASSIGNED_OWNER_PENDING,PROPOSED_NOT_APPROVED,docs/05_BACKUPS_DISASTER_RECOVERY.md
+ADR-36-06,Migration and rollback compatibility,Expand/contract vs maintenance window,ASSIGNED_OWNER_PENDING,PROPOSED_NOT_APPROVED,docs/06_OBSERVABILITY_SLO_SLI_AND_ALERTING.md
+ADR-36-07,PostgreSQL backup/PITR and retention,Managed PITR vs logical dumps + physical/WAL,ASSIGNED_OWNER_PENDING,PROPOSED_NOT_APPROVED,docs/07_INCIDENTS_AND_OPERATIONAL_RUNBOOKS.md
+ADR-36-08,"Media access, CDN revocation and backup",Signed URL gated origin vs public derivatives,ASSIGNED_OWNER_PENDING,PROPOSED_NOT_APPROVED,docs/07_INCIDENTS_AND_OPERATIONAL_RUNBOOKS.md
+ADR-36-09,Observability vendor and redaction,Managed telemetry vs self-host,ASSIGNED_OWNER_PENDING,PROPOSED_NOT_APPROVED,docs/07_INCIDENTS_AND_OPERATIONAL_RUNBOOKS.md
+ADR-36-10,SLO RTO RPO target selection,Baseline reliability tiers and costs,ASSIGNED_OWNER_PENDING,PROPOSED_NOT_APPROVED,docs/07_INCIDENTS_AND_OPERATIONAL_RUNBOOKS.md
+ADR-36-11,TLS ingress DNS and edge caching,CDN strategy vs origin-only,ASSIGNED_OWNER_PENDING,PROPOSED_NOT_APPROVED,docs/07_INCIDENTS_AND_OPERATIONAL_RUNBOOKS.md
+ADR-36-12,Incident roles and break-glass,Owner oncall vs supported external operator,ASSIGNED_OWNER_PENDING,PROPOSED_NOT_APPROVED,docs/07_INCIDENTS_AND_OPERATIONAL_RUNBOOKS.md

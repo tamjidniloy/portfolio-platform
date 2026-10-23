@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Candidate release evidence",
+  "type": "object",
+  "properties": {
+    "releaseId": {
+      "type": "string"
+    },
+    "sourceCommitSha": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{40}$"
+    },
+    "artifactDigest": {
+      "type": "string"
+    },
+    "environment": {
+      "enum": [
+        "staging",
+        "production"
+      ]
+    },
+    "approvedBy": {
+      "type": "string"
+    },
+    "approvedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "migrationRevision": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "smokeChecks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "result": {
+            "enum": [
+              "PASS",
+              "FAIL",
+              "BLOCKED",
+              "NOT_RUN"
+            ]
+          },
+          "evidenceUri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "result"
+        ]
+      }
+    }
+  },
+  "required": [
+    "releaseId",
+    "sourceCommitSha",
+    "artifactDigest",
+    "environment",
+    "approvedBy",
+    "approvedAt",
+    "smokeChecks"
+  ],
+  "additionalProperties": false
+}

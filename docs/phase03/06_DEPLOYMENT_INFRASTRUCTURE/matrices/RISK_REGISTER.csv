@@ -1,0 +1,21 @@
+risk_id,severity,threat,impact,candidate_mitigation,status
+RISK-36-01,Critical,Production secrets available to PR builds,Any PR can extract deployment token,Read-only CI + OIDC + separation,Open
+RISK-36-02,Critical,CDN stale private/draft after withdrawal,Privacy incident,Origin allowlist; no shared caching until tests,Open
+RISK-36-03,High,Managed DB backup not restorable,Data loss,Isolated restore drill and media inventory,Open
+RISK-36-04,High,SQL schema rollback incompatible,Long downtime,Expand/contract migrations and snapshot,Open
+RISK-36-05,High,DB and media backups inconsistent,Missing published images,Matched manifest/snapshot timing,Open
+RISK-36-06,High,Private GitHub plan lacks deployment reviewer gate,Unaudited production release,Manual external auditable approval fallback,Open
+RISK-36-07,High,Staging email delivers to real contacts,Spam/privacy,Sandbox mail sink isolated identities,Open
+RISK-36-08,High,Compromised owner email challenge,Admin takeover,"MFA decision ADR from 03.5, recovery review",Open
+RISK-36-09,High,Provider lock-in or unsupported Express SSR,Rearchitecture,Proof of concept before vendor ADR,Open
+RISK-36-10,High,Backups cannot be decrypted,No recovery,Key custody and restore test,Open
+RISK-36-11,High,Logs capture drafts or OTPs,Private data breach,Audit sanitizer and payload allowlist,Open
+RISK-36-12,Medium,Outbox worker backlog,Stale notifications/SEO,Alerts retries dead-letter & no false UI,Open
+RISK-36-13,Medium,TLS certificate expires,Visitor outage,Cert monitoring and provider automation,Open
+RISK-36-14,Medium,Single instance runs out of capacity,99.9 target missed,Scale signals/health/worker split,Open
+RISK-36-15,Medium,Data retention unapproved,Privacy noncompliance,Owner data/backup retention decision,Open
+RISK-36-16,Medium,Costs exceed budget due to egress/backups,Unexpected bill,"Plan/quotas, spend alert",Open
+RISK-36-17,High,Mutable deploy artifact re-built per environment,Supply chain/repro risk,Build once/promote digest,Open
+RISK-36-18,Medium,Wide runner permissions,SCM compromise,Pin and scope actions/tokens,Open
+RISK-36-19,High,PITR assumed from logical dumps,False RPO capability,Physical base+WAL/provider verification,Open
+RISK-36-20,Medium,No incident alternate oncall,Prolonged outage,Document response owner/support,Open

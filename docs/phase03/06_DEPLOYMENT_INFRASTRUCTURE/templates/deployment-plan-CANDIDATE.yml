@@ -1,0 +1,21 @@
+# NOT EXECUTABLE PROVIDER CONFIG — design illustration only.
+schema: devfolio-deployment-proposal-v1
+status: PROPOSED_NOT_PROVISIONED
+environments:
+  staging:
+    instance: managed-node-runtime-candidate
+    data: isolated-staging-postgres
+    media: private-staging-bucket
+  production:
+    instance: managed-node-runtime-candidate
+    data: managed-postgres-private-network
+    media: private-upload-and-revocable-published-assets
+rollout:
+  artifact: immutable-build-digest
+  approvals: verified-owner-or-platform-gate
+  migrations: separated-and-backwards-compatible
+  rollback: verify-compatible-schema-before-image-switch
+backup:
+  rto_hours_hypothesis: 4
+  rpo_hours_hypothesis: 24
+  point_in_time_recovery: decision_pending

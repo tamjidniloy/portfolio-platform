@@ -1,0 +1,14 @@
+
+digraph G {
+ rankdir=LR;bgcolor="#0f1724";pad=.35;splines=ortho;node [shape=box,style="rounded,filled",color="#48647b",fillcolor="#172536",fontcolor="#f0f7fb",fontname="DejaVu Sans",fontsize=11,margin=".20,.14"];edge[color="#75b9ce",arrowsize=.65,fontcolor="#d4e5f0"];
+ PR [label="PR source and lockfile",fillcolor="#1d3c51"];
+ CI [label="Read-only CI\nno production secret",fillcolor="#16544f"];
+ Tests [label="SAST / dependency /\nunit + contract + security"];
+ Registry [label="Immutable artifact digest\nSBOM / provenance candidate"];
+ Stage [label="Isolated staging\nDB / media / email sandbox"];
+ Approval [label="Owner production approval\nplatform gate if available",fillcolor="#4d452f"];
+ Deploy [label="Scoped OIDC deploy identity\nno DB admin"];
+ Prod [label="Production Node+worker\nmanaged DB",fillcolor="#483452"];
+ Review [label="CODEOWNER / release audit",fillcolor="#4d452f"];
+ PR->CI;CI->Tests;Tests->Registry;Registry->Stage;Stage->Approval;Review->Approval;Approval->Deploy;Deploy->Prod;Registry->Prod [style=dotted,label="same digest"];
+}

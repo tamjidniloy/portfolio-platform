@@ -1,0 +1,20 @@
+
+digraph G {
+ rankdir=LR; bgcolor="#0f1724"; pad=.35; nodesep=.55; ranksep=1; splines=polyline;
+ node [shape=box,style="rounded,filled",color="#48647b",fillcolor="#172536",fontname="DejaVu Sans",fontcolor="#f0f7fb",fontsize=12,margin=".20,.14"];
+ edge [color="#75b9ce",arrowsize=.7,fontname="DejaVu Sans",fontcolor="#bfdfeb",fontsize=10];
+ Visitor [label="Public visitor / crawler",fillcolor="#1d3c51"];
+ Owner [label="Owner admin",fillcolor="#1d3c51"];
+ Gateway [label="HTTPS edge / TLS\nDNS + optional CDN"];
+ SSR [label="React Router SSR\nExpress host"];
+ Public [label="Published-only\nread facade",fillcolor="#16544f"];
+ CMS [label="Protected owner\ncommands / private preview",fillcolor="#483452"];
+ DB [label="Managed PostgreSQL\npublished / private / outbox",fillcolor="#233d56"];
+ Worker [label="Outbox retry worker"];
+ Media [label="Private upload staging\ncontrolled media",fillcolor="#483452"];
+ Mail [label="Transactional email"];
+ Obs [label="Redacted logs / metrics\nalerts",fillcolor="#4d452f"];
+ Vault [label="Isolated backup vault\nDB + media + recovery keys",fillcolor="#4d452f"];
+ Visitor->Gateway;Owner->Gateway;Gateway->SSR;SSR->Public;SSR->CMS;Public->DB [label="published only"];CMS->DB [label="owner-only"];CMS->Media;DB->Worker [label="outbox"];Worker->Mail;SSR->Obs;Worker->Obs;DB->Vault;Media->Vault;
+ {rank=same;Public;CMS}
+}

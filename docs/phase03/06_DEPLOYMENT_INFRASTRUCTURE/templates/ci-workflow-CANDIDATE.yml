@@ -1,0 +1,17 @@
+# NON-OPERATIONAL SAMPLE: resides under docs/templates, not .github/workflows.
+# Replace action references with VERIFIED FULL COMMIT SHAs before activation.
+name: candidate-verify-only
+on:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      # - uses: actions/checkout@<verified-40hex-commit-SHA> # required before use
+      # - uses: actions/setup-node@<verified-40hex-commit-SHA> # required before use
+      - name: Explanation (not a working application CI)
+        run: echo "Phase 03.6 design placeholder; do not activate until application and audited SHA pins exist"
+# No prod environment, OIDC, artifact publish or deploy job here.
