@@ -31,6 +31,17 @@ export default function AdminSecurity(){
    window.location.reload();
   }catch(e){setError(e.message);setBusy(false);}
  }
+ async function revokeCredential(id){
+  if(!window.confirm("Revoke this passkey? You must keep another active passkey."))return;
+  setError("");setBusy(true);
+  try{
+   const r=await fetch("/api/v1/admin/passkeys/"+encodeURIComponent(id),{
+    method:"DELETE",credentials:"same-origin",headers:{"X-CSRF-Token":csrfToken},
+   });
+   if(!r.ok)throw new Error("Could not revoke credential. A second passkey and recent login are required.");
+   window.location.reload();
+  }catch(e){setError(e.message);setBusy(false);}
+ }
  async function rotate(){
   setError("");setBusy(true);
   try{
@@ -51,7 +62,7 @@ export default function AdminSecurity(){
   <h1>Passkeys and recovery</h1>
   <p>Use a separate backup passkey before rotating recovery codes. Security changes require recent authentication.</p>
   <h2>Registered passkeys</h2>
-  <ul>{credentials.map(x=><li key={x.id}>{x.device_label||"Registered authenticator"} (created {new Date(x.created_at).toLocaleDateString()})</li>)}</ul>
+  <ul>{credentials.map(x=><li key={x.id}>{x.device_label||"Registered authenticator"} (created {new Date(x.created_at).toLocaleDateString()}) <button type="button" disabled={busy||credentials.length<2} onClick={()=>revokeCredential(x.id)}>Revoke</button></li>)}</ul>
   <button type="button" disabled={busy} onClick={enroll}>Register another passkey</button>
   <h2>Offline recovery codes</h2>
   <button type="button" disabled={busy} onClick={rotate}>Rotate and show recovery codes once</button>
