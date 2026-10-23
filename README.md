@@ -6,7 +6,7 @@ JavaScript React Router Framework Mode SSR + Express + PostgreSQL. Professional 
 
 Install Node 22, Git for Windows, WebStorm, native PostgreSQL 16 and pgAdmin, and Postman. No Docker is needed locally or in CI. For the complete beginner-friendly walkthrough see [Windows setup](docs/phase04/WINDOWS11_WEBSTORM_SETUP.md).
 
-Clone GitHub `tamjidniloy/portfolio-platform` inside WebStorm and switch to `feat/phase04-1-database-candidate` to review the unmerged database candidate. In WebStorm PowerShell:
+Clone GitHub `tamjidniloy/portfolio-platform` inside WebStorm and switch to `feat/phase04-2-identity-security-foundation` to review the unmerged identity foundation; Phase 04.1 candidate is already on main. In WebStorm PowerShell:
 
 ```powershell
 Copy-Item .env.example .env

@@ -34,13 +34,13 @@ function trustedSession(row, now) {
     [SESSION_PROOF]: true,
     ownerId: row.admin_user_id,
     sessionId: row.id,
-    expiresAt: new Date(row.expires_at),
+    expiresAtEpochMs: new Date(row.expires_at).getTime(),
   });
 }
 
 export function assertVerifiedOwner(session, { ownerId, now = new Date() } = {}) {
   if (!session || session[SESSION_PROOF] !== true ||
-      !(session.expiresAt instanceof Date) || session.expiresAt.getTime() <= now.getTime() ||
+      !Number.isFinite(session.expiresAtEpochMs) || session.expiresAtEpochMs <= now.getTime() ||
       (ownerId !== undefined && session.ownerId !== ownerId)) {
     throw new OwnerNotAuthorized();
   }

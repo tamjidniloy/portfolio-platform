@@ -86,3 +86,8 @@ test("SQL session lookups parameterized and deny disabled owners", async () => {
   assert.equal(queries[0].args[0], digestSessionToken(secret));
   assert.equal(JSON.stringify(queries[0]).includes(secret), false);
 });
+
+test("session authority cannot be manufactured by mutating an arbitrary expiry Date", () => {
+  const forged = { ownerId: "owner", expiresAtEpochMs: Number.MAX_SAFE_INTEGER };
+  assert.throws(() => assertVerifiedOwner(forged), OwnerNotAuthorized);
+});

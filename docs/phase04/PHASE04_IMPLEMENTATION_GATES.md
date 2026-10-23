@@ -37,3 +37,9 @@ Phase 04.1 test-only database work is maintained in `docs/phase04/04.1_DATABASE_
 ## 04.2 candidate session security work
 
 Source and approval documents: [identity handoff](04.2_IDENTITY_AND_AUTHORIZATION_HANDOFF.md) and [owner MFA decision sheet](04.2_OWNER_MFA_DECISION.md). Pending final CI evidence. No owner login endpoint is active; future session issuance requires a verified authenticator adapter. Approving a feature branch is not approval of FR-040 or production security posture.
+
+## Verified Phase 04.2 candidate authentication primitives
+
+- Tested commit `52746fe780d270f1c5931cbc777238f09edf0ff2` — [CI run #40000108905](https://github.com/tamjidniloy/portfolio-platform/actions/runs/40000108905), SUCCESS.
+- 29 unit tests, 1 native DB test, 7 candidate DDL/transaction tests, 5 candidate session/authorization subtests passed. SSR build and unauthenticated admin-login negative HTTP smoke passed. `npm ci` restored as install step.
+- **No production MFA/sign-in/recovery is implemented or approved**. Full Phase 04.2 is blocked by owner choice and subsequent real browser security testing.
