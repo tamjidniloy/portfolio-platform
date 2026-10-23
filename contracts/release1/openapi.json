@@ -1,0 +1,3037 @@
+{
+  "openapi": "3.1.2",
+  "info": {
+    "title": "DEVFOLIO OS Release 1 JSON API",
+    "version": "1.0.0",
+    "description": "Owner-approved API-R1 target 2026-10-24 Asia/Dhaka. 37 operations. Not proof of deployed routes."
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "paths": {
+    "/api/v1/public/projects": {
+      "get": {
+        "operationId": "r1Operation01",
+        "summary": "PublicProjectsPage — /api/v1/public/projects",
+        "tags": [
+          "public"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicProjectsPage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 512
+            }
+          }
+        ],
+        "x-owner-session-required": false,
+        "x-csrf-required": false,
+        "x-recent-passkey-required": false,
+        "x-no-store": false,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/public/projects/{slug}": {
+      "get": {
+        "operationId": "r1Operation02",
+        "summary": "PublicContent — /api/v1/public/projects/{slug}",
+        "tags": [
+          "public"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicContent"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+              "maxLength": 160
+            }
+          }
+        ],
+        "x-owner-session-required": false,
+        "x-csrf-required": false,
+        "x-recent-passkey-required": false,
+        "x-no-store": false,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/public/research": {
+      "get": {
+        "operationId": "r1Operation03",
+        "summary": "PublicResearchPage — /api/v1/public/research",
+        "tags": [
+          "public"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicResearchPage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 512
+            }
+          }
+        ],
+        "x-owner-session-required": false,
+        "x-csrf-required": false,
+        "x-recent-passkey-required": false,
+        "x-no-store": false,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/public/research/{slug}": {
+      "get": {
+        "operationId": "r1Operation04",
+        "summary": "PublicContent — /api/v1/public/research/{slug}",
+        "tags": [
+          "public"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicContent"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+              "maxLength": 160
+            }
+          }
+        ],
+        "x-owner-session-required": false,
+        "x-csrf-required": false,
+        "x-recent-passkey-required": false,
+        "x-no-store": false,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/public/site": {
+      "get": {
+        "operationId": "r1Operation05",
+        "summary": "PublicSite — /api/v1/public/site",
+        "tags": [
+          "public"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicSite"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "x-owner-session-required": false,
+        "x-csrf-required": false,
+        "x-recent-passkey-required": false,
+        "x-no-store": false,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/contact": {
+      "post": {
+        "operationId": "r1Operation06",
+        "summary": "ContactReceipt — /api/v1/contact",
+        "tags": [
+          "anonymousWrite"
+        ],
+        "security": [],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactReceipt"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 200
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactRequest"
+              }
+            }
+          }
+        },
+        "x-owner-session-required": false,
+        "x-csrf-required": false,
+        "x-recent-passkey-required": false,
+        "x-no-store": false,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/auth/passkey/options": {
+      "post": {
+        "operationId": "r1Operation07",
+        "summary": "PasskeyOptions — /api/v1/auth/passkey/options",
+        "tags": [
+          "auth"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PasskeyOptions"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "x-owner-session-required": false,
+        "x-csrf-required": false,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/auth/passkey/verify": {
+      "post": {
+        "operationId": "r1Operation08",
+        "summary": "SessionCreated — /api/v1/auth/passkey/verify",
+        "tags": [
+          "auth"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionCreated"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebAuthnRequest"
+              }
+            }
+          }
+        },
+        "x-owner-session-required": false,
+        "x-csrf-required": false,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "operationId": "r1Operation09",
+        "summary": "NoContent — /api/v1/auth/logout",
+        "tags": [
+          "owner"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            }
+          }
+        ],
+        "x-owner-session-required": true,
+        "x-csrf-required": true,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/auth/recovery/start": {
+      "post": {
+        "operationId": "r1Operation10",
+        "summary": "RecoveryStart — /api/v1/auth/recovery/start",
+        "tags": [
+          "auth"
+        ],
+        "security": [],
+        "responses": {
+          "202": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecoveryStart"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "x-owner-session-required": false,
+        "x-csrf-required": false,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/auth/recovery/complete": {
+      "post": {
+        "operationId": "r1Operation11",
+        "summary": "RestrictedRecovery — /api/v1/auth/recovery/complete",
+        "tags": [
+          "auth"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestrictedRecovery"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecoveryCodeRequest"
+              }
+            }
+          }
+        },
+        "x-owner-session-required": false,
+        "x-csrf-required": false,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/admin/passkeys/options": {
+      "post": {
+        "operationId": "r1Operation12",
+        "summary": "PasskeyOptions — /api/v1/admin/passkeys/options",
+        "tags": [
+          "recent"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PasskeyOptions"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            }
+          }
+        ],
+        "x-owner-session-required": true,
+        "x-csrf-required": true,
+        "x-recent-passkey-required": true,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/admin/passkeys": {
+      "post": {
+        "operationId": "r1Operation13",
+        "summary": "CredentialRecord — /api/v1/admin/passkeys",
+        "tags": [
+          "recent"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CredentialRecord"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebAuthnRegistration"
+              }
+            }
+          }
+        },
+        "x-owner-session-required": true,
+        "x-csrf-required": true,
+        "x-recent-passkey-required": true,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      },
+      "get": {
+        "operationId": "r1Operation14",
+        "summary": "CredentialList — /api/v1/admin/passkeys",
+        "tags": [
+          "owner"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CredentialList"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "x-owner-session-required": true,
+        "x-csrf-required": false,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/admin/passkeys/{id}": {
+      "delete": {
+        "operationId": "r1Operation15",
+        "summary": "NoContent — /api/v1/admin/passkeys/{id}",
+        "tags": [
+          "recent"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            }
+          }
+        ],
+        "x-owner-session-required": true,
+        "x-csrf-required": true,
+        "x-recent-passkey-required": true,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/admin/recovery-codes/rotate": {
+      "post": {
+        "operationId": "r1Operation16",
+        "summary": "RecoveryCodeBatch — /api/v1/admin/recovery-codes/rotate",
+        "tags": [
+          "recent"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecoveryCodeBatch"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            }
+          }
+        ],
+        "x-owner-session-required": true,
+        "x-csrf-required": true,
+        "x-recent-passkey-required": true,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/admin/sessions": {
+      "get": {
+        "operationId": "r1Operation17",
+        "summary": "SessionPage — /api/v1/admin/sessions",
+        "tags": [
+          "owner"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionPage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "x-owner-session-required": true,
+        "x-csrf-required": false,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/admin/sessions/{id}": {
+      "delete": {
+        "operationId": "r1Operation18",
+        "summary": "NoContent — /api/v1/admin/sessions/{id}",
+        "tags": [
+          "owner"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            }
+          }
+        ],
+        "x-owner-session-required": true,
+        "x-csrf-required": true,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/admin/session": {
+      "get": {
+        "operationId": "r1Operation19",
+        "summary": "SessionInfo — /api/v1/admin/session",
+        "tags": [
+          "owner"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionInfo"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "x-owner-session-required": true,
+        "x-csrf-required": false,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/admin/content": {
+      "get": {
+        "operationId": "r1Operation20",
+        "summary": "ContentPage — /api/v1/admin/content",
+        "tags": [
+          "owner"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentPage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 512
+            }
+          }
+        ],
+        "x-owner-session-required": true,
+        "x-csrf-required": false,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      },
+      "post": {
+        "operationId": "r1Operation21",
+        "summary": "DraftSaved — /api/v1/admin/content",
+        "tags": [
+          "owner"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftSaved"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 200
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContentCreate"
+              }
+            }
+          }
+        },
+        "x-owner-session-required": true,
+        "x-csrf-required": true,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/admin/content/{id}": {
+      "get": {
+        "operationId": "r1Operation22",
+        "summary": "PrivateDraft — /api/v1/admin/content/{id}",
+        "tags": [
+          "owner"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivateDraft"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "x-owner-session-required": true,
+        "x-csrf-required": false,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      },
+      "patch": {
+        "operationId": "r1Operation23",
+        "summary": "DraftSaved — /api/v1/admin/content/{id}",
+        "tags": [
+          "owner"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftSaved"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"lock-v[0-9]+\"$"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContentUpdate"
+              }
+            }
+          }
+        },
+        "x-owner-session-required": true,
+        "x-csrf-required": true,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/admin/content/{id}/revisions": {
+      "get": {
+        "operationId": "r1Operation24",
+        "summary": "RevisionsPage — /api/v1/admin/content/{id}/revisions",
+        "tags": [
+          "owner"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevisionsPage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "x-owner-session-required": true,
+        "x-csrf-required": false,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/admin/content/{id}/publish": {
+      "post": {
+        "operationId": "r1Operation25",
+        "summary": "PublishReceipt — /api/v1/admin/content/{id}/publish",
+        "tags": [
+          "owner"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublishReceipt"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"lock-v[0-9]+\"$"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 200
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevisionSelection"
+              }
+            }
+          }
+        },
+        "x-owner-session-required": true,
+        "x-csrf-required": true,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/admin/content/{id}/unpublish": {
+      "post": {
+        "operationId": "r1Operation26",
+        "summary": "PublishReceipt — /api/v1/admin/content/{id}/unpublish",
+        "tags": [
+          "owner"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublishReceipt"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"lock-v[0-9]+\"$"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 200
+            }
+          }
+        ],
+        "x-owner-session-required": true,
+        "x-csrf-required": true,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/admin/content/{id}/restore": {
+      "post": {
+        "operationId": "r1Operation27",
+        "summary": "DraftSaved — /api/v1/admin/content/{id}/restore",
+        "tags": [
+          "owner"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftSaved"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"lock-v[0-9]+\"$"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 200
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevisionSelection"
+              }
+            }
+          }
+        },
+        "x-owner-session-required": true,
+        "x-csrf-required": true,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/admin/content/{id}/preview": {
+      "get": {
+        "operationId": "r1Operation28",
+        "summary": "PrivatePreview — /api/v1/admin/content/{id}/preview",
+        "tags": [
+          "owner"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivatePreview"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "x-owner-session-required": true,
+        "x-csrf-required": false,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/admin/media": {
+      "get": {
+        "operationId": "r1Operation29",
+        "summary": "MediaPage — /api/v1/admin/media",
+        "tags": [
+          "owner"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaPage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "x-owner-session-required": true,
+        "x-csrf-required": false,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/admin/media/intents": {
+      "post": {
+        "operationId": "r1Operation30",
+        "summary": "UploadIntent — /api/v1/admin/media/intents",
+        "tags": [
+          "owner"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadIntent"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 200
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadIntentRequest"
+              }
+            }
+          }
+        },
+        "x-owner-session-required": true,
+        "x-csrf-required": true,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/admin/media/{id}/finalize": {
+      "post": {
+        "operationId": "r1Operation31",
+        "summary": "MediaReady — /api/v1/admin/media/{id}/finalize",
+        "tags": [
+          "owner"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaReady"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 200
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FinalizeRequest"
+              }
+            }
+          }
+        },
+        "x-owner-session-required": true,
+        "x-csrf-required": true,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/admin/media/{id}": {
+      "delete": {
+        "operationId": "r1Operation32",
+        "summary": "NoContent — /api/v1/admin/media/{id}",
+        "tags": [
+          "owner"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            }
+          }
+        ],
+        "x-owner-session-required": true,
+        "x-csrf-required": true,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/admin/messages": {
+      "get": {
+        "operationId": "r1Operation33",
+        "summary": "ContactInbox — /api/v1/admin/messages",
+        "tags": [
+          "owner"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactInbox"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 512
+            }
+          }
+        ],
+        "x-owner-session-required": true,
+        "x-csrf-required": false,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/admin/messages/{id}": {
+      "delete": {
+        "operationId": "r1Operation34",
+        "summary": "NoContent — /api/v1/admin/messages/{id}",
+        "tags": [
+          "owner"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            }
+          }
+        ],
+        "x-owner-session-required": true,
+        "x-csrf-required": true,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/admin/site-settings": {
+      "get": {
+        "operationId": "r1Operation35",
+        "summary": "SiteSettingsPrivate — /api/v1/admin/site-settings",
+        "tags": [
+          "owner"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiteSettingsPrivate"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "x-owner-session-required": true,
+        "x-csrf-required": false,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      },
+      "patch": {
+        "operationId": "r1Operation36",
+        "summary": "SiteSettingsPrivate — /api/v1/admin/site-settings",
+        "tags": [
+          "owner"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiteSettingsPrivate"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"lock-v[0-9]+\"$"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SettingsUpdate"
+              }
+            }
+          }
+        },
+        "x-owner-session-required": true,
+        "x-csrf-required": true,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    },
+    "/api/v1/admin/audit": {
+      "get": {
+        "operationId": "r1Operation37",
+        "summary": "AuditPage — /api/v1/admin/audit",
+        "tags": [
+          "owner"
+        ],
+        "security": [
+          {
+            "OwnerSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditPage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 9457 Problem Details",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 512
+            }
+          }
+        ],
+        "x-owner-session-required": true,
+        "x-csrf-required": false,
+        "x-recent-passkey-required": false,
+        "x-no-store": true,
+        "x-contract-status": "OWNER_APPROVED_SPEC_IMPLEMENTATION_PENDING"
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "OwnerSession": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "__Host-devfolio_session",
+        "description": "Secure HttpOnly SameSite=Strict production cookie; CSRF + Origin for all mutations"
+      }
+    },
+    "schemas": {
+      "Problem": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "status": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "type": {
+            "type": "string",
+            "maxLength": 2048
+          },
+          "detail": {
+            "type": "string",
+            "maxLength": 2048
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "requestId": {
+            "type": "string",
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "title",
+          "status"
+        ]
+      },
+      "PublicContent": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "contentType": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "slug": {
+            "type": "string",
+            "maxLength": 160
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "summary": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "body": {
+            "type": "object"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 160
+            }
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "contentType",
+          "slug",
+          "title",
+          "summary",
+          "publishedAt"
+        ]
+      },
+      "PublicProjectsPage": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicContent"
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "PublicResearchPage": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicContent"
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "PublicSite": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "socialLinks": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "ContactReceipt": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "receiptId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "const": "received"
+          },
+          "notificationStatus": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "disabled"
+            ]
+          }
+        },
+        "required": [
+          "receiptId",
+          "status",
+          "notificationStatus"
+        ]
+      },
+      "PasskeyOptions": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "challengeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "publicKey": {
+            "type": "object",
+            "description": "WebAuthn options from pinned server library"
+          }
+        },
+        "required": [
+          "challengeId",
+          "publicKey"
+        ]
+      },
+      "SessionCreated": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "authenticated": {
+            "type": "boolean",
+            "const": true
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "authenticated",
+          "expiresAt"
+        ]
+      },
+      "RecoveryStart": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "accepted": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "accepted"
+        ]
+      },
+      "RestrictedRecovery": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "status": {
+            "type": "string",
+            "const": "restricted_recovery"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "status",
+          "expiresAt"
+        ]
+      },
+      "CredentialRecord": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastUsedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "createdAt"
+        ]
+      },
+      "CredentialList": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CredentialRecord"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "RecoveryCodeBatch": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "codes": {
+            "type": "array",
+            "minItems": 10,
+            "maxItems": 10,
+            "items": {
+              "type": "string",
+              "maxLength": 200
+            }
+          }
+        },
+        "required": [
+          "codes"
+        ]
+      },
+      "SessionPage": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "SessionInfo": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "ownerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "csrfToken": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "ownerId",
+          "csrfToken",
+          "expiresAt"
+        ]
+      },
+      "ContentPage": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PrivateDraft"
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "PrivateDraft": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "contentType": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "publicationState": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "published",
+              "archived"
+            ]
+          },
+          "lockVersion": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "latestRevisionNo": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "payload": {
+            "type": "object"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "contentType",
+          "publicationState",
+          "lockVersion",
+          "payload"
+        ]
+      },
+      "DraftSaved": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "revisionNo": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "lockVersion": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "status": {
+            "type": "string",
+            "const": "saved"
+          }
+        },
+        "required": [
+          "id",
+          "revisionNo",
+          "lockVersion",
+          "status"
+        ]
+      },
+      "RevisionsPage": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "PublishReceipt": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "published",
+              "unpublished"
+            ]
+          },
+          "revisionNo": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "lockVersion": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "generation": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "publicPath": {
+            "type": "string",
+            "maxLength": 512
+          }
+        },
+        "required": [
+          "status",
+          "lockVersion"
+        ]
+      },
+      "PrivatePreview": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "html": {
+            "type": "string"
+          },
+          "noindex": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "html",
+          "noindex"
+        ]
+      },
+      "MediaPage": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "UploadIntent": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "uploadUrl": {
+            "type": "string",
+            "maxLength": 2048
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "uploadUrl"
+        ]
+      },
+      "MediaReady": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "state": {
+            "type": "string",
+            "const": "ready"
+          }
+        },
+        "required": [
+          "id",
+          "state"
+        ]
+      },
+      "ContactInbox": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "SiteSettingsPrivate": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "lockVersion": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "settings": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "lockVersion",
+          "settings"
+        ]
+      },
+      "AuditPage": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "ContactRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 5000
+          },
+          "privacyConsent": {
+            "type": "boolean",
+            "const": true
+          },
+          "privacyNoticeVersion": {
+            "type": "string",
+            "maxLength": 40
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "message",
+          "privacyConsent",
+          "privacyNoticeVersion"
+        ]
+      },
+      "WebAuthnRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "challengeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "credential": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "challengeId",
+          "credential"
+        ]
+      },
+      "WebAuthnRegistration": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "challengeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "credential": {
+            "type": "object"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "challengeId",
+          "credential"
+        ]
+      },
+      "RecoveryCodeRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "recoveryRequestId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "recoveryCode": {
+            "type": "string",
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "recoveryRequestId",
+          "recoveryCode"
+        ]
+      },
+      "ContentCreate": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "contentType": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "payload": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "contentType",
+          "payload"
+        ]
+      },
+      "ContentUpdate": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "payload": {
+            "type": "object"
+          },
+          "changeNote": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "payload"
+        ]
+      },
+      "RevisionSelection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "revisionNo": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "revisionNo"
+        ]
+      },
+      "SettingsUpdate": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "settings": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "settings"
+        ]
+      },
+      "UploadIntentRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "declaredMime": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "byteSize": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "name",
+          "declaredMime",
+          "byteSize"
+        ]
+      },
+      "FinalizeRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "checksumSha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "required": [
+          "checksumSha256"
+        ]
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 name: Phase 04 Native PostgreSQL CI
 on:
   push:
-    branches: [feat/phase04-windows-native-development, feat/phase04-1-database-candidate, feat/phase04-2-identity-security-foundation, feat/phase04-1-migration-reconciliation]
+    branches: [feat/phase04-windows-native-development, feat/phase04-1-database-candidate, feat/phase04-2-identity-security-foundation, feat/phase04-1-migration-reconciliation, docs/release1-owner-approved-contracts]
   pull_request:
 permissions:
   contents: read
@@ -12,6 +12,7 @@ jobs:
       DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_ci
       HOST: 127.0.0.1
       PORT: "3000"
+      CONTRACT_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_release1_contract_ci
       CANDIDATE_MIGRATION_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_candidate_migration_ci
       CANDIDATE_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_candidate_ci
     steps:
@@ -31,6 +32,7 @@ jobs:
           sudo -u postgres createdb --owner=devfolio_ci devfolio_ci
           sudo -u postgres createdb --owner=devfolio_ci devfolio_candidate_ci
           sudo -u postgres createdb --owner=devfolio_ci devfolio_candidate_migration_ci
+          sudo -u postgres createdb --owner=devfolio_ci devfolio_release1_contract_ci
           psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -Atc "SELECT 1" | grep -qx 1
       - name: Install exact dependency graph
         run: |
@@ -45,6 +47,8 @@ jobs:
         run: npm run db:test:candidate
       - name: Candidate migration ledger, replay, drift and rollback tests
         run: npm run db:test:migrations && npm run db:migrate:candidate
+      - name: Owner-approved 19-table DB-R1 schema validation (disposable only)
+        run: npm run db:test:release1
       - name: Source contract consistency checks
         run: npm run check:contracts
       - name: Candidate identity/session integration (no live login)

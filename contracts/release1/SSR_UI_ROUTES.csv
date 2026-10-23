@@ -1,0 +1,42 @@
+interface_id,route,method,handler,audience,data_boundary,cache_policy,review_status
+UI-001,/,GET,loader/resource loader,anonymous,published home summary,SSR_INDEXABLE,APPROVED_SPEC
+UI-002,/about,GET,loader/resource loader,anonymous,approved public profile,SSR_INDEXABLE,APPROVED_SPEC
+UI-003,/projects,GET,loader/resource loader,anonymous,published projects,SSR_INDEXABLE,APPROVED_SPEC
+UI-004,/projects/:slug,GET,loader/resource loader,anonymous,published project by slug,SSR_INDEXABLE,APPROVED_SPEC
+UI-005,/research,GET,loader/resource loader,anonymous,published research and verified publication links,SSR_INDEXABLE,APPROVED_SPEC
+UI-006,/research/:slug,GET,loader/resource loader,anonymous,published truthful research state,SSR_INDEXABLE,APPROVED_SPEC
+UI-007,/experience,GET,loader/resource loader,anonymous,published employment,SSR_INDEXABLE,APPROVED_SPEC
+UI-008,/education,GET,loader/resource loader,anonymous,published education,SSR_INDEXABLE,APPROVED_SPEC
+UI-009,/skills,GET,loader/resource loader,anonymous,approved published skills,SSR_INDEXABLE,APPROVED_SPEC
+UI-010,/achievements,GET,loader/resource loader,anonymous,published awards,SSR_INDEXABLE,APPROVED_SPEC
+UI-011,/writing,GET,loader/resource loader,anonymous,published articles or approved empty state,SSR_CONDITIONAL,APPROVED_SPEC
+UI-012,/writing/:slug,GET,loader/resource loader,anonymous,published article body,SSR_INDEXABLE,APPROVED_SPEC
+UI-013,/contact,GET,loader/resource loader,anonymous,public safe settings and form,SSR_NO_CACHE_FORM,APPROVED_SPEC
+UI-014,/privacy,GET,loader/resource loader,anonymous,approved public policy copy,SSR_INDEXABLE,APPROVED_SPEC
+UI-015,/resume,GET,loader/resource loader,anonymous,enabled and approved public PDF only,RESOURCE_BINARY,APPROVED_SPEC
+UI-016,/sitemap.xml,GET,loader/resource loader,anonymous,canonical currently published URLs only,RESOURCE_XML,APPROVED_SPEC
+UI-017,/robots.txt,GET,loader/resource loader,anonymous,no private preview URLs,RESOURCE_TEXT,APPROVED_SPEC
+UI-018,/404,GET,loader/resource loader,anonymous,no private record existence hints,SSR_PUBLIC,APPROVED_SPEC
+UI-019,/admin/login,GET,owner UI loader/action,unauthenticated auth flow,Passkey login,PRIVATE_NO_STORE,APPROVED_SPEC
+UI-020,/admin/passkey,GET,owner UI loader/action,unauthenticated auth flow,WebAuthn challenge,PRIVATE_NO_STORE,APPROVED_SPEC
+UI-021,/admin/recover,GET,owner UI loader/action,unauthenticated auth flow,Account recovery,PRIVATE_NO_STORE,APPROVED_SPEC
+UI-022,/admin,GET,owner UI loader/action,owner session,Overview,PRIVATE_NO_STORE,APPROVED_SPEC
+UI-023,/admin/profile,GET,owner UI loader/action,owner session,Profile editor,PRIVATE_NO_STORE,APPROVED_SPEC
+UI-024,/admin/projects,GET,owner UI loader/action,owner session,Project list,PRIVATE_NO_STORE,APPROVED_SPEC
+UI-025,/admin/projects/new,GET,owner UI loader/action,owner session,Project editor,PRIVATE_NO_STORE,APPROVED_SPEC
+UI-026,/admin/projects/:id/edit,GET,owner UI loader/action,owner session,Project editor,PRIVATE_NO_STORE,APPROVED_SPEC
+UI-027,/admin/research,GET,owner UI loader/action,owner session,Research list,PRIVATE_NO_STORE,APPROVED_SPEC
+UI-028,/admin/research/:id/edit,GET,owner UI loader/action,owner session,Research editor,PRIVATE_NO_STORE,APPROVED_SPEC
+UI-029,/admin/publications,GET,owner UI loader/action,owner session,Publication records,PRIVATE_NO_STORE,APPROVED_SPEC
+UI-030,/admin/writing,GET,owner UI loader/action,owner session,Writing list,PRIVATE_NO_STORE,APPROVED_SPEC
+UI-031,/admin/writing/:id/edit,GET,owner UI loader/action,owner session,Writing editor,PRIVATE_NO_STORE,APPROVED_SPEC
+UI-032,/admin/education,GET,owner UI loader/action,owner session,Education,PRIVATE_NO_STORE,APPROVED_SPEC
+UI-033,/admin/experience,GET,owner UI loader/action,owner session,Experience,PRIVATE_NO_STORE,APPROVED_SPEC
+UI-034,/admin/skills,GET,owner UI loader/action,owner session,Skills,PRIVATE_NO_STORE,APPROVED_SPEC
+UI-035,/admin/achievements,GET,owner UI loader/action,owner session,Achievements,PRIVATE_NO_STORE,APPROVED_SPEC
+UI-036,/admin/media,GET,owner UI loader/action,owner session,Media library,PRIVATE_NO_STORE,APPROVED_SPEC
+UI-037,/admin/resume,GET,owner UI loader/action,owner session,Resume,PRIVATE_NO_STORE,APPROVED_SPEC
+UI-038,/admin/messages,GET,owner UI loader/action,owner session,Contact inbox,PRIVATE_NO_STORE,APPROVED_SPEC
+UI-039,/admin/settings,GET,owner UI loader/action,owner session,Settings and SEO,PRIVATE_NO_STORE,APPROVED_SPEC
+UI-040,/admin/security,GET,owner UI loader/action,owner session,Sessions and security,PRIVATE_NO_STORE,APPROVED_SPEC
+UI-041,/admin/audit,GET,owner UI loader/action,owner session,Audit history,PRIVATE_NO_STORE,APPROVED_SPEC

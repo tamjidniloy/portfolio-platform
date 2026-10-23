@@ -1,45 +1,65 @@
 {
   "project": "DEVFOLIO OS",
-  "status": "PROPOSED_NOT_APPROVED",
-  "scope": "Phase04.1 SRS/MFA/DB/API reconciliation",
+  "status": "OWNER_APPROVED_SPEC",
+  "scope": "Release 1 SRS-R1/AUTH-R1/DB-R1/API-R1",
+  "ownerApproval": {
+    "status": "APPROVED_IN_PROJECT_CONVERSATION",
+    "recordedAt": "2026-10-24",
+    "timezone": "Asia/Dhaka",
+    "evidence": "Owner explicitly stated full and complete approval of all four immediately preceding Release 1 contracts in ChatGPT Portfolio Website project.",
+    "record": "docs/phase04/RELEASE1_OWNER_ACCEPTANCE.md",
+    "signedGitHash": null
+  },
   "sources": {
     "srs": {
-      "file": "docs/phase01/proposals/SRS_v1_1_CANDIDATE.md",
-      "blobSha": "e621b581002b3d39ba1b7e7d3622deceb5d71420",
-      "status": "PENDING_OWNER"
+      "file": "docs/SRS.md",
+      "status": "OWNER_APPROVED_SPEC",
+      "version": "SRS-R1"
     },
     "requirements": {
-      "file": "docs/phase01/proposals/REQUIREMENTS_CATALOG_v1_1_PROPOSED.md",
+      "file": "docs/REQUIREMENTS_CATALOG.md",
       "expectedFR": 52,
       "expectedNFR": 24,
-      "status": "PENDING_OWNER"
+      "status": "OWNER_APPROVED_SPEC"
+    },
+    "auth": {
+      "file": "contracts/release1/AUTH_R1.md",
+      "status": "OWNER_APPROVED_SPEC",
+      "version": "AUTH-R1"
     },
     "database": {
-      "file": "docs/phase03/03_DATABASE_ARCHITECTURE/schema/01_CANDIDATE_POSTGRES_DDL.sql",
-      "blobSha": "d46185cf2154c207fc40f52289be451ad30f6079",
-      "expectedTables": 18,
-      "status": "PENDING_OWNER"
+      "file": "contracts/release1/DB_R1.sql",
+      "expectedTables": 19,
+      "status": "OWNER_APPROVED_SPEC",
+      "version": "DB-R1"
     },
-    "openapi": {
-      "file": "docs/phase03/04_API_ARCHITECTURE/api/openapi-3.1.2-candidate.json",
-      "expectedPaths": 26,
-      "expectedOperations": 29,
-      "status": "PENDING_OWNER"
+    "api": {
+      "file": "contracts/release1/openapi.json",
+      "expectedOperations": 37,
+      "expectedPaths": 33,
+      "status": "OWNER_APPROVED_SPEC",
+      "version": "API-R1"
     },
     "ui": {
-      "file": "docs/phase03/04_API_ARCHITECTURE/matrices/SSR_AND_UI_ROUTE_INVENTORY.csv",
+      "file": "contracts/release1/SSR_UI_ROUTES.csv",
       "expectedRoutes": 41,
-      "status": "PENDING_OWNER"
+      "status": "OWNER_APPROVED_SPEC"
     }
   },
-  "criticalOpenGates": [
-    "SRS exact-version approval and FR-034 deferral",
-    "MFA FR-040: legacy email challenge versus recommended passkey with recovery",
-    "Auth credential tables to fit final MFA",
-    "Contact, audit, backup and media retention/privacy",
-    "Canonical Work route /projects versus current /work",
-    "API field caps, idempotency/route contracts, migration tool, backup and production release"
+  "historicalCandidates": {
+    "srs": "docs/phase01/proposals/SRS_v1_1_CANDIDATE.md",
+    "database": "docs/phase03/03_DATABASE_ARCHITECTURE/schema/01_CANDIDATE_POSTGRES_DDL.sql",
+    "api": "docs/phase03/04_API_ARCHITECTURE/api/openapi-3.1.2-candidate.json",
+    "databaseTables": 18,
+    "apiOperations": 29
+  },
+  "engineeringGatesStillOpen": [
+    "Execute/test real reviewed 19-table versioned migration using isolated staging and role grants",
+    "Implement and verify real WebAuthn credential enrollment/login/recovery/CSRF/owner provisioning",
+    "Implement/test 37 API operations and 41 UI/SSR routes with real source DB",
+    "Implement privacy retention and deletion jobs, privacy/legal notices and provider contracts",
+    "Backup/restore, browser E2E, security, WCAG, performance and launch signoffs"
   ],
-  "migrations": "CANDIDATE_TEST_DATABASE_ONLY",
-  "ownerApproval": null
+  "migrations": "APPROVED_TARGET_SCHEMA_REFERENCE_NOT_YET_PRODUCTION_MIGRATED",
+  "runtimeCompletion": false
 }
