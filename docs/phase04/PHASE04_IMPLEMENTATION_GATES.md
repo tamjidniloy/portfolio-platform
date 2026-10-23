@@ -5,14 +5,14 @@
 | Milestone | Roadmap tasks | State | Required signoff/evidence |
 |---|---|---|---|
 | 04.0 | P4-001–008 | Native Windows/CI implementation verified; formal owner gates remain open | Branch-specific CI, owner acceptance of P4-001/P4-008 |
-| 04.1 | P4-009–016 | Candidate persistence and isolated versioned migration ledger under test; **not formally approved** | Explicit SRS/MFA/DB/API/retention owner approval + real final migrations/release signoff |
-| 04.2 | P4-017–025 | Candidate-only session/cookie/CSRF/authorization work under test; no live sign-in | Explicit MFA/recovery ADR, final auth schema, owner enrollment, brute force and browser security tests |
-| 04.3 | P4-026–035 | NOT IMPLEMENTED | Approved API/schema; private CMS, publish atomicity, no draft leak |
+| 04.1 | P4-009–016 | Owner-approved 19-table DB-R1 **specification**; executable final migrations, grants and integration pending | Approved specs recorded 2026-10-24; real migration, staging/restore and evidence required |
+| 04.2 | P4-017–025 | Owner-approved AUTH-R1 **specification**, candidate session helpers, no live passkey login | Approved MFA contract; WebAuthn enrollment/login/recovery, abuse, browser tests outstanding |
+| 04.3 | P4-026–035 | NOT IMPLEMENTED | Approved API-R1 scope; private CMS, publish atomicity, no draft leak |
 | 04.4 | P4-036–044 | NOT IMPLEMENTED | Media/email provider, privacy rules, integration tests |
 | 04.5 | P4-045–053 | NOT IMPLEMENTED | Cloud/provider/region/budget, staging, real backups and restore |
 | 04.6 | P4-054–062 | NOT EXECUTED | 76-requirement traceability, security, WCAG, performance, launch go/no-go |
 
-**Owner gates still OPEN:** authoritative SRS candidate `docs/phase01/proposals/SRS_v1_1_CANDIDATE.md`; FR-040 MFA; final DB migrations/data retention; versioned API shapes/privacy; hosting/region/storage/email/backup policy; production readiness. A candidate specification must never be promoted to approved merely because code was requested.
+**Owner approval received 2026-10-24:** authoritative SRS-R1 + 76 requirements, AUTH-R1/passkey and controlled recovery, DB-R1 19-table target, API-R1 37 ops/canonical routes and retention defaults. See `docs/phase04/RELEASE1_OWNER_ACCEPTANCE.md` and `contracts/phase04-baselines.json`. **Engineering gates still OPEN:** apply/test final migrations, real passkey & CMS implementation, retention jobs, provider/hosting and legal/privacy checks, backup/restore, accessibility/security/staging and launch signoff. Approval of a specification is not successful execution.
 
 **Evidence log** (update after real run): commit SHA, GitHub Actions run URL, native PostgreSQL version, npm ci, unit result, build result, HTTP smoke, audit, failures/retests, reviewer signoff. A workflow pass is not a penetration test, accessibility audit or production deployment.
 
@@ -51,3 +51,7 @@ Source and approval documents: [identity handoff](04.2_IDENTITY_AND_AUTHORIZATIO
 - Phase03 SRS, DDL and OpenAPI are reference candidates until **owner exact-text approval**. No application migrations should be run via `npm run dev` / `npm start`.
 - Automated metadata reconciliation checks SRS catalog 76 IDs, 18 candidate SQL tables, API operations 29, routes 41, and tracks the open `/work` versus `/projects` route and email-MFA contract conflicts.
 - Use [04.1 migration review](04.1_MIGRATION_RECONCILIATION.md) to understand decision gates and CI test evidence.
+
+## 2026-10-24 — Approved Release 1 baseline supersession
+
+Canonical owner-approved contract documents: [SRS-R1](../../docs/SRS.md) (with all FR/NFR IDs), [AUTH-R1](../../contracts/release1/AUTH_R1.md), [DB-R1](../../contracts/release1/DB_R1.md) and [API-R1](../../contracts/release1/API_R1.md). Historical 18-table/29-operation candidate references above remain *test evidence for earlier prototypes*, not authoritative Release 1 contracts. New release1 schema/API validation CI evidence to be recorded after execution. The 19-table reference DDL is NOT deployed, owner authentication is NOT live, and 37 endpoints are NOT all implemented.

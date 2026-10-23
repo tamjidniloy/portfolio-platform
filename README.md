@@ -6,7 +6,7 @@ JavaScript React Router Framework Mode SSR + Express + PostgreSQL. Professional 
 
 Install Node 22, Git for Windows, WebStorm, native PostgreSQL 16 and pgAdmin, and Postman. No Docker is needed locally or in CI. For the complete beginner-friendly walkthrough see [Windows setup](docs/phase04/WINDOWS11_WEBSTORM_SETUP.md).
 
-Clone GitHub `tamjidniloy/portfolio-platform` inside WebStorm and use **main** for the merged foundation. Review ongoing database migration engineering on branch `feat/phase04-1-migration-reconciliation` without merging it as an approved schema. In WebStorm PowerShell:
+Clone GitHub `tamjidniloy/portfolio-platform` inside WebStorm and use **main** for the merged foundation. The owner-approved Release 1 contract work is available for review on branch `docs/release1-owner-approved-contracts` until its PR is merged. In WebStorm PowerShell:
 
 ```powershell
 Copy-Item .env.example .env
@@ -18,13 +18,13 @@ npm run dev
 
 Open http://127.0.0.1:3000/; import checked-in [Postman collection](postman/DEVFOLIO_OS_Foundation.postman_collection.json). `GET /healthz` shows process liveness; `GET /readyz` returns 200 with native PostgreSQL or 503 without it.
 
-**Never run proposed schema DDL or implement sign-in/MFA as final contracts before explicit owner approvals.** Read [the owner gates](docs/phase04/PHASE04_IMPLEMENTATION_GATES.md), [updated architecture](docs/phase04/PHASE04_REVISED_ARCHITECTURE.md), and [Phase 03 master handoff](docs/phase03/PHASE03_MASTER_HANDOFF/PHASE03_MASTER_ARCHITECTURE_AND_HANDOFF.md).
+**Release 1 SRS/MFA/DB/API engineering contracts were explicitly owner-approved on 2026-10-24.** This does not make historical candidate SQL production-ready: do not execute unreviewed migration SQL against real databases, or expose login until real passkey verification and negative security tests pass. Read [the owner gates](docs/phase04/PHASE04_IMPLEMENTATION_GATES.md), [updated architecture](docs/phase04/PHASE04_REVISED_ARCHITECTURE.md), and [Phase 03 master handoff](docs/phase03/PHASE03_MASTER_HANDOFF/PHASE03_MASTER_ARCHITECTURE_AND_HANDOFF.md).
 
 Verification scripts: `npm run check:syntax`, `npm run lint`, `npm test`, `npm run check:no-docker`, `npm run check:secrets`, `npm run build`. Use `npm ci` for reproducible dependency installs.
 
 ## Phase 04.1 persistence work (candidate only)
 
-The [database implementation review packet](docs/phase04/04.1_DATABASE_IMPLEMENTATION.md) and [owner approval decision sheet](docs/phase04/04.1_OWNER_APPROVAL_DECISION_SHEET.md) explain the 18-table proposal and what requires explicit signoff. A transaction helper, public-only read facade and prototype draft/publish/unpublish commands are implemented **only as isolated test code**. They are not wired to live HTTP routes or deployed migrations.
+The historical [database implementation review packet](docs/phase04/04.1_DATABASE_IMPLEMENTATION.md) and [owner approval decision sheet](docs/phase04/04.1_OWNER_APPROVAL_DECISION_SHEET.md) explain the 18-table proposal and what requires explicit signoff. A transaction helper, public-only read facade and prototype draft/publish/unpublish commands are implemented **only as isolated test code**. They are not wired to live HTTP routes or deployed migrations.
 
 `npm run db:test:candidate` must **only** be run with `CANDIDATE_DATABASE_URL` pointing to a separately created disposable local database named `devfolio_candidate_test` or `devfolio_candidate_ci`. It deliberately fails on your normal `devfolio_dev` database, remote hosts and production. Do not copy the Phase 03 proposed DDL to production migration directories or execute it against real app data.
 
@@ -35,3 +35,9 @@ The [database implementation review packet](docs/phase04/04.1_DATABASE_IMPLEMENT
 ## Disposable 04.1 migration verification (GitHub CI)
 
 New source files under `db/candidate_migrations/` and `server/persistence/candidate-migrator.js` implement an **isolated 18-table candidate SQL baseline**, version/checksum ledger, transaction locks, idempotent retries and rollback tests. They deliberately do **not** install application migrations, expose a new API or modify your normal `devfolio_dev` database. Read [04.1 migration reconciliation](docs/phase04/04.1_MIGRATION_RECONCILIATION.md) for optional PowerShell testing in a separately named disposable DB. `npm run check:contracts` verifies SRS/DB/API candidate counts; it is not a declaration that those contracts are owner-approved.
+
+## Owner-approved Release 1 contract baseline
+
+Owner acceptance: [decision/evidence record](docs/phase04/RELEASE1_OWNER_ACCEPTANCE.md). Canonical authority: [SRS-R1](docs/SRS.md) + [all 76 requirements](docs/REQUIREMENTS_CATALOG.md), [AUTH-R1](contracts/release1/AUTH_R1.md), [DB-R1 reference](contracts/release1/DB_R1.md) with [19-table SQL](contracts/release1/DB_R1.sql), [API-R1](contracts/release1/API_R1.md) and [OpenAPI 3.1.2 JSON](contracts/release1/openapi.json) (37 operations), [41 planned SSR routes](contracts/release1/SSR_UI_ROUTES.csv). All older `docs/phase01/proposals/` / `docs/phase03/` documents and `db/candidate_migrations/` files remain **historical candidate** design/test fixtures.
+
+`npm run check:contracts` validates the approved metadata. GitHub native PostgreSQL CI also applies the **new 19-table reference DDL only to a dedicated disposable local database** using `npm run db:test:release1`. No automatic migration, WebAuthn endpoint or production CMS is activated by owner specification approval. Engineering and launch QA gates remain open.
