@@ -40,3 +40,14 @@ assert.equal(anonymousMutation.response.status,401);
 const oldLogin=await request("/admin/login");
 assert.equal(oldLogin.response.status,404);
 console.log("CMS-enabled SSR, public data, sitemap and anonymous auth-denial smoke PASS");
+
+const robots=await request("/robots.txt");
+assert.equal(robots.response.status,200);
+assert.match(robots.body,/Disallow: \/admin/);
+const contactDenied=await request("/api/v1/contact",{
+  method:"POST",headers:{"Content-Type":"application/json",Origin:"http://127.0.0.1:3001"},
+  body:JSON.stringify({name:"Test",email:"test@example.com",message:"Test"}),
+});
+assert.equal(contactDenied.response.status,404);
+const mediaDenied=await request("/api/v1/admin/media");
+assert.equal(mediaDenied.response.status,401);

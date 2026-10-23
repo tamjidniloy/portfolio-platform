@@ -49,3 +49,7 @@ Owner acceptance: [decision/evidence record](docs/phase04/RELEASE1_OWNER_ACCEPTA
 ## Integrated R1 DB / Passkeys / CMS
 
 Use [approved migration runbook](docs/phase04/04.1_RELEASE_MIGRATIONS_RUNBOOK.md), [offline owner WebAuthn provisioning](docs/phase04/04.2_OWNER_PASSKEY_RUNBOOK.md), [CMS implementation](docs/phase04/04.3_CMS_IMPLEMENTATION.md) and [retention operations](docs/phase04/04.3_RETENTION_OPERATIONS.md). Database migration/retention commands require exact operator confirmation; production must use distinct `CMS_DATABASE_URL` and restricted `CMS_PUBLIC_DATABASE_URL`. The `CMS_API_ENABLED` and `CMS_AUTH_ENABLED` flags remain OFF by default; no real owner device, staging or production environment was used for CI. The updated feature branch is `feat/phase04-release1-unblock`.
+
+## Phase 04.4 — Media, Contact and privacy integrations
+
+[Phase 04.4 operator and engineering runbook](docs/phase04/04.4_MEDIA_CONTACT_INTEGRATIONS.md) covers isolated private S3-compatible browser upload, verification, immutable references and safe deletion; consent-based contact intake and owner inbox; Resend postcommit notification worker with retry/DLQ, optional Cloudflare cache purging and published-only SEO; scheduled retention/orphan cleanup. All external provider and contact features remain disabled until reviewed and configured. `npm run integrations:test` requires only the dedicated ephemeral `devfolio_integrations_ci` database.

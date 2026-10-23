@@ -9,6 +9,7 @@ export default [
   route("writing", "./routes/writing.jsx"),
   route("writing/:slug", "./routes/writing-detail.jsx"),
   route("contact", "./routes/contact.jsx"),
+  route("privacy", "./routes/privacy.jsx"),
   route("admin", "./routes/admin.jsx"),
   route("admin/media", "./routes/admin-media.jsx"),
   route("admin/messages", "./routes/admin-messages.jsx"),
