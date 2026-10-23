@@ -1,0 +1,78 @@
+{
+  "generated_date": "2026-10-23",
+  "milestones": [
+    {
+      "milestone": "03.1",
+      "source_zip": "DEVFOLIO_OS_Phase03_01_Architecture_Proposal.zip",
+      "source_zip_bytes": 334502,
+      "source_zip_sha256": "da55f7eb0e03c60a5a64fbf7f7b93f34e60f2281ebfc839a16f9c39745624af3",
+      "source_files": 22,
+      "zip_testzip": "PASS"
+    },
+    {
+      "milestone": "03.2",
+      "source_zip": "DEVFOLIO_OS_Phase03_02_Detailed_Component_Architecture.zip",
+      "source_zip_bytes": 337495,
+      "source_zip_sha256": "1fb4ac7d9297f685dd5e845c5c247a6232f6b90cf77997cb3dd2ee151e7aab1a",
+      "source_files": 31,
+      "zip_testzip": "PASS"
+    },
+    {
+      "milestone": "03.3",
+      "source_zip": "DEVFOLIO_OS_Phase03_03_Database_Architecture_and_ERD.zip",
+      "source_zip_bytes": 556230,
+      "source_zip_sha256": "f7cd7a0d5af37dd935fa38948d3bf446c3ae303dfa458fefe414c50de0140626",
+      "source_files": 32,
+      "zip_testzip": "PASS"
+    },
+    {
+      "milestone": "03.4",
+      "source_zip": "DEVFOLIO_OS_Phase03_04_API_Architecture_and_Interface_Contracts.zip",
+      "source_zip_bytes": 213468,
+      "source_zip_sha256": "0aed89c9fbe79d5a262befeff290820fb60bfb7cee8bbe04df88d6827b467fdf",
+      "source_files": 53,
+      "zip_testzip": "PASS"
+    },
+    {
+      "milestone": "03.5",
+      "source_zip": "DEVFOLIO_OS_Phase03_05_Authentication_and_Security_Architecture_COMPLETE.zip",
+      "source_zip_bytes": 328087,
+      "source_zip_sha256": "6dc0177ba9160cec3749323c39d67edf173400aa837e4c9680c4022b3ea573a5",
+      "source_files": 37,
+      "zip_testzip": "PASS"
+    },
+    {
+      "milestone": "03.6",
+      "source_zip": "DEVFOLIO_OS_Phase03_06_Deployment_Infrastructure_Reliability_DevSecOps_COMPLETE.zip",
+      "source_zip_bytes": 288487,
+      "source_zip_sha256": "12a33f0a38be1ce1257d03fe29dab894f17ab10a38e055237f7c78a552a600dd",
+      "source_files": 51,
+      "zip_testzip": "PASS"
+    },
+    {
+      "milestone": "03.7",
+      "source_zip": "DEVFOLIO_OS_Phase03_07_COMPLETE_MASTER.zip",
+      "source_zip_bytes": 2461192,
+      "source_zip_sha256": "331a179bef91906570cdc268ed9ac179385aae43e81e5a406f300eb8e8109225",
+      "source_files": 48,
+      "zip_testzip": "PASS"
+    }
+  ],
+  "stage_zip_originals": 7,
+  "unpacked_stage_files": 274,
+  "all_archive_files_except_validation": 299,
+  "all_entries_unique": true,
+  "expected_stage_member_content_matches": true,
+  "source_zips_verification": "all PASS",
+  "github_pr33_merged_commit": "b020110c6d7e283a78602b8c78c8f6f483dfb76d",
+  "stage_archive_hashes": {
+    "03.1": "da55f7eb0e03c60a5a64fbf7f7b93f34e60f2281ebfc839a16f9c39745624af3",
+    "03.2": "1fb4ac7d9297f685dd5e845c5c247a6232f6b90cf77997cb3dd2ee151e7aab1a",
+    "03.3": "f7cd7a0d5af37dd935fa38948d3bf446c3ae303dfa458fefe414c50de0140626",
+    "03.4": "0aed89c9fbe79d5a262befeff290820fb60bfb7cee8bbe04df88d6827b467fdf",
+    "03.5": "6dc0177ba9160cec3749323c39d67edf173400aa837e4c9680c4022b3ea573a5",
+    "03.6": "12a33f0a38be1ce1257d03fe29dab894f17ab10a38e055237f7c78a552a600dd",
+    "03.7": "331a179bef91906570cdc268ed9ac179385aae43e81e5a406f300eb8e8109225"
+  },
+  "notes": "Static integrity only; QA tests unrun; approval gates separate. Original Phase03.2 GitHub variant documents referenced by link except owner approval record."
+}
