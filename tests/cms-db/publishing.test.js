@@ -6,6 +6,7 @@ import pg from "pg";
 import express from "express";
 import { createCmsApiRouter } from "../../server/cms/http.js";
 import { csrfTokenForSession } from "../../server/identity/csrf.js";
+import { getPrivateSiteSettings, updatePrivateSiteSettings } from "../../server/cms/settings.js";
 import { createSessionForVerifiedOwner, resolveOwnerSession } from "../../server/identity/session-store.js";
 import {
   createDraft, saveDraft, getDraft, listDrafts, listRevisions, previewRevision,
@@ -39,6 +40,18 @@ test("CMS 04.3 approved DB-R1 draft/publish lifecycle in isolated native Postgre
  const foreign=await resolveOwnerSession(pool,otherToken);
  assert.equal(assertVerifiedOwner(session),owner);
 
+ await t.test("private settings allowlist, revision locking and audit",async()=>{
+  assert.deepEqual(await getPrivateSiteSettings(pool,session),{lockVersion:0,settings:{}});
+  await assert.rejects(updatePrivateSiteSettings(pool,session,{expectedVersion:0,settings:{privateApiKey:"must-never-store"}}),e=>e.status===422);
+  const saved=await updatePrivateSiteSettings(pool,session,{
+    expectedVersion:0,
+    settings:{publicTitle:"Engineering Portfolio",contactEnabled:false,primaryNavOrder:["projects","research","about","contact"]},
+  });
+  assert.equal(saved.lockVersion,1);
+  assert.equal((await getPrivateSiteSettings(pool,session)).settings.publicTitle,"Engineering Portfolio");
+  await assert.rejects(updatePrivateSiteSettings(pool,foreign,{expectedVersion:0,settings:{publicTitle:"Stale"}}),e=>e.status===412);
+  assert.equal((await getPrivateSiteSettings(pool,foreign)).settings.publicTitle,"Engineering Portfolio");
+ });
  let id;
  await t.test("create draft is atomic, private and idempotent without publishing",async()=>{
   const request={type:"project",payload:{title:"Project one",summary:"Factual test summary",slug:"private-project",privateNote:"SECRETS_ONLY_DRAFT"},key:"create_test_key_001"};
@@ -155,6 +168,17 @@ test("CMS 04.3 approved DB-R1 draft/publish lifecycle in isolated native Postgre
   const who=await get("/api/v1/admin/session",{Cookie:cookie});
   assert.equal(who.status,200);
   assert.equal((await who.json()).csrfToken,csrf);
+  const privateSettings=await get("/api/v1/admin/site-settings",{Cookie:cookie});
+  assert.equal(privateSettings.status,200);
+  assert.equal(privateSettings.headers.get("etag"),'"lock-v1"');
+  assert.equal((await privateSettings.json()).settings.publicTitle,"Engineering Portfolio");
+  const badSettings=await fetch(origin+"/api/v1/admin/site-settings",{
+    method:"PATCH",headers:{"Content-Type":"application/json",Cookie:cookie,Origin:origin,
+      "X-CSRF-Token":csrf,"If-Match":'"lock-v1"'},
+    body:JSON.stringify({settings:{secret:"untrusted"}}),
+  });
+  assert.equal(badSettings.status,422);
+
   const input={contentType:"research",payload:{
     title:"Scientific methods",summary:"Validated outcome",slug:"science-demo",
     researchStatus:"in_progress",privateNote:"PRIVATE_RESEARCH_CONTEXT"
