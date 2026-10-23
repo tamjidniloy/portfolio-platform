@@ -53,3 +53,8 @@ Use [approved migration runbook](docs/phase04/04.1_RELEASE_MIGRATIONS_RUNBOOK.md
 ## Phase 04.4 — Media, Contact and privacy integrations
 
 [Phase 04.4 operator and engineering runbook](docs/phase04/04.4_MEDIA_CONTACT_INTEGRATIONS.md) covers isolated private S3-compatible browser upload, verification, immutable references and safe deletion; consent-based contact intake and owner inbox; Resend postcommit notification worker with retry/DLQ, optional Cloudflare cache purging and published-only SEO; scheduled retention/orphan cleanup. All external provider and contact features remain disabled until reviewed and configured. `npm run integrations:test` requires only the dedicated ephemeral `devfolio_integrations_ci` database.
+
+
+## Phase 04.5 — Deployment infrastructure reference (not provisioned)
+
+The no-Docker Terraform AWS staging reference, OIDC-restricted/manual deployment release workflow, safe structured HTTP telemetry, alarms, PITR/restore drill and operating runbooks are documented in [04.5 deployment and observability](docs/phase04/04.5_DEPLOYMENT_INFRA_OBSERVABILITY.md). **Do not confuse merged code or CI verification with running hosting.** AWS provider/region/budget, GitHub Environment permissions, real deployment, DB migrations, passkeys, external provider functionality and measured operational drills are pending owner-controlled execution and approval. Phase 04.6 final QA remains unexecuted.

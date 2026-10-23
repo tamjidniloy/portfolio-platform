@@ -1,5 +1,6 @@
 import { createRequestHandler } from "@react-router/express";
 import express from "express";
+import { requestObservability } from "./server/observability.js";
 import { createCmsApiRouter } from "./server/cms/http.js";
 import { createOwnerAuthRouter } from "./server/identity/auth-http.js";
 import { createPrivateObjectStorage } from "./server/integrations/object-storage.js";
@@ -14,6 +15,7 @@ const database = createDatabaseReadiness(config.databaseUrl);
 const app = express();
 
 app.disable("x-powered-by");
+app.use(requestObservability());
 app.use((_request, response, next) => {
   response.set("X-Content-Type-Options", "nosniff");
   response.set("Referrer-Policy", "strict-origin-when-cross-origin");

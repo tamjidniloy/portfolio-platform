@@ -15,7 +15,10 @@ try{
  });
  const failed=await deadLetterSummary(pool);
  console.log(JSON.stringify({result,deadLetter:failed}));
- if(failed.length)process.exitCode=2; // Route scheduler failure to monitoring alerts.
+ if(failed.length){
+  console.error(JSON.stringify({event:"outbox_dead_letter_alert",count:failed.length}));
+  process.exitCode=2;
+}
 }finally{
  await pool.end();
  await storage?.close();
