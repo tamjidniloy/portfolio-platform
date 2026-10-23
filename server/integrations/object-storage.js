@@ -25,7 +25,7 @@ export function createPrivateObjectStorage(env=process.env){
       const {url,fields}=await createPresignedPost(client,{
         Bucket:bucket,Key:key,Expires:300,
         Conditions:[
-          ["content-length-range",1,size],
+          ["content-length-range",1,Math.min(MEDIA_MAX_BYTES+16384,size+16384)],
           ["eq","$Content-Type",mime],
           ["eq","$key",key],
         ],
