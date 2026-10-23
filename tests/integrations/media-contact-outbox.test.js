@@ -1,6 +1,5 @@
 import assert from "node:assert/strict";
 import { randomUUID, createHash } from "node:crypto";
-import { readFile } from "node:fs/promises";
 import test from "node:test";
 import pg from "pg";
 import express from "express";

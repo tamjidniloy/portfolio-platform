@@ -9,7 +9,8 @@ const fail=message=>new CmsError("INVALID_MEDIA",422,message);
 
 export function validateMediaIntent({name,mime,size,sha256}={}){
   if(typeof name!=="string"||!name.trim()||name.length>160||
-    /[\\/\x00-\x1f\x7f]/.test(name))throw fail("Invalid filename");
+    (name.includes("/")||name.includes("\\")||
+     [...name].some(ch=>ch.charCodeAt(0)<32||ch.charCodeAt(0)===127)))throw fail("Invalid filename");
   if(!allowed.has(mime))throw fail("Unsupported media MIME");
   if(!Number.isInteger(size)||size<1||size>MEDIA_MAX_BYTES)throw fail("Media must be 1–8 MiB");
   if(typeof sha256!=="string"||!hex.test(sha256))throw fail("Valid SHA-256 required");

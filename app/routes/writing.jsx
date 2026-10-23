@@ -1,16 +1,17 @@
 import { Link, useLoaderData } from "react-router";
 import { PublicShell } from "../components/public-shell.jsx";
 import { getCmsPublicPool } from "../../server/cms/pool.js";
+import { canonicalUrl, canonicalMeta } from "../../server/integrations/seo.js";
 import { getPublicList } from "../../server/cms/public-reader.js";
 
 export async function loader() {
  const pool=getCmsPublicPool();
  const items=pool?await getPublicList(pool,{type:"article"}):[];
- return Response.json({items},{headers:{"Cache-Control":"no-store"}});
+ return Response.json({items,canonical:items.length?canonicalUrl("/writing"):null},{headers:{"Cache-Control":"no-store"}});
 }
 export function meta({data}){
  return [{title:"Writing — DEVFOLIO OS"},{name:"description",content:"Published writing and engineering notes."},
- ...(data?.items?.length?[]:[{name:"robots",content:"noindex,nofollow"}])];
+ ...(data?.items?.length?[]:[{name:"robots",content:"noindex,nofollow"}]),...canonicalMeta({canonical:data?.canonical,title:"Writing — DEVFOLIO OS"})];
 }
 export default function Writing(){
  const {items}=useLoaderData();

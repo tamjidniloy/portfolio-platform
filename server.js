@@ -53,6 +53,11 @@ if (cmsPool) {
     csrfSecret: process.env.CMS_CSRF_SECRET,
     isProduction: config.isProduction,
   }));
+  app.get("/robots.txt", (_req,response)=>{
+    const origin=new URL(process.env.CMS_PUBLIC_ORIGIN).origin;
+    response.type("text/plain").set("Cache-Control","no-store")
+      .send("User-agent: *\nDisallow: /admin\nDisallow: /api/v1/admin\nSitemap: "+origin+"/sitemap.xml\n");
+  });
   app.get("/sitemap.xml", async (_request, response) => {
     try {
       const paths = await publishedSitemapPaths(publicPool);

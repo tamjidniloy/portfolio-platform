@@ -69,7 +69,7 @@ async function audit(client, actorId, targetId, action) {
 async function writeOutbox(client,itemId,eventType,key,publicPath) {
   await client.query(
     "INSERT INTO outbox_events(event_type,aggregate_id,dedupe_key,safe_payload) VALUES($1,$2::uuid,$3,$4::jsonb)",
-    [eventType,itemId,sha(eventType+"\0"+key)],
+    [eventType,itemId,sha(eventType+"\0"+key),JSON.stringify({publicPath})],
   );
 }
 async function idempotent(client, scope, key, request, fn) {

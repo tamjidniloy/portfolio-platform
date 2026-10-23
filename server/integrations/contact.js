@@ -1,12 +1,12 @@
 import express from "express";
-import { createHash, timingSafeEqual } from "node:crypto";
+import { createHash } from "node:crypto";
 import { withTransaction } from "../persistence/unit-of-work.js";
 import { CmsError, checkedUuid } from "../../domain/cms/content-contract.js";
 import { assertVerifiedOwner } from "../identity/session-store.js";
 
 const fail=(code,status,message)=>new CmsError(code,status,message);
 const safeEmail=value=>typeof value==="string"&&value.length<=254&&
-  /^[^\s@\x00-\x1f]+@[^\s@\x00-\x1f]+\.[^\s@\x00-\x1f]+$/.test(value);
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) && [...value].every(ch=>ch.charCodeAt(0)>=32 && ch.charCodeAt(0)!==127);
 export function validateContactRequest(value,noticeVersion){
   if(!value||typeof value!=="object"||Array.isArray(value))throw fail("INVALID_CONTACT",422,"Invalid message");
   const {name,email,message,consent,notice,website}=value;
