@@ -25,6 +25,8 @@ jobs:
           fi
           terraform init -backend=false -input=false
           terraform validate -no-color
+          terraform providers lock -platform=linux_amd64 -platform=windows_amd64 -platform=darwin_arm64
+          echo "TERRAFORM_LOCK_B64=$(base64 -w0 .terraform.lock.hcl)"
       - name: Shell syntax (no external resource calls)
         run: |
           bash -n ops/aws/deploy-host.sh
