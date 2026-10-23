@@ -34,6 +34,19 @@ function authenticated(response,result,prod) {
   response.append("Set-Cookie",serializeSessionCookie(result.token,{isProduction:prod,maxAgeSeconds:3600}));
   response.status(200).json({authenticated:true,expiresAt:result.expiresAt});
 }
+async function verifiedOwnerRead(pool,req,production) {
+  const token=readSessionCookie(req.headers.cookie,{isProduction:production});
+  const session=await resolveOwnerSession(pool,token);
+  if(!session)throw new AuthFailure();
+  const checked=await pool.query(
+    `UPDATE admin_sessions SET last_seen_at=now() WHERE id=$1::uuid
+     AND revoked_at IS NULL AND expires_at>now()
+     AND coalesce(last_seen_at,issued_at)>now()-interval '15 minutes' RETURNING id`,
+    [session.sessionId],
+  );
+  if(!checked.rowCount)throw new AuthFailure();
+  return session;
+}
 async function verifiedOwner(pool,req,{publicOrigin,csrfSecret,production,recent=false}={}){
   const token=readSessionCookie(req.headers.cookie,{isProduction:production});
   const session=await resolveOwnerSession(pool,token);
@@ -104,9 +117,7 @@ export function createOwnerAuthRouter({pool,publicOrigin,rpID,csrfSecret,isProdu
     res.status(204).end();
   }));
   router.get("/admin/passkeys",safe(async(req,res)=>{
-    const token=readSessionCookie(req.headers.cookie,{isProduction});
-    const session=await resolveOwnerSession(pool,token);
-    if(!session)throw new AuthFailure();
+    const session=await verifiedOwnerRead(pool,req,isProduction);
     const r=await pool.query(
       `SELECT id,device_label,created_at,last_used_at FROM webauthn_credentials
        WHERE admin_user_id=$1::uuid AND revoked_at IS NULL ORDER BY created_at DESC`,
@@ -145,9 +156,7 @@ export function createOwnerAuthRouter({pool,publicOrigin,rpID,csrfSecret,isProdu
     res.status(204).end();
   }));
   router.get("/admin/sessions",safe(async(req,res)=>{
-    const token=readSessionCookie(req.headers.cookie,{isProduction});
-    const session=await resolveOwnerSession(pool,token);
-    if(!session)throw new AuthFailure();
+    const session=await verifiedOwnerRead(pool,req,isProduction);
     const rows=await pool.query(
       "SELECT id,issued_at,expires_at FROM admin_sessions WHERE admin_user_id=$1::uuid AND revoked_at IS NULL AND expires_at>now() ORDER BY issued_at DESC",
       [session.ownerId],
