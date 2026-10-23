@@ -13,6 +13,7 @@ jobs:
       HOST: 127.0.0.1
       PORT: "3000"
       RELEASE_MIGRATION_TEST_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_release_migration_ci
+      AUTH_CRYPTO_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_release_auth_crypto_ci
       AUTH_TEST_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_release_auth_ci
       RESTORE_TEST_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_restore_ci
       CMS_TEST_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_cms_ci
@@ -40,6 +41,7 @@ jobs:
           sudo -u postgres createdb --owner=devfolio_ci devfolio_cms_ci
           sudo -u postgres createdb --owner=devfolio_ci devfolio_release_migration_ci
           sudo -u postgres createdb --owner=devfolio_ci devfolio_release_auth_ci
+          sudo -u postgres createdb --owner=devfolio_ci devfolio_release_auth_crypto_ci
           sudo -u postgres createdb --owner=devfolio_ci devfolio_restore_ci
           sudo -u postgres psql -v ON_ERROR_STOP=1 -c "CREATE ROLE devfolio_public_reader LOGIN PASSWORD 'ci_public_ephemeral';"
           sudo -u postgres psql -v ON_ERROR_STOP=1 -c "CREATE ROLE devfolio_cms_runtime LOGIN PASSWORD 'ci_runtime_ephemeral';"
