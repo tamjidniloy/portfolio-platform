@@ -65,7 +65,6 @@ export function createCmsApiRouter({pool,publicOrigin,csrfSecret,isProduction=fa
     throw new Error("Invalid public origin");
   }
   const r=express.Router();
-  r.disable("x-powered-by");
   r.use(express.json({limit:"260kb",type:"application/json"}));
   r.use((_req,res,next)=>{
     res.set("Cache-Control","no-store");
