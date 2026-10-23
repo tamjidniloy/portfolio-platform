@@ -1,0 +1,37 @@
+threat_id,title,domain,abuse_case,risk,design_mitigation,primary_test_id,open_dependency,status
+T01,Account takeover,identity,Credential stuffing,high,Rate limit+Argon2id+monitor,SEC35-012,MFA choice,OPEN_DESIGN
+T02,Password hash compromise,identity,Offline guessing DB leak,high,Argon2id+pepper decision+breach response,SEC35-003,Argon2 benchmark,OPEN_DESIGN
+T03,Email OTP is not secure MFA,identity,Mailbox takeover/phishing,critical,Explicit NIST conflict and WebAuthn/TOTP decision,SEC35-016,G-SEC-01,OPEN_DESIGN
+T04,Challenge replay,identity,Reused code,high,Atomic consumption+TTL+attempt ceiling,SEC35-004,Auth implementation,OPEN_DESIGN
+T05,Login enumeration,identity,Distinct errors/timing,medium,Generic messages+uniform work,SEC35-002,Threat test,OPEN_DESIGN
+T06,Challenge flood,identity,Email send amplification,high,Per owner/IP cooldown and provider quotas,SEC35-007,Rate policy,OPEN_DESIGN
+T07,Recovery hijack,identity,Recovery bypass MFA,critical,Single use token+approved recovery proof,SEC35-013,Recovery policy,OPEN_DESIGN
+T08,Session fixation,session,Session carries privilege,high,New session on auth+rotate,SEC35-019,Session implementation,OPEN_DESIGN
+T09,Session theft,session,XSS/cookie leak,high,HttpOnly Secure server digest revoke,SEC35-017,Cookie test,OPEN_DESIGN
+T10,Session reuse after logout,session,Revocation miss,high,Server checks every admin request,SEC35-020,Session test,OPEN_DESIGN
+T11,CSRF mutation,web,Cross-site form submit,high,Synchronizer+Origin+Fetch Metadata,SEC35-026,Browser tests,OPEN_DESIGN
+T12,Stored XSS,web,Rich editor payload,critical,Sanitize+encode+CSP+test,SEC35-032,Editor selection,OPEN_DESIGN
+T13,XSS via hydration,web,Unsafe SSR JSON/script,high,Safe serialization+no secrets,SEC35-033,SSR tests,OPEN_DESIGN
+T14,CORS misuse,web,Credentialed wildcard,high,Same-origin allowlist,SEC35-030,Origin test,OPEN_DESIGN
+T15,Open redirect,web,next URL or social links,medium,Allowlisted relative paths,SEC35-034,Route tests,OPEN_DESIGN
+T16,Object authorization bypass,content,IDOR on /admin/content/:id,critical,Resource-level policy each read/write,SEC35-038,Direct HTTP tests,OPEN_DESIGN
+T17,Draft leak SSR,content,Public loader joins drafts,critical,Published-only projection+DTO allowlist,SEC35-040,Multi-channel negative tests,OPEN_DESIGN
+T18,Draft leak cache,content,CDN serves private HTML,critical,No-store private & public invalidation policy,SEC35-045,Edge test,OPEN_DESIGN
+T19,Preview link exfiltration,content,Query token controls private mode,critical,Active owner session + noindex/no-store,SEC35-039,Preview test,OPEN_DESIGN
+T20,Stale publish overwrite,content,Concurrent update,high,If-Match + transaction,SEC35-047,Concurrency test,OPEN_DESIGN
+T21,Unpublish retention in public index,content,Sitemap/asset stale,critical,Authoritative eligible published check,SEC35-044,Unpublish test,OPEN_DESIGN
+T22,Private media exposure,media,Direct private object URL,critical,Private staging+published media gate,SEC35-055,Media test,OPEN_DESIGN
+T23,Malicious upload,media,Active content/polyglot,high,Signature+type+size+quarantine,SEC35-051,Negative uploads,OPEN_DESIGN
+T24,Presigned URL replay,media,Unlimited reuse,high,Short TTL+scope+one-time finalize,SEC35-054,Staging tests,OPEN_DESIGN
+T25,Contact spam,contact,Abuse mailbox/DB,medium,Rate limit+sanitization+idempotency,SEC35-057,Abuse test,OPEN_DESIGN
+T26,PII logging,privacy,Body/token in diagnostics,high,Explicit safe fields and log scrubbing,SEC35-061,Log inspection,OPEN_DESIGN
+T27,Retention drift,privacy,Indefinite storage,high,Owner policy + deletion jobs + backup disclosure,SEC35-060,Privacy policy gate,OPEN_DESIGN
+T28,Secrets in repo,operations,API key leaked,critical,Secret manager+CI scanning+rotate,SEC35-062,CI checks,OPEN_DESIGN
+T29,Overprivileged migration role,operations,Public app escalates DB,high,Separate DB users/grants,SEC35-064,DB role test,OPEN_DESIGN
+T30,Backup restore re-exposes drafts,operations,Restore public projection incorrectly,critical,Isolated restore + published-only probes,SEC35-066,Restore drill,OPEN_DESIGN
+T31,Reverse proxy spoofing,operations,Forged client IP / TLS headers,high,Trusted proxy allowlist,SEC35-067,Proxy test,OPEN_DESIGN
+T32,Supply chain compromise,operations,Malicious dependency/action,high,Pinned reviewed deps+scan provenance,SEC35-063,CI review,OPEN_DESIGN
+T33,Outbox impersonation,operations,Worker issues unauthorized publish,high,Scoped event type + origin authorization,SEC35-071,Worker test,OPEN_DESIGN
+T34,Incident response gap,operations,Credential leak uncontained,high,Runbook+session revoke+alert owner,SEC35-069,Tabletop,OPEN_DESIGN
+T35,Timing oracle,identity,Account detection,medium,Uniform errors bounded timing,SEC35-002,Enumeration test,OPEN_DESIGN
+T36,Misleading compliance claim,governance,AAL2/ASVS asserted without proof,critical,Approval labels + actual evidence gates,SEC35-072,Document review,OPEN_DESIGN

@@ -1,0 +1,5 @@
+id,option,runtime_fit,security_identity,networking,deploy_ops,cost_dimensions,recommendation
+HOST-01,Managed Node/PaaS,SSR+Express custom host,OIDC deploy,Region/DB network,Health/rollout,Pricing incl egress,PREFERRED_CANDIDATE
+HOST-02,Managed containers,Immutable image and worker,Scoped deploy identity,Networking and Postgres,Blue-green/rollback,Registry and support,ALTERNATIVE
+HOST-03,VPS container host,Host-managed Node/container,SSH/deploy agent,OS patch/firewall,Manual rollback,Storage/backup/pager,ALTERNATIVE
+HOST-04,Multi-region Kubernetes,Cluster and replicas,Complex workload identity,DR and data replication,Complexity,High base cost,OUT_OF_SCOPE_R1

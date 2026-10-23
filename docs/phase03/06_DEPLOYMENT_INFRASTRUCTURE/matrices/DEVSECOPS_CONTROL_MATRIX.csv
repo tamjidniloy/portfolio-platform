@@ -1,0 +1,31 @@
+control_id,category,expected_rule,evidence_source,implementation_status,execution_status
+CTRL36-01,SCM and CI,CI for PRs has no production credentials,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-02,SCM and CI,Restrict default GITHUB_TOKEN permissions,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-03,SCM and CI,Require reviewed workflow changes,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-04,SCM and CI,Pin third-party actions to full audited SHAs at implementation,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-05,Supply chain,Lock dependency graph and scan vulnerabilities,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-06,Supply chain,Produce release SBOM candidate,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-07,Supply chain,Record immutable artifact digest and promotion provenance,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-08,Supply chain,Verify container/image base image provenance,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-09,Identity and secrets,Short-lived scoped OIDC identities for deployment,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-10,Identity and secrets,Separate app runtime and migration identities,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-11,Identity and secrets,Separate backup encryption and restore access,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-12,Identity and secrets,Rotate and revoke credentials under incident,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-13,Environment isolation,Stage and prod DB/buckets/mail providers separated,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-14,Environment isolation,No production customer data in PR/preview tests,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-15,Runtime and network,HTTPS ingress and cert expiry monitoring,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-16,Runtime and network,Private database network and authenticated TLS,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-17,Runtime and network,Health/readiness avoids exposing secrets,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-18,Database,Transactional migration separate role,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-19,Database,Conservative DB pool/timeouts and backup monitoring,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-20,Database,Backup/WAL chain integrity verified,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-21,Published privacy,Public only published DTO at origin and edge,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-22,Published privacy,Immediate fail-closed withdrawal/no shared private cache,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-23,Media,Private staged media and reference-gated public serving,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-24,Email,OTP outage never bypasses factor; truthful contact receipt,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-25,Observability,No PII/OTP/tokens in logs or trace bodies,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-26,Observability,Alerts have owner/severity/runbook and test plan,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-27,Backup/DR,DB and media consistent backup chain,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-28,Backup/DR,Isolated restore drill measures actual RPO/RTO,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-29,Release gate,Staging smoke+owner audited production approval,Design spec,NOT_IMPLEMENTED,NOT_TESTED
+CTRL36-30,Incident response,Incident SEV1 containment and evidence preservation,Design spec,NOT_IMPLEMENTED,NOT_TESTED

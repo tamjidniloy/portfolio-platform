@@ -1,0 +1,12 @@
+{
+  "event_id": "00000000-0000-4000-8000-000000000035",
+  "timestamp_utc": "2026-10-23T10:00:00Z",
+  "event_type": "admin_access_denied",
+  "outcome": "deny",
+  "request_id": "request-example-12345678",
+  "actor_pseudonym": "unknown",
+  "resource_class": "content_revision",
+  "metadata": {
+    "reason": "authorization_denied"
+  }
+}

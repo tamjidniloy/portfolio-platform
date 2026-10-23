@@ -1,0 +1,15 @@
+decision_id,topic,candidate_direction,priority,gate,status
+SEC-ADR-001,Owner authenticator choice,Passkey/WebAuthn preferred; TOTP secondary; legacy email OTP unresolved,P0,G-SEC-01,OWNER_DECISION_REQUIRED
+SEC-ADR-002,Password storage,Argon2id and benchmarked parameters; breach-password check,P0,SRS and benchmark,PROPOSED
+SEC-ADR-003,Session repository,Opaque verifier cookie + server-side digest/revocation,P0,Store choice,PROPOSED
+SEC-ADR-004,CSRF and origin,Synchronizer token + trusted Origin/Fetch metadata,P0,Browser compatibility test,PROPOSED
+SEC-ADR-005,Authorization placement,Use case/resource deny-by-default + route middleware,P0,Policy tests,PROPOSED
+SEC-ADR-006,Preview and published projections,Separate safe DTO source; private no-store preview,P0,Schema/API gates,PROPOSED
+SEC-ADR-007,CSP and rich content,Nonce-based CSP + content sanitization,P0,Editor choices,PROPOSED
+SEC-ADR-008,File upload policy,"Private staging, sniff, scan/quarantine, published gate",P0,Provider limits,PROPOSED
+SEC-ADR-009,Contact data lifecycle,PII minimization + owner-approved retention,P0,Privacy decisions,OWNER_DECISION_REQUIRED
+SEC-ADR-010,Secret store and rotation,"Separate identities, versioned secrets and CI scanning",P0,Hosting/provider,PROPOSED
+SEC-ADR-011,Monitoring and response,"Redacted events, alerts and incident playbook",P1,Operator assignment,PROPOSED
+SEC-ADR-012,ASVS scope and testing,Risk-based ASVS 5.0.0 mapping and evidence,P0,Runtime system,PROPOSED
+SEC-ADR-013,RLS defense in depth,Potential scoped Postgres RLS after service identity design,P1,Schema approval,DEFERRED
+SEC-ADR-014,Backup access and retention,Encrypted isolation and restore drills,P0,RPO/RTO privacy,PROPOSED

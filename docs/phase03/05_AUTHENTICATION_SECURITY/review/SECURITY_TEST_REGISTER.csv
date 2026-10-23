@@ -1,0 +1,81 @@
+test_id,category,scenario,expected_evidence,test_method,status,evidence_link,executed_at,notes
+SEC35-001,authentication,No public owner signup exists,404/deny signup route,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-002,authentication,Wrong owner password generic error,No account discovery,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-003,authentication,Argon2id password verifier configured,Memory-hard hash parameters benchmarked,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-004,authentication,One-use code replay rejected,Consumed challenge cannot be reused,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-005,authentication,Expired challenge rejected,No authenticated session,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-006,authentication,Challenge resend invalidates previous code,Only newest valid code accepted,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-007,authentication,Challenge throttling per owner/IP,Bounded abuse,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-008,authentication,Email transport failure does not log in,No session on send failure,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-009,authentication,Password successful alone cannot view CMS,Pending only,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-010,authentication,Recovery token single use,Reused token fails,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-011,authentication,Recovery revokes all old sessions,Previously active cookies rejected,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-012,authentication,Credential stuffing throttled,No trivial brute force,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-013,authentication,Recovery does not silently bypass MFA,Owner-approved risk policy,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-014,authentication,Passkey RP ID and origin validated if selected,Forged origin rejected,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-015,authentication,TOTP timestep replay rejected if selected,One proof per period,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-016,authentication,Email OTP not represented as AAL2,Documentation/protocol review,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-017,session,Session cookie secure attributes,Secure HttpOnly host only,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-018,session,Opaque verifier not in localStorage,No browser-readable bearer,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-019,session,Fresh token on full authentication,No fixation,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-020,session,Revoked token forbidden immediately,Every admin request denies,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-021,session,Absolute session expiration,Expired token denied,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-022,session,Idle expiration,Idle owner reauth,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-023,session,Concurrent logout invalidation,All expected sessions revoked,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-024,session,Session DB failure is fail-closed,Private route errors no data,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-025,session,Session verifier not plaintext in DB,Digest only,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-026,csrf_browser,No CSRF token rejects mutation,403 no change,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-027,csrf_browser,Invalid Origin rejects owner mutation,403 no change,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-028,csrf_browser,Fetch metadata misuse denied,Cross-site rejected,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-029,csrf_browser,Lax cookie not only defense,Token/origin checked,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-030,csrf_browser,Credentialed wildcard CORS disabled,CORS safe,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-031,csrf_browser,Logout requires CSRF,Cross-site logout denied,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-032,csrf_browser,CSP blocks inline injection,No executable script,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-033,csrf_browser,SSR embedding escapes untrusted JSON,No script break-out,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-034,csrf_browser,Safe redirect path allowlist,External redirect rejected,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-035,csrf_browser,Production HSTS configured safely,Header verified,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-036,authorization,Anonymous owner API denied,401/404 no leak,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-037,authorization,Pending challenge cannot read drafts,No privilege,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-038,authorization,Object ID tampering denied,403/404 no BOLA,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-039,authorization,Private preview needs owner,Anonymous blocked,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-040,authorization,Public SSR excludes draft body,HTML safe,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-041,authorization,Public JSON excludes private DTO,Loader/api safe,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-042,authorization,Sitemap excludes draft/unpublished,No unpublished URL,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-043,authorization,Public metadata omits private name/email,No PII,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-044,authorization,Unpublish removes public snapshot,Public read denied promptly,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-045,authorization,Cache does not reveal withdrawn content,CDN/edge negative,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-046,authorization,Published DTO cannot pull draft fields,Projection tests,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-047,authorization,Revision restore protected with If-Match,Conflict safe,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-048,authorization,Owner patch enforces server CSRF/authorization,Direct request denied,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-049,authorization,Audit and inbox read owner-only,No PII for anonymous,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-050,media_contact,Unauthenticated media intent rejected,No staging URL,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-051,media_contact,Media MIME spoof rejected,Signature validates,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-052,media_contact,Unsupported SVG/HTML upload rejected,No active content,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-053,media_contact,Oversized upload rejected,Quota safe,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-054,media_contact,Staging URL cannot be guessed/reused,Scoped TTL,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-055,media_contact,Unpublished media not publicly fetched,No private media leak,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-056,media_contact,Delete published referenced asset guarded,Referential policy,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-057,media_contact,Contact repeated POST limited,Rate limit effective,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-058,media_contact,Stored contact body safely rendered,No stored XSS,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-059,media_contact,Email failure reports stored only,Truthful response,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-060,media_contact,Contact deleted per approved policy,Retention evidence,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-061,media_contact,No PII in email/worker failure logs,Redacted output,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-062,operations,Secret scanner catches sample canary,CI fails secret commit,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-063,operations,CI token limited scope,Permissions audit,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-064,operations,App DB user cannot migrate schema,Least privileges,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-065,operations,Backup access is restricted,No public archive,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-066,operations,Restore in staging excludes draft public leak,Restore negative tests,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-067,operations,Cookie and forwarded header proxy safe,No spoof,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-068,operations,Session rotation after key change,Old token policy,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-069,operations,Incident revoke playbook rehearsed,Owner can contain,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-070,operations,Redacted audit event matches schema,No raw tokens,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-071,operations,Outbox cannot publish without authorized intent,Worker access constrained,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-072,operations,No security standard conformance claim without evidence,Review signed,FUTURE_UNIT_INTEGRATION_E2E_OR_MANUAL,NOT_RUN,,,owner/engineer assignment pending
+SEC35-073,accessibility,Owner login possible with keyboard only,Logical focus and accessible controls,FUTURE_BROWSER_MANUAL_A11Y,NOT_RUN,,,owner/engineer assignment pending
+SEC35-074,accessibility,Challenge failure status announced to assistive tech,Error summary and focus,FUTURE_BROWSER_MANUAL_A11Y,NOT_RUN,,,owner/engineer assignment pending
+SEC35-075,accessibility,Expired-session announcement and safe focus restore,Reauthentication without loss,FUTURE_BROWSER_MANUAL_A11Y,NOT_RUN,,,owner/engineer assignment pending
+SEC35-076,accessibility,Recovery form supports paste/password manager and labels,Accessible secure recovery,FUTURE_BROWSER_MANUAL_A11Y,NOT_RUN,,,owner/engineer assignment pending
+SEC35-077,accessibility,Upload failure communicated accessibly,Live region and focus,FUTURE_BROWSER_MANUAL_A11Y,NOT_RUN,,,owner/engineer assignment pending
+SEC35-078,accessibility,Admin confirmation dialog focus trap/return,Accessible modal,FUTURE_BROWSER_MANUAL_A11Y,NOT_RUN,,,owner/engineer assignment pending
+SEC35-079,accessibility,Actual dark tokens and focus contrast measured,WCAG 2.2 AA manual+automated results,FUTURE_BROWSER_MANUAL_A11Y,NOT_RUN,,,owner/engineer assignment pending
+SEC35-080,accessibility,Cross-browser screen reader and reduced-motion flows,Compatibility report,FUTURE_BROWSER_MANUAL_A11Y,NOT_RUN,,,owner/engineer assignment pending

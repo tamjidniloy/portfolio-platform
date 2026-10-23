@@ -1,0 +1,12 @@
+
+digraph G {
+ rankdir=LR;bgcolor="#0f1724";pad=.4;splines=polyline;node[shape=box,style="rounded,filled",fillcolor="#172536",fontcolor="#f0f7fb",color="#48647b",fontname="DejaVu Sans",fontsize=11,margin=".19,.13"];edge[color="#f4b988",arrowsize=.7,fontcolor="#eff"];
+ Signal [label="Monitor / privacy probe / report",fillcolor="#1d3c51"];
+ Triage [label="Severity + incident commander"];
+ Leak [label="Private data leaked?",shape=diamond,fillcolor="#593b45"];
+ Contain [label="SEV-1 contain\nrevoke session/key/cache",fillcolor="#642f44"];
+ Roll [label="Compatible app rollback\nor isolated DB restore",fillcolor="#16544f"];
+ Check [label="SSR, auth, DB + media\nnegative smoke checks"];
+ Review [label="Owner evidence + postmortem",fillcolor="#4d452f"];
+ Signal->Triage;Triage->Leak;Leak->Contain[label="yes"];Leak->Roll[label="no"];Contain->Roll;Roll->Check;Check->Review;
+}

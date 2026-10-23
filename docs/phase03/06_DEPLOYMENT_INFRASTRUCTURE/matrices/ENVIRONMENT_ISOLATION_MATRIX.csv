@@ -1,0 +1,5 @@
+environment,compute,data,production_contact,storage_db,identity_scope,secret_scope,status
+Local,Local workstation,Mocked/synthetic,Never,Local only,Local seeded DB / fake media,Developer,NO_DEPLOY
+PR CI,Ephemeral isolated runner,Synthetic,Never,No production creds,Ephemeral test DB,CI read-only,NO_DEPLOY
+Staging,Managed runtime sandbox,Synthetic or sanitized only,No,staging-db/bucket/email sandbox,Separate staging,Stage scoped,PREPROD_CANDIDATE
+Production,Managed runtime candidate,Approved public + private production,Yes,prod DB/bucket/email,Dedicated prod,Prod deploy+runtime split,NOT_PROVISIONED
