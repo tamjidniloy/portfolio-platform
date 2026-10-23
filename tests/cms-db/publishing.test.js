@@ -3,6 +3,9 @@ import { randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import pg from "pg";
+import express from "express";
+import { createCmsApiRouter } from "../../server/cms/http.js";
+import { csrfTokenForSession } from "../../server/identity/csrf.js";
 import { createSessionForVerifiedOwner, resolveOwnerSession } from "../../server/identity/session-store.js";
 import {
   createDraft, saveDraft, getDraft, listDrafts, listRevisions, previewRevision,
@@ -134,4 +137,71 @@ test("CMS 04.3 approved DB-R1 draft/publish lifecycle in isolated native Postgre
   // The draft itself is syntactically valid; this actually *can* publish if title/summary/slug are valid.
   assert.equal(after.rows[0].n,before.rows[0].n);
  });
+ await t.test("real HTTP boundary denies anonymous/CSRF and exposes only approved public DTO",async t2=>{
+  const app=express();
+  const server=await new Promise(resolve=>{
+    const s=app.listen(0,"127.0.0.1",()=>resolve(s));
+  });
+  t2.after(async()=>new Promise(resolve=>server.close(resolve)));
+  const origin="http://127.0.0.1:"+server.address().port;
+  const secret="cms-integration-test-only-strong-unique-csrf-secret-000012";
+  app.use("/api/v1",createCmsApiRouter({pool,publicOrigin:origin,csrfSecret:secret,isProduction:false}));
+  const cookie="devfolio_session="+ownToken;
+  const csrf=csrfTokenForSession(ownToken,secret);
+  const get = (path,headers={})=>fetch(origin+path,{headers});
+  const anon=await get("/api/v1/admin/content");
+  assert.equal(anon.status,401);
+  assert.equal(anon.headers.get("cache-control"),"no-store");
+  const who=await get("/api/v1/admin/session",{Cookie:cookie});
+  assert.equal(who.status,200);
+  assert.equal((await who.json()).csrfToken,csrf);
+  const input={contentType:"research",payload:{
+    title:"Scientific methods",summary:"Validated outcome",slug:"science-demo",
+    researchStatus:"in_progress",privateNote:"PRIVATE_RESEARCH_CONTEXT"
+  }};
+  async function send(body,headers={}){
+    return fetch(origin+"/api/v1/admin/content",{
+      method:"POST",headers:{"Content-Type":"application/json",Cookie:cookie,...headers},
+      body:JSON.stringify(body),
+    });
+  }
+  assert.equal((await send(input)).status,403,"CSRF and origin are both required");
+  assert.equal((await send(input,{Origin:"https://attacker.example","X-CSRF-Token":csrf})).status,403);
+  const created=await send(input,{
+    Origin:origin,"X-CSRF-Token":csrf,"Idempotency-Key":"http_create_research_01",
+  });
+  assert.equal(created.status,201);
+  const draft=await created.json();
+  const privateRead=await get("/api/v1/admin/content/"+draft.id,{Cookie:cookie});
+  assert.equal(privateRead.status,200);
+  assert.equal(privateRead.headers.get("etag"),'"lock-v1"');
+  assert.equal((await privateRead.json()).payload.privateNote,"PRIVATE_RESEARCH_CONTEXT");
+  const publish=await fetch(origin+"/api/v1/admin/content/"+draft.id+"/publish",{
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json",Cookie:cookie,Origin:origin,
+      "X-CSRF-Token":csrf,"If-Match":'"lock-v1"',
+      "Idempotency-Key":"http_publish_research_01",
+    },
+    body:JSON.stringify({revisionNo:1}),
+  });
+  assert.equal(publish.status,200);
+  const page=await get("/api/v1/public/research/science-demo");
+  assert.equal(page.status,200);
+  const safe=await page.json();
+  assert.equal(safe.researchStatus,"in_progress");
+  assert.equal(safe.privateNote,undefined);
+  assert.equal(JSON.stringify(safe).includes("PRIVATE_RESEARCH_CONTEXT"),false);
+  const stale=await fetch(origin+"/api/v1/admin/content/"+draft.id+"/publish",{
+    method:"POST",
+    headers:{"Content-Type":"application/json",Cookie:cookie,Origin:origin,
+      "X-CSRF-Token":csrf,"If-Match":'"lock-v1"',
+      "Idempotency-Key":"http_publish_research_02"},
+    body:JSON.stringify({revisionNo:1}),
+  });
+  assert.equal(stale.status,412);
+  const list=await get("/api/v1/public/research");
+  assert.equal((await list.json()).items.length,1);
+ });
+
 });
