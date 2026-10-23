@@ -74,7 +74,7 @@ test("CMS 04.3 approved DB-R1 draft/publish lifecycle in isolated native Postgre
   const edited=await saveDraft(pool,session,{
    id,expectedVersion:1,
    payload:{title:"Project revised",summary:"Published eventually",slug:"private-project",
-     problem:"A tested engineering problem",approach:"Implemented carefully",privateNote:"SECRETS_ONLY_DRAFT"},
+     role:"Lead engineer",problem:"A tested engineering problem",approach:"Implemented carefully",outcome:"Verified improvement",limitations:"Fixture limitations",privateNote:"SECRETS_ONLY_DRAFT"},
    changeNote:"Draft update",
   });
   assert.equal(edited.revisionNo,2);
@@ -122,7 +122,7 @@ test("CMS 04.3 approved DB-R1 draft/publish lifecycle in isolated native Postgre
  });
 
  await t.test("slug republish writes redirect provenance and public DTO contains no private notes",async()=>{
-  const updated=await saveDraft(pool,session,{id,expectedVersion:5,payload:{title:"Public new title",summary:"New summary",slug:"new-project-slug",privateNote:"DO_NOT_SHARE"}});
+  const updated=await saveDraft(pool,session,{id,expectedVersion:5,payload:{title:"Public new title",summary:"New summary",slug:"new-project-slug",role:"Lead engineer",problem:"Tested problem",approach:"Careful method",outcome:"Verified result",limitations:"Known limitation",privateNote:"DO_NOT_SHARE"}});
   assert.equal(updated.revisionNo,5);
   const changed=await publishRevision(pool,session,{id,revisionNo:5,expectedVersion:6,key:"publish_slug_change_001"});
   assert.equal(changed.publicPath,"/projects/new-project-slug");
@@ -181,7 +181,7 @@ test("CMS 04.3 approved DB-R1 draft/publish lifecycle in isolated native Postgre
 
   const input={contentType:"research",payload:{
     title:"Scientific methods",summary:"Validated outcome",slug:"science-demo",
-    researchStatus:"in_progress",privateNote:"PRIVATE_RESEARCH_CONTEXT"
+    researchStatus:"in_progress",researchQuestion:"What is the effect?",methods:"Measured experiment",results:"Observed effects",limitations:"Small controlled sample",privateNote:"PRIVATE_RESEARCH_CONTEXT"
   }};
   async function send(body,headers={}){
     return fetch(origin+"/api/v1/admin/content",{
