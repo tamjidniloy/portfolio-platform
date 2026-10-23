@@ -34,6 +34,8 @@ jobs:
         run: npm run check:syntax && npm run lint && npm run check:no-docker
       - name: Unit tests
         run: npm test
+      - name: Database integration and environment doctor
+        run: npm run verify:db && npm run doctor
       - name: Heuristic secret scan
         run: npm run check:secrets
       - name: Production SSR build

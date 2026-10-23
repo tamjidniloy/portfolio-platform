@@ -12,6 +12,8 @@ assert.equal(home.response.status, 200, "SSR homepage must succeed");
 assert.match(home.body, /Built for work that speaks for itself/);
 assert.match(home.body, /<html/);
 assert.match(home.body, /noindex/);
+assert.equal(home.response.headers.get("x-frame-options"), "DENY");
+assert.equal(home.response.headers.get("cache-control"), "no-store");
 
 const live = await get("/healthz");
 assert.equal(live.response.status, 200);
