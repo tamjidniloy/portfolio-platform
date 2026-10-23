@@ -24,7 +24,7 @@ export function PublicShell({ children }) {
       <footer className="footer">
         <div className="footer-info">
           <span>DEVFOLIO OS / ENGINEERING BUILD</span>
-          <span>No published records yet · prelaunch</span>
+          <span>Published records only · owner-reviewed</span>
         </div>
         <nav className="footer-nav" aria-label="Background">
           {secondaryNavigation.map(({ slug, label }) => <NavLink key={slug} to={`/${slug}`}>{label}</NavLink>)}

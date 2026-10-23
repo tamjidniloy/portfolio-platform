@@ -59,3 +59,7 @@ Canonical owner-approved contract documents: [SRS-R1](../../docs/SRS.md) (with a
 ## Phase 04.3 engineering delivery
 
 Source handoff: [04.3 CMS implementation](04.3_CMS_IMPLEMENTATION.md). The CMS is opt-in and requires configured DB-R1, exact public origin and high-entropy CSRF secret. There is no anonymous admin login and no HTTP session issuance. Isolated `devfolio_cms_ci` integration tests do not change application databases. Production acceptance remains open.
+
+### Phase 04.3 evidence and next gates
+
+Phase 04.3 branch `feat/phase04-3-cms-publishing` implements draft save, revisions, private preview, published-only SSR/API/read models, transactional publish/unpublish/redirect metadata, owner-only settings and interface skeleton. Native PostgreSQL DB-R1 tests + HTTP/SSR CI prove the candidate behavior. **P4-026..035 are not all signed off** until the browser passkey ceremony, full per-type publish schemas, least-privilege migrations/grants, editor accessibility, CDN cache revocation and staging tests finish. No developer/user DB migration is auto-run.
