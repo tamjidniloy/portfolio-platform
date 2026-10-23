@@ -1,0 +1,45 @@
+{
+  "project": "DEVFOLIO OS",
+  "status": "PROPOSED_NOT_APPROVED",
+  "scope": "Phase04.1 SRS/MFA/DB/API reconciliation",
+  "sources": {
+    "srs": {
+      "file": "docs/phase01/proposals/SRS_v1_1_CANDIDATE.md",
+      "blobSha": "e621b581002b3d39ba1b7e7d3622deceb5d71420",
+      "status": "PENDING_OWNER"
+    },
+    "requirements": {
+      "file": "docs/phase01/proposals/REQUIREMENTS_CATALOG_v1_1_PROPOSED.md",
+      "expectedFR": 52,
+      "expectedNFR": 24,
+      "status": "PENDING_OWNER"
+    },
+    "database": {
+      "file": "docs/phase03/03_DATABASE_ARCHITECTURE/schema/01_CANDIDATE_POSTGRES_DDL.sql",
+      "blobSha": "d46185cf2154c207fc40f52289be451ad30f6079",
+      "expectedTables": 18,
+      "status": "PENDING_OWNER"
+    },
+    "openapi": {
+      "file": "docs/phase03/04_API_ARCHITECTURE/api/openapi-3.1.2-candidate.json",
+      "expectedPaths": 26,
+      "expectedOperations": 29,
+      "status": "PENDING_OWNER"
+    },
+    "ui": {
+      "file": "docs/phase03/04_API_ARCHITECTURE/matrices/SSR_AND_UI_ROUTE_INVENTORY.csv",
+      "expectedRoutes": 41,
+      "status": "PENDING_OWNER"
+    }
+  },
+  "criticalOpenGates": [
+    "SRS exact-version approval and FR-034 deferral",
+    "MFA FR-040: legacy email challenge versus recommended passkey with recovery",
+    "Auth credential tables to fit final MFA",
+    "Contact, audit, backup and media retention/privacy",
+    "Canonical Work route /projects versus current /work",
+    "API field caps, idempotency/route contracts, migration tool, backup and production release"
+  ],
+  "migrations": "CANDIDATE_TEST_DATABASE_ONLY",
+  "ownerApproval": null
+}

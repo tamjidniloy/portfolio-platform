@@ -15,7 +15,7 @@ export function assertCandidateDatabase(urlString, nodeEnv = process.env.NODE_EN
   const path = url.pathname.slice(1);
   if (!["postgres:", "postgresql:"].includes(url.protocol) ||
       !["127.0.0.1", "localhost", "::1", "[::1]"].includes(url.hostname) ||
-      !/^devfolio_candidate_(test|ci)$/.test(path)) {
+      !/^devfolio_candidate_(test|ci|migration_ci)$/.test(path)) {
     throw new Error("Candidate schema restricted to explicitly named local disposable databases");
   }
   return true;
