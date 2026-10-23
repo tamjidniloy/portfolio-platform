@@ -1,0 +1,158 @@
+{
+  "status": "CANDIDATE_NOT_APPROVED",
+  "contracts": [
+    {
+      "id": "C01",
+      "name": "PublishedProjects.list",
+      "class": "public query",
+      "input": "filters,sort,cursor",
+      "output": "PublicSummary[]",
+      "refs": "FR-003"
+    },
+    {
+      "id": "C02",
+      "name": "PublishedProjects.bySlug",
+      "class": "public query",
+      "input": "slug",
+      "output": "SafePublicProject|NOT_FOUND",
+      "refs": "FR-004,FR-045"
+    },
+    {
+      "id": "C03",
+      "name": "PublishedResearch.bySlug",
+      "class": "public query",
+      "input": "slug",
+      "output": "SafeResearch|NOT_FOUND",
+      "refs": "FR-005,FR-006"
+    },
+    {
+      "id": "C04",
+      "name": "PublicSettings.current",
+      "class": "public query",
+      "input": "locale",
+      "output": "SafeSiteSettings",
+      "refs": "FR-029,FR-031"
+    },
+    {
+      "id": "C05",
+      "name": "SaveDraft.execute",
+      "class": "owner command",
+      "input": "actor,entity,input,expectedRevision",
+      "output": "SavedDraft|Error",
+      "refs": "FR-027"
+    },
+    {
+      "id": "C06",
+      "name": "PublishContent.execute",
+      "class": "owner command",
+      "input": "actor,entity,expectedRevision",
+      "output": "Published|Error",
+      "refs": "FR-027,FR-045"
+    },
+    {
+      "id": "C07",
+      "name": "UnpublishContent.execute",
+      "class": "owner command",
+      "input": "actor,entity,expectedRevision",
+      "output": "Unpublished|Error",
+      "refs": "FR-027"
+    },
+    {
+      "id": "C08",
+      "name": "RestoreRevision.execute",
+      "class": "owner command",
+      "input": "actor,entity,sourceRevision",
+      "output": "NewDraft|Error",
+      "refs": "FR-028"
+    },
+    {
+      "id": "C09",
+      "name": "GetPrivatePreview.execute",
+      "class": "owner query",
+      "input": "actor,entity,revision",
+      "output": "SafePreview|Error",
+      "refs": "FR-027"
+    },
+    {
+      "id": "C10",
+      "name": "Media.requestUpload",
+      "class": "owner command",
+      "input": "actor,mime,bytes,digest",
+      "output": "PrivateHandle|Error",
+      "refs": "FR-026"
+    },
+    {
+      "id": "C11",
+      "name": "Media.finalizeUpload",
+      "class": "owner command",
+      "input": "actor,handle,signature,digest",
+      "output": "VerifiedMedia|Error",
+      "refs": "FR-047"
+    },
+    {
+      "id": "C12",
+      "name": "Contact.submit",
+      "class": "visitor command",
+      "input": "message,contact,consent",
+      "output": "StoredMessage|Error",
+      "refs": "FR-013,FR-046"
+    },
+    {
+      "id": "C13",
+      "name": "Auth.startPasswordChallenge",
+      "class": "auth",
+      "input": "password,context",
+      "output": "PendingChallenge|Error",
+      "refs": "FR-039"
+    },
+    {
+      "id": "C14",
+      "name": "Auth.verifyEmailCode",
+      "class": "auth",
+      "input": "challengeId,code,context",
+      "output": "OwnerSession|Error",
+      "refs": "FR-040"
+    },
+    {
+      "id": "C15",
+      "name": "Policy.authorize",
+      "class": "security",
+      "input": "actor,action,resource",
+      "output": "Permit|Deny",
+      "refs": "FR-018,FR-043"
+    },
+    {
+      "id": "C16",
+      "name": "UnitOfWork.run",
+      "class": "infrastructure",
+      "input": "transactionCallback",
+      "output": "Result|Error",
+      "refs": "NFR-011"
+    },
+    {
+      "id": "C17",
+      "name": "Outbox.process",
+      "class": "worker",
+      "input": "eventId",
+      "output": "Ack|Retry|DeadLetter",
+      "refs": "FR-027,FR-046"
+    },
+    {
+      "id": "C18",
+      "name": "PublishedSitemap.entries",
+      "class": "public query",
+      "input": "generation",
+      "output": "CanonicalPublicURL[]",
+      "refs": "FR-051"
+    }
+  ],
+  "errors": [
+    "VALIDATION",
+    "UNAUTHENTICATED",
+    "FORBIDDEN",
+    "NOT_FOUND",
+    "CONFLICT",
+    "RATE_LIMIT",
+    "DEPENDENCY_UNAVAILABLE"
+  ]
+}
