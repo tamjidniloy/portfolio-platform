@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { getCmsPool } from "../../server/cms/pool.js";
 import { PublicShell } from "../components/public-shell.jsx";
+import { Link } from "react-router";
 
 export async function loader(){
  const pool=getCmsPool();
@@ -13,7 +14,7 @@ export async function loader(){
   headers:{"Cache-Control":"no-store"},
  });
 }
-export function meta(){return [{title:"Contact — DEVFOLIO OS"},{name:"description",content:"Send a private message with explicit privacy consent."}];}
+export function meta({data}){return [{title:"Contact — DEVFOLIO OS"},{name:"description",content:"Send a private message with explicit privacy consent."},...(data?.enabled?[]:[{name:"robots",content:"noindex,nofollow"}])];}
 export default function Contact({loaderData}){
  const {enabled,notice}=loaderData;
  const [busy,setBusy]=useState(false),[result,setResult]=useState(""),[error,setError]=useState("");
@@ -43,7 +44,7 @@ export default function Contact({loaderData}){
     <input id="contact-website" name="website" tabIndex={-1} autoComplete="off"/></div>
    <label><input type="checkbox" name="consent" value="yes" required/>
     I agree to this message and my email being retained for up to 90 days for a response,
-    with deletion requests handled through the site owner. I acknowledge privacy notice {notice}.</label>
+    with deletion requests handled through the site owner. I acknowledge privacy notice {notice} and have read the <Link to="/privacy">privacy information</Link>.</label>
    <button type="submit" disabled={busy}>{busy?"Submitting…":"Send message"}</button>
   </form>:<p role="status">The contact form is not accepting messages right now.</p>}
   {result&&<p role="status">{result}</p>}{error&&<p role="alert">{error}</p>}

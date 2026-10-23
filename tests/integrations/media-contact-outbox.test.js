@@ -191,6 +191,37 @@ test("Phase 04.4 real PostgreSQL media, contact, outbox, consent and least-leak 
     assert.equal(attachedId!==undefined,true);
   });
 
+  await t.test("dead-letter exhausted events are visible without message data",async()=>{
+    const id=randomUUID();
+    const row=await pool.query(
+      `INSERT INTO contact_messages(sender_name,sender_email,message_body,consent_at,
+       notice_version,retention_until) VALUES('Failure case','failure@invalid.test','Undelivered',
+       now(),$1,now()+interval '90 days') RETURNING id`,[notice],
+    );
+    await pool.query(
+      `INSERT INTO outbox_events(id,event_type,dedupe_key,aggregate_id,safe_payload)
+       VALUES($1::uuid,'contact.notify',$2,$3::uuid,'{}'::jsonb)`,
+      [id,"ci-dead-letter:"+id,row.rows[0].id],
+    );
+    for(let attempt=0;attempt<5;attempt++){
+      const r=await runOutboxOnce(pool,{
+        batch:25,storage,email:{async send(){throw Error("RESEND_HTTP_503");}},
+        cache:{async purge(){}},
+      });
+      assert.ok(r.claimed>=1);
+      await pool.query("UPDATE outbox_events SET available_at=now() WHERE id=$1::uuid",[id]);
+    }
+    const record=await pool.query(
+      "SELECT dead_lettered_at,attempts,last_error_code FROM outbox_events WHERE id=$1::uuid",[id],
+    );
+    assert.equal(record.rows[0].attempts,5);
+    assert.equal(record.rows[0].last_error_code,"RESEND_HTTP_503");
+    assert.ok(record.rows[0].dead_lettered_at);
+    const summary=await deadLetterSummary(pool);
+    assert.ok(summary.some(x=>x.eventType==="contact.notify"&&x.code==="RESEND_HTTP_503"));
+    assert.equal(JSON.stringify(summary).includes("sender@example.com"),false);
+  });
+
   await t.test("provider outbound requests are pinned, idempotent and validate purge acknowledgement",async()=>{
     const calls=[];
     const fetchStub=async(url,opts)=>{

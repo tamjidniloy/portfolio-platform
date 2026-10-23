@@ -8,7 +8,7 @@
 | 04.1 | P4-009–016 | DB-R1: 4 versioned migrations, public role ACL and encrypted restore CI VERIFIED; real staging pending | Approved specs recorded 2026-10-24; real migration, staging/restore and evidence required |
 | 04.2 | P4-017–025 | AUTH-R1: verified WebAuthn P-256 crypto, sessions, bootstrap and recovery code/CLI in CI; owner hardware ceremony pending | Approved MFA contract; WebAuthn enrollment/login/recovery, abuse, browser tests outstanding |
 | 04.3 | P4-026–035 | CMS: per-type publish validators, immutable revisions, guarded UI/SSR/API, staging-style CI passed; browser/hosting QA pending | Real DB-R1 executable migrations, passkey integration and browser/staging tests |
-| 04.4 | P4-036–044 | NOT IMPLEMENTED | Media/email provider, privacy rules, integration tests |
+| 04.4 | P4-036–044 | Private media/contact/outbox/SEO/retention implementation under native CI review | Real provider credentials and staging delivery/asset/notification acceptance |
 | 04.5 | P4-045–053 | NOT IMPLEMENTED | Cloud/provider/region/budget, staging, real backups and restore |
 | 04.6 | P4-054–062 | NOT EXECUTED | 76-requirement traceability, security, WCAG, performance, launch go/no-go |
 
@@ -69,3 +69,12 @@ Phase 04.3 branch `feat/phase04-3-cms-publishing` implements draft save, revisio
 Native PostgreSQL 16 CI covers **4 numbered/checksummed DB-R1 migrations**, rollback/drift, restrictive public-reader ACL checks, AES256-encrypted disposable restore, signed P-256 WebAuthn registration/login/replay/wrong-origin tests, independently privileged owner recovery, 13 CMS publish schemas and legal-hold retention. See [Release migration runbook](04.1_RELEASE_MIGRATIONS_RUNBOOK.md), [passkeys](04.2_OWNER_PASSKEY_RUNBOOK.md), [CMS](04.3_CMS_IMPLEMENTATION.md) and [retention](04.3_RETENTION_OPERATIONS.md).
 
 **Unverified real-world gates:** owner's physical Windows Hello/backup passkey enrollment, authentic Windows 11/staging setup, trusted TLS/host/RP ID, browser accessibility and CDN cache behavior, provider/media/contact flows, real backups/retention scheduler and production release approval. CI success MUST NOT be described as completion of these external checks.
+
+## Phase 04.4 engineering verification boundary
+
+- P4-036–038: S3-compatible private bucket upload intents with 5-minute signed browser form, exact MIME/type/size/SHA256 verification, state lifecycle, immutable revision references and safe deletion outbox. Public unsigned media listing is unavailable.
+- P4-039–040: consent-gated same-origin contact intake, honeypot, 3-per-15-min/IP and 10-per-day hashed-IP limits, 90-day retention, message + notification outbox single transaction. Database receipt NEVER means email delivered.
+- P4-041: postcommit independently scheduled Resend delivery with provider idempotency, expiring claims, bounded retries, dead-letter record and CLI nonzero alert signal. Never log message bodies or API keys.
+- P4-042–043: canonical/OG SSR metadata, published-only sitemap, robots, no-store public content and optional exact Cloudflare purge provider with retry on failure.
+- P4-044: operator retention sweep, legal holds and queued orphan object storage deletion.
+- Integration CI uses native isolated PostgreSQL 16, fake S3/email/CDN provider port and negative HTTP tests. **No real vendor account delivery, domain verification, staging bucket CORS, WAF or backup provider lifecycle was executed.** Production signoff remains open until real integrations and legal notice reviewed.
