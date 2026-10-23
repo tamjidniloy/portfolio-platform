@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createReadinessHandler, livenessHandler } from "../server/probes.js";
+import { createReadinessHandler, createApplicationReadiness, livenessHandler } from "../server/probes.js";
 
 function responseDouble() {
   return {
@@ -50,4 +50,38 @@ test("missing DB and failure are both fail-closed with no details", async () => 
     assert.deepEqual(response.body, { status: "unavailable" });
     assert.equal(JSON.stringify(response.body).includes("NEVER_RETURN"), false);
   }
+});
+
+test("CMS and public reader are both mandatory when enabled", async () => {
+  let baseCalls = 0;
+  let privateCalls = 0;
+  let publicCalls = 0;
+  const baseCheck = async () => { baseCalls++; return true; };
+  const cmsPool = { query: async () => { privateCalls++; return {rows:[{"?column?":1}]}; } };
+  const publicPool = { query: async () => { publicCalls++; return {rows:[{"?column?":1}]}; } };
+  const check = createApplicationReadiness({baseCheck, cmsPool, publicPool});
+  assert.equal(await check(), true);
+  assert.deepEqual([baseCalls,privateCalls,publicCalls], [1,1,1]);
+});
+test("production public reader outage returns 503 even if main and CMS DB work", async () => {
+  const check = createApplicationReadiness({
+    baseCheck: async () => true,
+    cmsPool: {query: async () => ({rows:[]})},
+    publicPool: {query: async () => {throw new Error("private provider secret");}},
+  });
+  const response = responseDouble();
+  await createReadinessHandler(check)({},response);
+  assert.equal(response.code,503);
+  assert.deepEqual(response.body,{status:"unavailable"});
+});
+test("general DB failure and CMS failure separately fail closed", async () => {
+  const cmsPool = {query: async () => ({rows:[]})};
+  assert.equal(await createApplicationReadiness({baseCheck:async()=>false,cmsPool})(),false);
+  assert.equal(await createApplicationReadiness({baseCheck:async()=>true,cmsPool:{query:async()=>{throw Error("secret")}}})(),false);
+});
+test("public reader shares private pool only in dev and is queried once", async () => {
+  let calls=0;
+  const shared={query:async()=>{calls++;return {rows:[]}}};
+  assert.equal(await createApplicationReadiness({baseCheck:async()=>true,cmsPool:shared,publicPool:shared})(),true);
+  assert.equal(calls,1);
 });

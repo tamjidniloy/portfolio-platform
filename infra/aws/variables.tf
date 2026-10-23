@@ -58,9 +58,9 @@ variable "github_oidc_provider_arn" {
 }
 variable "github_oidc_subject" {
   type = string
-  description = "Exact immutable GitHub OIDC sub for protected deployment environment. Verify by the issued claim, never use a wildcard."
+  description = "Exact GitHub-issued OIDC sub for protected deployment environment. Default GitHub format is repo:OWNER/REPO:environment:ENV; custom issuer claims require separate validation. Never use a wildcard."
   validation {
     condition = can(regex("^repo:[^:*]+:environment:(staging|production)$", var.github_oidc_subject))
-    error_message = "Expected exact repo:OWNER@ID/REPO@ID:environment:ENV OIDC subject."
+    error_message = "Expected exact repo:OWNER/REPO:environment:ENV OIDC subject."
   }
 }
