@@ -3,7 +3,6 @@ import { releaseMigrationPlan, applyReleaseMigrations } from "../server/persiste
 const args=new Set(process.argv.slice(2));
 const url=process.env.MIGRATION_DATABASE_URL;
 const apply=args.has("--apply");
-const db=url?new URL(url).pathname.slice(1):"";
 const pool=new pg.Pool({connectionString:url,max:1,connectionTimeoutMillis:5000});
 try{
  const result=await applyReleaseMigrations(pool,{

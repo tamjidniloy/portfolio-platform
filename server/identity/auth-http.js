@@ -1,11 +1,11 @@
 import express from "express";
 import { createHash, randomBytes } from "node:crypto";
-import { assertSameOrigin, verifyOwnerMutation, csrfTokenForSession } from "./csrf.js";
+import { assertSameOrigin, verifyOwnerMutation } from "./csrf.js";
 import {
   serializeSessionCookie, clearSessionCookie, readSessionCookie,
 } from "./session-tokens.js";
 import {
-  resolveOwnerSession, revokeOwnerSession, revokeAllOwnerSessions,
+  resolveOwnerSession, revokeOwnerSession,
 } from "./session-store.js";
 import {
   AuthFailure, assertRelyingParty, createAuthenticationChallenge, finishAuthentication,
@@ -15,7 +15,6 @@ import {
 import { withTransaction } from "../persistence/unit-of-work.js";
 
 const sha=value=>createHash("sha256").update(value).digest();
-const SESSION_WINDOW="15 minutes";
 const MAX_BODY="24kb";
 const safe=(fn)=>(req,res,next)=>Promise.resolve().then(()=>fn(req,res,next)).catch(next);
 function replyError(res,error) {
