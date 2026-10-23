@@ -8,6 +8,8 @@ import {
  beginBootstrapRegistration, finishRegistration, readCeremonyCookie,
 } from "../../server/identity/webauthn-service.js";
 import { createOwnerAuthRouter } from "../../server/identity/auth-http.js";
+import { createSessionForVerifiedOwner } from "../../server/identity/session-store.js";
+import { csrfTokenForSession } from "../../server/identity/csrf.js";
 
 const hash=value=>createHash("sha256").update(value).digest();
 test("owner passkey ceremonies use durable single-use challenges and deny invalid assertions",async t=>{
@@ -80,4 +82,31 @@ test("owner passkey ceremonies use durable single-use challenges and deny invali
   method:"POST",headers:{"Content-Type":"application/json",Origin:origin},body:"{}",
  });
  assert.equal(blocked.status,401);
+ const synthetic=await createSessionForVerifiedOwner(pool,{ownerId:active});
+ const csrf=csrfTokenForSession(synthetic.token,"ci-auth-secret-very-long-unguessable-not-real-0000000000");
+ const ownerHeaders={
+  "Content-Type":"application/json",Origin:origin,
+  "X-CSRF-Token":csrf,Cookie:"devfolio_session="+synthetic.token,
+ };
+ const rotated=await fetch(origin+"/api/v1/admin/recovery-codes/rotate",{
+  method:"POST",headers:ownerHeaders,body:"{}",
+ });
+ assert.equal(rotated.status,200);
+ const codes=(await rotated.json()).codes;
+ assert.equal(codes.length,10);
+ assert.equal(new Set(codes).size,10);
+ const redeemed=await fetch(origin+"/api/v1/auth/recovery/complete",{
+  method:"POST",headers:{"Content-Type":"application/json",Origin:origin},
+  body:JSON.stringify({recoveryCode:codes[0]}),
+ });
+ assert.equal(redeemed.status,200);
+ const receipt=await redeemed.json();
+ assert.equal(receipt.status,"restricted_recovery");
+ assert.equal(redeemed.headers.get("set-cookie"),null,"recovery code alone must never grant session");
+ const replay=await fetch(origin+"/api/v1/auth/recovery/complete",{
+  method:"POST",headers:{"Content-Type":"application/json",Origin:origin},
+  body:JSON.stringify({recoveryCode:codes[0]}),
+ });
+ assert.equal(replay.status,401);
+ assert.equal((await pool.query("SELECT count(*)::int AS n FROM recovery_codes WHERE used_at IS NOT NULL")).rows[0].n,1);
 });
