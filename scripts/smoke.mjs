@@ -32,6 +32,12 @@ assert.match(work.body, /noindex/);
 const research = await get("/research");
 assert.equal(research.response.status, 200, "Research prelaunch route must SSR");
 
+const login = await get("/admin/login");
+assert.equal(login.response.status, 404, "no owner login until verified MFA is approved");
+
+const passwordApi = await get("/api/v1/auth/password");
+assert.equal(passwordApi.response.status, 404, "no unapproved password API is exposed");
+
 const admin = await get("/admin");
 assert.equal(admin.response.status, 404, "no owner/admin page exposed before MFA signoff");
 

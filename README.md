@@ -27,3 +27,7 @@ Verification scripts: `npm run check:syntax`, `npm run lint`, `npm test`, `npm r
 The [database implementation review packet](docs/phase04/04.1_DATABASE_IMPLEMENTATION.md) and [owner approval decision sheet](docs/phase04/04.1_OWNER_APPROVAL_DECISION_SHEET.md) explain the 18-table proposal and what requires explicit signoff. A transaction helper, public-only read facade and prototype draft/publish/unpublish commands are implemented **only as isolated test code**. They are not wired to live HTTP routes or deployed migrations.
 
 `npm run db:test:candidate` must **only** be run with `CANDIDATE_DATABASE_URL` pointing to a separately created disposable local database named `devfolio_candidate_test` or `devfolio_candidate_ci`. It deliberately fails on your normal `devfolio_dev` database, remote hosts and production. Do not copy the Phase 03 proposed DDL to production migration directories or execute it against real app data.
+
+## Phase 04.2 isolated authentication foundation
+
+[Session, CSRF and owner authorization handoff](docs/phase04/04.2_IDENTITY_AND_AUTHORIZATION_HANDOFF.md) and [required owner MFA decision](docs/phase04/04.2_OWNER_MFA_DECISION.md). No owner login/signup/private CMS endpoint is activated. The candidate identity integration tests run **after** candidate Phase 04.1 schema tests in a separate disposable PostgreSQL database: `npm run db:test:candidate` then `npm run auth:test:candidate`. **Never run these against `devfolio_dev` or production.** The CI pipeline executes both on GitHub's isolated native PostgreSQL service.

@@ -1,7 +1,7 @@
 name: Phase 04 Native PostgreSQL CI
 on:
   push:
-    branches: [feat/phase04-windows-native-development, feat/phase04-1-database-candidate]
+    branches: [feat/phase04-windows-native-development, feat/phase04-1-database-candidate, feat/phase04-2-identity-security-foundation]
   pull_request:
 permissions:
   contents: read
@@ -32,9 +32,7 @@ jobs:
           psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -Atc "SELECT 1" | grep -qx 1
       - name: Install exact dependency graph
         run: |
-          npm cache clean --force
-          rm -rf node_modules
-          npm install --no-fund
+          npm ci --no-fund
       - name: Syntax, lint, no-container checks
         run: npm run check:syntax && npm run lint && npm run check:no-docker
       - name: Unit tests
@@ -43,6 +41,8 @@ jobs:
         run: npm run verify:db && npm run doctor
       - name: Isolated candidate schema and transactions (not production migrations)
         run: npm run db:test:candidate
+      - name: Candidate identity/session integration (no live login)
+        run: npm run auth:test:candidate
       - name: Heuristic secret scan
         run: npm run check:secrets
       - name: Production SSR build
