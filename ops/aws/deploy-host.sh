@@ -12,6 +12,7 @@ command -v aws >/dev/null
 command -v node-22 >/dev/null
 command -v systemctl >/dev/null
 source /etc/devfolio/host.env
+export AWS_DEFAULT_REGION="$AWS_REGION" AWS_REGION
 test -n "$ENV_SECRET_ARN" && test -n "$AWS_REGION" && test -n "$RELEASE_SIGNING_KEY_ARN"
 aws secretsmanager get-secret-value --region "$AWS_REGION" --secret-id "$ENV_SECRET_ARN" \
   --query SecretString --output text > /etc/devfolio/runtime.env.next
