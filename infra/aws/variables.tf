@@ -64,3 +64,9 @@ variable "github_oidc_subject" {
     error_message = "Expected exact repo:OWNER/REPO:environment:ENV OIDC subject."
   }
 }
+
+variable "enable_alb_instance_replacement" {
+  type = bool
+  default = false
+  description = "Do not enable until a signed approved release is bootstrapped on new instances and ALB health is verified in staging."
+}

@@ -216,6 +216,8 @@ resource "aws_iam_role_policy" "host" {
     Version = "2012-10-17"
     Statement = [
       { Effect = "Allow", Action = ["s3:GetObject"], Resource = [format("%s/releases/%s/*", aws_s3_bucket.artifacts.arn, var.environment)] },
+      { Effect = "Allow", Action = ["ssm:GetParameter"], Resource = [aws_ssm_parameter.approved_release.arn] },
+      { Effect = "Allow", Action = ["kms:Verify", "kms:GetPublicKey"], Resource = [aws_kms_key.release_signing.arn] },
       { Effect = "Allow", Action = ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"], Resource = [format("%s/private/staging/*", aws_s3_bucket.media.arn)] },
       { Effect = "Allow", Action = ["secretsmanager:GetSecretValue"], Resource = [aws_secretsmanager_secret.runtime.arn] },
       { Effect = "Allow", Action = ["logs:CreateLogStream", "logs:PutLogEvents", "logs:DescribeLogStreams"], Resource = [format("%s:*", aws_cloudwatch_log_group.app.arn)] }
@@ -226,28 +228,101 @@ resource "aws_iam_instance_profile" "host" {
   name = format("%s-host", local.prefix)
   role = aws_iam_role.host.name
 }
-resource "aws_instance" "host" {
-  ami = data.aws_ssm_parameter.al2023.value
+resource "aws_ssm_parameter" "approved_release" {
+  name = format("/devfolio/%s/approved-release", local.prefix)
+  type = "String"
+  value = "UNSET"
+  lifecycle {
+    ignore_changes = [value]
+  }
+}
+
+resource "aws_kms_key" "release_signing" {
+  description = format("Trusted DEVFOLIO OS %s release signature", local.prefix)
+  key_usage = "SIGN_VERIFY"
+  customer_master_key_spec = "RSA_2048"
+  deletion_window_in_days = 30
+}
+resource "aws_kms_alias" "release_signing" {
+  name = format("alias/%s-release-signing", local.prefix)
+  target_key_id = aws_kms_key.release_signing.key_id
+}
+
+resource "aws_launch_template" "app" {
+  name_prefix = format("%s-lt-", local.prefix)
+  image_id = data.aws_ssm_parameter.al2023.value
   instance_type = var.instance_type
-  subnet_id = aws_subnet.public[0].id
-  associate_public_ip_address = true
-  vpc_security_group_ids = [aws_security_group.app.id]
-  iam_instance_profile = aws_iam_instance_profile.host.name
+  update_default_version = true
+  iam_instance_profile {
+    arn = aws_iam_instance_profile.host.arn
+  }
+  network_interfaces {
+    associate_public_ip_address = true
+    security_groups = [aws_security_group.app.id]
+  }
   metadata_options {
     http_tokens = "required"
     http_endpoint = "enabled"
   }
-  root_block_device {
-    volume_type = "gp3"
-    volume_size = 20
-    encrypted = true
+  block_device_mappings {
+    device_name = "/dev/xvda"
+    ebs {
+      volume_size = 20
+      volume_type = "gp3"
+      encrypted = true
+      delete_on_termination = true
+    }
   }
-  user_data = templatefile(format("%s/user-data.sh.tftpl", path.module), {
+  monitoring {
+    enabled = true
+  }
+  user_data = base64encode(templatefile(format("%s/user-data.sh.tftpl", path.module), {
     env_secret_arn = aws_secretsmanager_secret.runtime.arn
     log_group = aws_cloudwatch_log_group.app.name
     aws_region = var.aws_region
-  })
-  tags = { Name = format("%s-host", local.prefix) }
+    release_bucket = aws_s3_bucket.artifacts.id
+    environment = var.environment
+    release_parameter = aws_ssm_parameter.approved_release.name
+    release_signing_key = aws_kms_key.release_signing.arn
+  }))
+  tag_specifications {
+    resource_type = "instance"
+    tags = { Name = format("%s-host", local.prefix), Project = "devfolio-os", Environment = var.environment }
+  }
+}
+
+resource "aws_autoscaling_group" "app" {
+  name = format("%s-asg", local.prefix)
+  min_size = var.environment == "production" ? 2 : 1
+  desired_capacity = var.environment == "production" ? 2 : 1
+  max_size = var.environment == "production" ? 3 : 1
+  vpc_zone_identifier = aws_subnet.public[*].id
+  target_group_arns = [aws_lb_target_group.app.arn]
+  health_check_type = var.enable_alb_instance_replacement ? "ELB" : "EC2"
+  health_check_grace_period = 900
+  launch_template {
+    id = aws_launch_template.app.id
+    version = "$Latest"
+  }
+  enabled_metrics = ["GroupInServiceInstances"]
+  metrics_granularity = "1Minute"
+  tag {
+    key = "Project"
+    value = "devfolio-os"
+    propagate_at_launch = true
+  }
+  tag {
+    key = "Environment"
+    value = var.environment
+    propagate_at_launch = true
+  }
+  instance_refresh {
+    strategy = "Rolling"
+    preferences {
+      min_healthy_percentage = var.environment == "production" ? 50 : 0
+      instance_warmup = 300
+    }
+  }
 }
 resource "aws_lb" "app" {
   name = format("%s-alb", local.prefix)
@@ -273,11 +348,6 @@ resource "aws_lb_target_group" "app" {
     healthy_threshold = 2
     unhealthy_threshold = 2
   }
-}
-resource "aws_lb_target_group_attachment" "app" {
-  target_group_arn = aws_lb_target_group.app.arn
-  target_id = aws_instance.host.id
-  port = 3000
 }
 resource "aws_lb_listener" "redirect" {
   load_balancer_arn = aws_lb.app.arn
@@ -333,10 +403,16 @@ resource "aws_iam_role_policy" "deploy" {
     Version = "2012-10-17"
     Statement = [
       { Effect = "Allow", Action = ["s3:PutObject"], Resource = [format("%s/releases/%s/*", aws_s3_bucket.artifacts.arn, var.environment)] },
+      { Effect = "Allow", Action = ["kms:Sign"], Resource = [aws_kms_key.release_signing.arn] },
+      { Effect = "Allow", Action = ["ssm:PutParameter"], Resource = [aws_ssm_parameter.approved_release.arn] },
+      { Effect = "Allow", Action = ["autoscaling:DescribeAutoScalingGroups"], Resource = ["*"] },
+      { Effect = "Allow", Action = ["ssm:SendCommand"], Resource = [format("arn:aws:ssm:%s::document/AWS-RunShellScript", var.aws_region)] },
       { Effect = "Allow", Action = ["ssm:SendCommand"], Resource = [
-        format("arn:aws:ssm:%s::document/AWS-RunShellScript", var.aws_region),
-        aws_instance.host.arn
-      ] },
+        format("arn:aws:ec2:%s:%s:instance/*", var.aws_region, data.aws_caller_identity.current.account_id)
+      ], Condition = {StringEquals = {
+        "aws:ResourceTag/Project" = "devfolio-os",
+        "aws:ResourceTag/Environment" = var.environment
+      } } },
       { Effect = "Allow", Action = ["ssm:GetCommandInvocation", "ssm:ListCommandInvocations"], Resource = ["*"] }
     ]
   })
@@ -391,18 +467,18 @@ resource "aws_cloudwatch_metric_alarm" "db_storage" {
   alarm_actions = [aws_sns_topic.alerts.arn]
   treat_missing_data = "missing"
 }
-resource "aws_cloudwatch_metric_alarm" "host_status" {
-  alarm_name = format("%s-ec2-status", local.prefix)
-  namespace = "AWS/EC2"
-  metric_name = "StatusCheckFailed"
-  statistic = "Maximum"
+resource "aws_cloudwatch_metric_alarm" "in_service_capacity" {
+  alarm_name = format("%s-insufficient-in-service", local.prefix)
+  namespace = "AWS/AutoScaling"
+  metric_name = "GroupInServiceInstances"
+  statistic = "Minimum"
   period = 60
   evaluation_periods = 2
-  threshold = 1
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  dimensions = { InstanceId = aws_instance.host.id }
+  threshold = var.environment == "production" ? 2 : 1
+  comparison_operator = "LessThanThreshold"
+  dimensions = { AutoScalingGroupName = aws_autoscaling_group.app.name }
   alarm_actions = [aws_sns_topic.alerts.arn]
-  treat_missing_data = "missing"
+  treat_missing_data = "breaching"
 }
 resource "aws_budgets_budget" "cost" {
   name = format("%s-monthly-alert", local.prefix)

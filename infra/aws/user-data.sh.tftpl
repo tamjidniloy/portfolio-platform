@@ -8,6 +8,10 @@ cat >/etc/devfolio/host.env <<'HOSTENV'
 ENV_SECRET_ARN=${env_secret_arn}
 AWS_REGION=${aws_region}
 APP_LOG_GROUP=${log_group}
+RELEASE_BUCKET=${release_bucket}
+RELEASE_ENVIRONMENT=${environment}
+RELEASE_PARAMETER=${release_parameter}
+RELEASE_SIGNING_KEY_ARN=${release_signing_key}
 HOSTENV
 chmod 0600 /etc/devfolio/host.env
 cat >/etc/systemd/system/devfolio.service <<'UNIT'
@@ -113,3 +117,17 @@ CONFIG
 touch /var/log/devfolio/app.log /var/log/devfolio/outbox.log /var/log/devfolio/retention.log
 chown devfolio:devfolio /var/log/devfolio/*.log
 /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/etc/devfolio.json
+
+# Restore the last approved, signed build when Auto Scaling replaces a host.
+source /etc/devfolio/host.env
+if approved_sha="$(aws ssm get-parameter --name "$RELEASE_PARAMETER" --region "$AWS_REGION" --query Parameter.Value --output text)" &&
+   [[ "$approved_sha" =~ ^[a-f0-9]{64}$ ]]; then
+  tmp="$(mktemp -d)"
+  trap 'rm -rf "$tmp"' EXIT
+  aws s3 cp "s3://$RELEASE_BUCKET/releases/$RELEASE_ENVIRONMENT/$approved_sha.tgz" "$tmp/release.tgz" --only-show-errors
+  echo "$approved_sha  $tmp/release.tgz" | sha256sum --check --status
+  tar -xOzf "$tmp/release.tgz" ops/aws/deploy-host.sh > "$tmp/deploy-host.sh"
+  bash "$tmp/deploy-host.sh" "$approved_sha" "$RELEASE_BUCKET" "$RELEASE_ENVIRONMENT"
+else
+  echo "No trusted release pointer yet; EC2 remains out of target service."
+fi

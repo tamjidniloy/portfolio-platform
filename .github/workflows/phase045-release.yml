@@ -20,11 +20,14 @@ jobs:
     permissions:
       contents: read
       id-token: write
+      attestations: write
     env:
       TARGET_ENV: ${{ inputs.environment }}
       AWS_REGION: ${{ vars.AWS_REGION }}
       AWS_RELEASE_BUCKET: ${{ vars.AWS_RELEASE_BUCKET }}
-      AWS_EC2_INSTANCE_ID: ${{ vars.AWS_EC2_INSTANCE_ID }}
+      AWS_ASG_NAME: ${{ vars.AWS_ASG_NAME }}
+      AWS_RELEASE_PARAMETER: ${{ vars.AWS_RELEASE_PARAMETER }}
+      AWS_RELEASE_SIGNING_KEY_ARN: ${{ vars.AWS_RELEASE_SIGNING_KEY_ARN }}
       SITE_ORIGIN: ${{ vars.SITE_ORIGIN }}
     steps:
       - uses: actions/checkout@v4
@@ -40,7 +43,7 @@ jobs:
           AWS_OIDC_ROLE_ARN: ${{ vars.AWS_OIDC_ROLE_ARN }}
         run: |
           set -euo pipefail
-          for name in AWS_REGION AWS_RELEASE_BUCKET AWS_EC2_INSTANCE_ID SITE_ORIGIN AWS_OIDC_ROLE_ARN; do
+          for name in AWS_REGION AWS_RELEASE_BUCKET AWS_ASG_NAME AWS_RELEASE_PARAMETER AWS_RELEASE_SIGNING_KEY_ARN SITE_ORIGIN AWS_OIDC_ROLE_ARN; do
             test -n "${!name}" || { echo "::error::Required GitHub Environment variable $name not configured"; exit 2; }
           done
           [[ "$SITE_ORIGIN" =~ ^https://[a-zA-Z0-9.-]+$ ]] || exit 2
@@ -55,13 +58,35 @@ jobs:
           sha256sum release.tgz | tee release.sha256
           sha256sum release-sbom.json > release-sbom.sha256
           node -e 'process.stdout.write(JSON.stringify({commit:process.env.GITHUB_SHA,workflow:process.env.GITHUB_WORKFLOW,run_id:process.env.GITHUB_RUN_ID,created_at:new Date().toISOString()}))' > release-manifest.json
+      - name: Emit trusted GitHub provenance attestation for the exact archive
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: release.tgz
+      - name: Verify GitHub-generated attestation before any AWS upload
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh attestation verify release.tgz --repo "$GITHUB_REPOSITORY"
       - name: Configure short-lived AWS OIDC credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ${{ env.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_OIDC_ROLE_ARN }}
           role-session-name: devfolio-release
-      - name: Upload content-addressed artifact, deploy by SSM and verify
+      - name: Sign immutable SHA-256 digest using environment-scoped AWS KMS
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha="$(sha256sum release.tgz | cut -d' ' -f1)"
+          printf "%s" "$sha" | xxd -r -p > release.digest
+          aws kms sign --key-id "$AWS_RELEASE_SIGNING_KEY_ARN" \
+            --message-type DIGEST --signing-algorithm RSASSA_PSS_SHA_256 \
+            --message fileb://release.digest --query Signature --output text | base64 --decode > release.sig
+          test -s release.sig
+          valid="$(aws kms verify --key-id "$AWS_RELEASE_SIGNING_KEY_ARN" \
+            --message-type DIGEST --signing-algorithm RSASSA_PSS_SHA_256 \
+            --message fileb://release.digest --signature fileb://release.sig --query SignatureValid --output text)"
+          test "$valid" = True
+      - name: Upload signed immutable release and deploy with serial host verification
         shell: bash
         run: |
           set -euo pipefail
@@ -69,17 +94,38 @@ jobs:
           key="releases/$TARGET_ENV/$sha.tgz"
           aws s3api put-object --bucket "$AWS_RELEASE_BUCKET" --key "$key" \
             --body release.tgz --server-side-encryption AES256 --if-none-match '*' >/dev/null
-          aws s3api put-object --bucket "$AWS_RELEASE_BUCKET" --key "releases/$TARGET_ENV/$sha.sbom.json" \
-            --body release-sbom.json --server-side-encryption AES256 --if-none-match '*' >/dev/null
-          aws s3api put-object --bucket "$AWS_RELEASE_BUCKET" --key "releases/$TARGET_ENV/$sha.manifest.json" \
-            --body release-manifest.json --server-side-encryption AES256 --if-none-match '*' >/dev/null
-          cmd="set -euo pipefail; tmp=\$(mktemp -d); aws s3 cp s3://$AWS_RELEASE_BUCKET/$key \$tmp/release.tgz --only-show-errors; echo '$sha  '\$tmp'/release.tgz' | sha256sum --check --status; tar -xOzf \$tmp/release.tgz ops/aws/deploy-host.sh > \$tmp/deploy-host.sh; bash \$tmp/deploy-host.sh $sha $AWS_RELEASE_BUCKET $TARGET_ENV; rm -rf \$tmp"
-          params="$(jq -n --arg command "$cmd" '{commands: [$command]}')"
-          id="$(aws ssm send-command --document-name AWS-RunShellScript \
-            --instance-ids "$AWS_EC2_INSTANCE_ID" --parameters "$params" \
-            --comment "DEVFOLIO reviewed immutable release" --query 'Command.CommandId' --output text)"
-          aws ssm wait command-executed --command-id "$id" --instance-id "$AWS_EC2_INSTANCE_ID"
-          status="$(aws ssm get-command-invocation --command-id "$id" --instance-id "$AWS_EC2_INSTANCE_ID" --query Status --output text)"
-          test "$status" = Success
+          for artifact in release.sig release-sbom.json release-manifest.json; do
+            case "$artifact" in
+              release.sig) extension=sig ;;
+              release-sbom.json) extension=sbom.json ;;
+              release-manifest.json) extension=manifest.json ;;
+            esac
+            aws s3api put-object --bucket "$AWS_RELEASE_BUCKET" \
+              --key "releases/$TARGET_ENV/$sha.$extension" --body "$artifact" \
+              --server-side-encryption AES256 --if-none-match '*' >/dev/null
+          done
+          instances="$(aws autoscaling describe-auto-scaling-groups \
+            --auto-scaling-group-names "$AWS_ASG_NAME" --output json |
+            jq -r '.AutoScalingGroups[0].Instances[]? | select(.LifecycleState=="InService") | .InstanceId')"
+          count="$(printf "%s\n" "$instances" | grep -Ec '^i-[a-z0-9]+$' || true)"
+          minimum=1
+          if [[ "$TARGET_ENV" == production ]]; then minimum=2; fi
+          if (( count < minimum )); then
+            echo "::error::Auto Scaling capacity below required count"; exit 4
+          fi
+          for instance in $instances; do
+            [[ "$instance" =~ ^i-[0-9a-f]{8,17}$ ]] || exit 4
+            command="set -euo pipefail; tmp=\$(mktemp -d); trap 'rm -rf \"\$tmp\"' EXIT; aws s3 cp s3://$AWS_RELEASE_BUCKET/$key \$tmp/release.tgz --only-show-errors; echo '$sha  '\$tmp'/release.tgz' | sha256sum --check --status; tar -xOzf \$tmp/release.tgz ops/aws/deploy-host.sh > \$tmp/deploy-host.sh; bash \$tmp/deploy-host.sh $sha $AWS_RELEASE_BUCKET $TARGET_ENV"
+            params="$(jq -n --arg command "$command" '{commands: [$command]}')"
+            id="$(aws ssm send-command --document-name AWS-RunShellScript \
+              --instance-ids "$instance" --parameters "$params" \
+              --comment "DEVFOLIO KMS-verified release" --query 'Command.CommandId' --output text)"
+            aws ssm wait command-executed --command-id "$id" --instance-id "$instance"
+            test "$(aws ssm get-command-invocation --command-id "$id" \
+              --instance-id "$instance" --query Status --output text)" = Success
+          done
           bash ops/aws/health-smoke.sh "$SITE_ORIGIN"
-          echo "Release SHA-256: $sha"
+          # Only publish bootstrap pointer after EVERY existing host passes.
+          aws ssm put-parameter --name "$AWS_RELEASE_PARAMETER" \
+            --value "$sha" --type String --overwrite >/dev/null
+          echo "Verified SHA-256, KMS signature, attested source and deployment to $count hosts."
