@@ -1,15 +1,16 @@
 import { Link, useLoaderData } from "react-router";
 import { PublicShell } from "../components/public-shell.jsx";
 import { getCmsPublicPool } from "../../server/cms/pool.js";
+import { canonicalUrl, canonicalMeta } from "../../server/integrations/seo.js";
 import { getPublicList } from "../../server/cms/public-reader.js";
 
 export async function loader() {
   const pool=getCmsPublicPool();
   const items=pool?await getPublicList(pool,{type:"project"}):[];
-  return Response.json({items},{headers:{"Cache-Control":"no-store"}});
+  return Response.json({items,canonical:items.length?canonicalUrl("/projects"):null},{headers:{"Cache-Control":"no-store"}});
 }
-export function meta(){
-  return [{title:"Work — DEVFOLIO OS"},{name:"description",content:"Verified software engineering case studies."}];
+export function meta({data}){
+  return [{title:"Work — DEVFOLIO OS"},{name:"description",content:"Verified software engineering case studies."},...(data?.items?.length?[]:[{name:"robots",content:"noindex,nofollow"}]),...canonicalMeta({canonical:data?.canonical,title:"Work — DEVFOLIO OS"})];
 }
 export default function Projects(){
   const {items}=useLoaderData();

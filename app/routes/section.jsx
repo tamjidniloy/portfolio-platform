@@ -2,6 +2,7 @@ import { Link, useLoaderData } from "react-router";
 import { PublicShell } from "../components/public-shell.jsx";
 import { getPublicSection } from "../features/public-pages/sections.js";
 import { getCmsPublicPool } from "../../server/cms/pool.js";
+import { canonicalUrl, canonicalMeta } from "../../server/integrations/seo.js";
 import { getPublicList, getPublicSnapshot } from "../../server/cms/public-reader.js";
 
 export async function loader({ params }) {
@@ -12,7 +13,7 @@ export async function loader({ params }) {
   const type=sectionTypes[section.slug];
   const items=type&&pool ? await getPublicList(pool,{type}):[];
   const profile=section.slug==="about"&&pool?await getPublicSnapshot(pool,"/about"):null;
-  return Response.json({section,items,profile},{headers:{"Cache-Control":"no-store"}});
+  return Response.json({section,items,profile,canonical:items.length||profile?canonicalUrl("/"+section.slug):null},{headers:{"Cache-Control":"no-store"}});
 }
 
 export function meta({ data }) {
@@ -20,6 +21,7 @@ export function meta({ data }) {
     { title: data ? `${data.section.title} — DEVFOLIO OS` : "Not found — DEVFOLIO OS" },
     { name: "description", content: data?.section.description ?? "Page not found." },
     ...(data?.items?.length || data?.profile ? [] : [{ name: "robots", content: "noindex, nofollow" }]),
+    ...canonicalMeta({canonical:data?.canonical,title:data?.section?.title}),
   ];
 }
 

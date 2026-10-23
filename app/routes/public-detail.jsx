@@ -1,6 +1,7 @@
 import { redirect, useLoaderData } from "react-router";
 import { PublicShell } from "../components/public-shell.jsx";
 import { getCmsPublicPool } from "../../server/cms/pool.js";
+import { canonicalUrl, canonicalMeta } from "../../server/integrations/seo.js";
 import { getPublicSnapshot, publishedRedirect } from "../../server/cms/public-reader.js";
 
 export async function loader({request,params}){
@@ -15,11 +16,11 @@ export async function loader({request,params}){
   if(!item || item.contentType !== (area==="research"?"research":area==="writing"?"article":"project")) {
     throw new Response("Not found",{status:404,headers:{"Cache-Control":"no-store"}});
   }
-  return Response.json({item},{headers:{"Cache-Control":"no-store"}});
+  return Response.json({item,canonical:canonicalUrl("/"+area+"/"+params.slug)},{headers:{"Cache-Control":"no-store"}});
 }
 export function meta({data}){
   return data?.item?[{title:`${data.item.title} — DEVFOLIO OS`},
-    {name:"description",content:data.item.summary}]:
+    {name:"description",content:data.item.summary},...canonicalMeta({canonical:data.canonical,title:data.item.title})]:
     [{title:"Not found — DEVFOLIO OS"},{name:"robots",content:"noindex"}];
 }
 export default function PublicDetail(){

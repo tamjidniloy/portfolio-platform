@@ -94,6 +94,11 @@ export function validateDraft(type, payload) {
   if (own(payload, "title") && !optional(payload.title, 200)) throw badInput("Title exceeds 200 characters");
   if (own(payload, "slug") && payload.slug !== "" && !validSlug(payload.slug)) throw badInput("Invalid slug");
   if (own(payload, "summary") && !optional(payload.summary, 2000)) throw badInput("Summary exceeds 2000 characters");
+  if(own(payload,"mediaIds")){
+    if(!Array.isArray(payload.mediaIds)||payload.mediaIds.length>8 ||
+       new Set(payload.mediaIds).size!==payload.mediaIds.length)throw badInput("Invalid attachment IDs");
+    for(const id of payload.mediaIds)checkedUuid(id);
+  }
   if (own(payload, "researchStatus") && !researchStages.has(payload.researchStatus)) throw badInput("Unrecognized research stage");
   for (const [key,max] of Object.entries(LIMITS)) {
     if(own(payload,key)&&!optional(payload[key],max))throw badInput("Invalid or overlong field: "+key);

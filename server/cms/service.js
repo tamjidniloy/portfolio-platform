@@ -66,10 +66,10 @@ async function audit(client, actorId, targetId, action) {
     [actorId,action,targetId],
   );
 }
-async function writeOutbox(client,itemId,eventType,key) {
+async function writeOutbox(client,itemId,eventType,key,publicPath) {
   await client.query(
-    "INSERT INTO outbox_events(event_type,aggregate_id,dedupe_key,safe_payload) VALUES($1,$2::uuid,$3,'{}'::jsonb)",
-    [eventType,itemId,sha(eventType+"\0"+key)],
+    "INSERT INTO outbox_events(event_type,aggregate_id,dedupe_key,safe_payload) VALUES($1,$2::uuid,$3,$4::jsonb)",
+    [eventType,itemId,sha(eventType+"\0"+key),JSON.stringify({publicPath})],
   );
 }
 async function idempotent(client, scope, key, request, fn) {
@@ -98,6 +98,22 @@ async function idempotent(client, scope, key, request, fn) {
   return result;
 }
 
+async function linkRevisionMedia(client,{id,revisionNo,actor,payload}){
+  const ids=payload.mediaIds||[];
+  if(!ids.length)return;
+  const result=await client.query(
+    "SELECT id FROM media_assets WHERE id=ANY($1::uuid[]) AND created_by=$2::uuid AND state='ready'",
+    [ids,actor],
+  );
+  if(result.rows.length!==ids.length)throw new CmsError("MEDIA_NOT_READY",422,"Attachment is not approved and ready");
+  for(const mediaId of ids){
+    await client.query(
+      `INSERT INTO media_references(item_id,revision_no,media_id,use_role)
+       VALUES($1::uuid,$2,$3::uuid,'attachment')`,[id,revisionNo,mediaId],
+    );
+  }
+}
+
 export async function createDraft(pool, session, { type, payload, key } = {}) {
   const actor=owner(session);
   assertContentType(type);
@@ -115,6 +131,7 @@ export async function createDraft(pool, session, { type, payload, key } = {}) {
          VALUES ($1::uuid,1,$2::jsonb,$3,$4,$5::uuid)`,
         [id,json,VERSION,digest,actor],
       );
+      await linkRevisionMedia(client,{id,revisionNo:1,actor,payload:clean});
       await audit(client,actor,id,"content.created");
       return {id,revisionNo:1,lockVersion:1,status:"saved"};
     }
@@ -137,6 +154,7 @@ export async function saveDraft(pool, session, {id,expectedVersion,payload,chang
       "UPDATE content_items SET latest_revision_no=$2,lock_version=lock_version+1,updated_at=now() WHERE id=$1::uuid",
       [id,next],
     );
+    await linkRevisionMedia(client,{id,revisionNo:next,actor,payload:clean});
     await audit(client,actor,id,"content.revision_saved");
     return {id,revisionNo:next,lockVersion:expectedVersion+1,status:"saved"};
   });
@@ -209,6 +227,7 @@ export async function restoreRevision(pool, session, {id,revisionNo,expectedVers
         "UPDATE content_items SET latest_revision_no=$2,lock_version=lock_version+1,updated_at=now() WHERE id=$1::uuid",
         [id,next],
       );
+      await linkRevisionMedia(client,{id,revisionNo:next,actor,payload});
       await audit(client,actor,id,"content.restored_to_draft");
       return {id,revisionNo:next,lockVersion:expectedVersion+1,status:"saved"};
     }
@@ -223,6 +242,13 @@ export async function publishRevision(pool, session, {id,revisionNo,expectedVers
       const revision=await revisionFor(client,id,revisionNo);
       // Verify published data is immutable revision data, not untrusted client DTO.
       const {publicPath,publicPayload}=projectPublicRevision(item.content_type,revision.payload);
+      const media=await client.query(
+        `SELECT count(*)::int AS total,
+         count(*) FILTER(WHERE m.state='ready')::int AS ready
+         FROM media_references r JOIN media_assets m ON m.id=r.media_id
+         WHERE r.item_id=$1::uuid AND r.revision_no=$2`,[id,revisionNo],
+      );
+      if(media.rows[0].total!==media.rows[0].ready)throw new CmsError("MEDIA_NOT_READY",422,"Linked media is not ready");
       const prior=await client.query(
         "SELECT public_path FROM published_snapshots WHERE item_id=$1::uuid FOR UPDATE",
         [id],
@@ -258,7 +284,7 @@ export async function publishRevision(pool, session, {id,revisionNo,expectedVers
         [id,publicPayload.slug],
       );
       await audit(client,actor,id,"content.published");
-      await writeOutbox(client,id,"content.published",key);
+      await writeOutbox(client,id,"content.published",key,publicPath);
       const g=await client.query("SELECT generation FROM published_snapshots WHERE item_id=$1::uuid",[id]);
       return {status:"published",revisionNo,lockVersion:expectedVersion+1,generation:Number(g.rows[0].generation),publicPath};
     }
@@ -283,7 +309,7 @@ export async function unpublishRevision(pool, session, {id,expectedVersion,key}=
       // Redirects must never reveal unpublished destination.
       await client.query("UPDATE slug_redirects SET is_active=false WHERE to_path=$1",[prior.rows[0].public_path]);
       await audit(client,actor,id,"content.unpublished");
-      await writeOutbox(client,id,"content.unpublished",key);
+      await writeOutbox(client,id,"content.unpublished",key,prior.rows[0].public_path);
       return {status:"unpublished",revisionNo:prior.rows[0].source_revision_no,lockVersion:expectedVersion+1,generation:Number(prior.rows[0].generation),publicPath:prior.rows[0].public_path};
     }
   ));
