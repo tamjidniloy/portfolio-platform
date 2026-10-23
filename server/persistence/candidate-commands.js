@@ -4,6 +4,7 @@
  * Do not expose these functions from HTTP routes until MFA, SRS and DB/API
  * contracts are formally approved and owner authorization is implemented.
  */
+import { createHash } from "node:crypto";
 import { withTransaction } from "./unit-of-work.js";
 import { toPublicDto, isPublicPath } from "./published-reader.js";
 
@@ -25,7 +26,7 @@ async function lockItem(client, itemId, expectedVersion) {
   );
   if (result.rows.length === 0) throw new VersionConflict();
   const row = result.rows[0];
-  if (Number(row.lock_version) !== expectedVersion) throw new VersionConflict();
+  if (BigInt(row.lock_version) !== BigInt(expectedVersion)) throw new VersionConflict();
   return row;
 }
 
@@ -41,6 +42,10 @@ export async function saveCandidateRevision(pool, { itemId, actorId, expectedVer
       typeof payloadSha256 !== "string" || !/^[a-fA-F0-9]{64}$/.test(payloadSha256)) {
     throw new TypeError("Valid revision JSON and SHA-256 are required");
   }
+  const serializedPayload = JSON.stringify(payload);
+  if (createHash("sha256").update(serializedPayload).digest("hex") !== payloadSha256.toLowerCase()) {
+    throw new TypeError("Revision SHA-256 does not match submitted payload");
+  }
   return withTransaction(pool, async (client) => {
     const item = await lockItem(client, itemId, expectedVersion);
     const revisionNo = item.latest_revision_no + 1;
@@ -48,7 +53,7 @@ export async function saveCandidateRevision(pool, { itemId, actorId, expectedVer
       `INSERT INTO content_revisions
          (item_id, revision_no, payload, schema_version, payload_sha256, created_by)
        VALUES ($1::uuid,$2,$3::jsonb,1,$4,$5::uuid)`,
-      [itemId, revisionNo, JSON.stringify(payload), payloadSha256, actorId],
+      [itemId, revisionNo, serializedPayload, payloadSha256.toLowerCase(), actorId],
     );
     await client.query(
       "UPDATE content_items SET latest_revision_no = $2, lock_version = lock_version + 1, updated_at = now() WHERE id = $1::uuid",
@@ -74,11 +79,18 @@ export async function publishCandidateSnapshot(
   return withTransaction(pool, async (client) => {
     await lockItem(client, itemId, expectedVersion);
     const revision = await client.query(
-      "SELECT revision_no FROM content_revisions WHERE item_id = $1::uuid AND revision_no = $2",
+      "SELECT payload FROM content_revisions WHERE item_id = $1::uuid AND revision_no = $2",
       [itemId, revisionNo],
     );
     if (revision.rows.length !== 1) throw new VersionConflict();
     const safePublic = toPublicDto(publicPayload);
+    const revisionPublic = toPublicDto(revision.rows[0].payload);
+    if (!revisionPublic || JSON.stringify(revisionPublic) !== JSON.stringify(safePublic)) {
+      throw new TypeError("Published fields must match the exact approved revision payload");
+    }
+    if (!publicPath.endsWith("/" + safePublic.slug)) {
+      throw new TypeError("Canonical candidate URL does not match revision slug");
+    }
     await client.query(
       `INSERT INTO published_snapshots
          (item_id,source_revision_no,public_path,public_payload,published_by,generation)
@@ -116,7 +128,8 @@ export async function unpublishCandidateSnapshot(pool, { itemId, actorId, expect
     throw new TypeError("Invalid deduplication key");
   }
   return withTransaction(pool, async (client) => {
-    await lockItem(client, itemId, expectedVersion);
+    const item = await lockItem(client, itemId, expectedVersion);
+    if (item.publication_state !== "published") throw new VersionConflict();
     await client.query("DELETE FROM published_snapshots WHERE item_id = $1::uuid", [itemId]);
     await client.query(
       "UPDATE content_items SET publication_state='archived', lock_version=lock_version+1, updated_at=now() WHERE id=$1::uuid",

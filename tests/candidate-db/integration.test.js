@@ -58,12 +58,22 @@ test("Phase03 18-table candidate DDL and 04.1 transaction invariants in ephemera
     assert.equal(await readPublishedByPath(pool, "/projects/private-only"), null);
     const stored = await pool.query("SELECT payload FROM content_revisions WHERE item_id=$1::uuid", [itemId]);
     assert.equal(stored.rows[0].payload.notes, "SECRET_NOT_PUBLIC");
+    await assert.rejects(saveCandidateRevision(pool, {
+      itemId, actorId, expectedVersion: 1, payload: privatePayload, payloadSha256: "a".repeat(64),
+    }), /SHA-256 does not match/);
+    await assert.rejects(unpublishCandidateSnapshot(pool, {
+      itemId, actorId, expectedVersion: 1, dedupeKey: randomUUID(),
+    }), VersionConflict, "cannot unpublish a never-published draft");
   });
 
   await t.test("publishing is atomic with revision FK, safe DTO, audit and outbox", async () => {
     const itemId = await create();
     const draft = { slug: "verified-project", title: "Verified project", summary: "Reviewed", privateNotes: "DONOTLEAK" };
     await saveCandidateRevision(pool, { itemId, actorId, expectedVersion: 0, payload: draft, payloadSha256: digest(draft) });
+    await assert.rejects(publishCandidateSnapshot(pool, {
+      itemId, actorId, expectedVersion: 1, revisionNo: 1, publicPath: "/projects/verified-project",
+      publicPayload: { ...draft, title: "Forged public title" }, dedupeKey: randomUUID(),
+    }), /must match the exact approved revision/);
     const publish = await publishCandidateSnapshot(pool, {
       itemId, actorId, expectedVersion: 1, revisionNo: 1, publicPath: "/projects/verified-project",
       publicPayload: draft, dedupeKey: randomUUID(),
@@ -77,6 +87,8 @@ test("Phase03 18-table candidate DDL and 04.1 transaction invariants in ephemera
       [itemId],
     );
     assert.equal(records.rows[0].outbox, 1);
+    const state = await pool.query("SELECT lock_version FROM content_items WHERE id=$1::uuid", [itemId]);
+    assert.equal(Number(state.rows[0].lock_version), 2, "failed forged publish must leave state unchanged");
     assert.equal(records.rows[0].audits, 2);
 
     const secondDraft = { ...draft, title: "Unpublished later edit", privateNotes: "NEW_PRIVATE" };
