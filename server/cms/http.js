@@ -8,6 +8,7 @@ import {
  previewRevision, publishRevision, unpublishRevision, restoreRevision,
 } from "./service.js";
 import { getPublicSnapshot, getPublicList } from "./public-reader.js";
+import { getPrivateSiteSettings, updatePrivateSiteSettings } from "./settings.js";
 
 function problem(response, error) {
   let status=error instanceof CmsError ? error.status : 500;
@@ -117,6 +118,19 @@ export function createCmsApiRouter({pool,publicOrigin,csrfSecret,isProduction=fa
     next();
   }));
 
+  r.get("/admin/site-settings",guarded(async(req,res)=>{
+    const data=await getPrivateSiteSettings(pool,req.cmsSession);
+    res.set("ETag",`"lock-v${data.lockVersion}"`);
+    json(res,data);
+  }));
+  r.patch("/admin/site-settings",guarded(async(req,res)=>{
+    const data=await updatePrivateSiteSettings(pool,req.cmsSession,{
+      expectedVersion:matchVersion(req.headers["if-match"]),
+      settings:req.body?.settings,
+    });
+    res.set("ETag",`"lock-v${data.lockVersion}"`);
+    json(res,data);
+  }));
   r.get("/admin/session",guarded(async(req,res)=>{
     json(res,{ownerId:req.cmsSession.ownerId,expiresAt:new Date(req.cmsSession.expiresAtEpochMs),
       csrfToken:csrfTokenForSession(req.cmsToken,csrfSecret)});

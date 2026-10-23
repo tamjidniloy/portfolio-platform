@@ -28,6 +28,7 @@ export default function Admin(){
   <p className="eyebrow">PRIVATE / DEVFOLIO OS</p>
   <h1>Content workspace</h1>
   <p>All edits are private until published. Only validated owner sessions can access this page.</p>
+  <p><Link to="/admin/settings">Edit site settings</Link></p>
   <h2>Content</h2>
   {items.length?<ul>{items.map(x=><li key={x.id}><Link to={`/admin/content/${x.id}`}>
    {x.payload?.title||x.contentType}</Link> — {x.publicationState} (revision {x.latestRevisionNo})</li>)}</ul>:

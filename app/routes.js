@@ -10,6 +10,7 @@ export default [
   route("writing/:slug", "./routes/writing-detail.jsx"),
   route("admin", "./routes/admin.jsx"),
   route("admin/content/:id", "./routes/admin-content.jsx"),
+  route("admin/settings", "./routes/admin-settings.jsx"),
   route(":section", "./routes/section.jsx"),
   route("*", "./routes/not-found.jsx"),
 ];
