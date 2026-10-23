@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
+import {spawnSync} from "node:child_process";
 const read=(p)=>readFileSync(new URL("../"+p,import.meta.url),"utf8");
 
 test("all mandatory database connections enforce readiness",()=>{
@@ -34,4 +35,25 @@ test("OIDC release uses signed immutable bytes and fleet failure rollback",()=>{
  assert.match(yaml,/ssm put-parameter/);
  assert.match(deploy,/aws kms verify/);
  assert.match(deploy,/sha256sum --check --status/);
+});
+
+test("every embedded deployment workflow shell script is syntactically valid",()=>{
+  const lines=read(".github/workflows/phase045-release.yml").split("\n");
+  const scripts=[];
+  for(let i=0;i<lines.length;i++){
+    if(!/^ {8}run: \|$/.test(lines[i]))continue;
+    const script=[];
+    for(let j=i+1;j<lines.length;j++){
+      if(lines[j].trim()===""){script.push("");continue;}
+      if(!lines[j].startsWith("          "))break;
+      script.push(lines[j].slice(10));
+      i=j;
+    }
+    scripts.push(script.join("\n"));
+  }
+  assert.ok(scripts.length>=4,"expected guarded release scripts");
+  for(const [index,script] of scripts.entries()){
+    const result=spawnSync("bash",["-n"],{input:script,encoding:"utf8"});
+    assert.equal(result.status,0,"script "+index+": "+result.stderr);
+  }
 });

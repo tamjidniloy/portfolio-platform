@@ -27,4 +27,4 @@ jobs:
           bash -n infra/aws/user-data.sh.tftpl
       - name: Redacted telemetry tests
         run: |
-          node --test tests/observability.test.js
+          node --test tests/observability.test.js tests/phase045-hardening.test.js
