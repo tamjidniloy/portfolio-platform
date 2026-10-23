@@ -5,7 +5,7 @@
 | Milestone | Roadmap tasks | State | Required signoff/evidence |
 |---|---|---|---|
 | 04.0 | P4-001–008 | Native Windows/CI implementation verified; formal owner gates remain open | Branch-specific CI, owner acceptance of P4-001/P4-008 |
-| 04.1 | P4-009–016 | NOT IMPLEMENTED | SRS + final DB/retention contract; migrations and isolation tests |
+| 04.1 | P4-009–016 | Candidate-only persistence and 04.1 DB tests **verified**; live migration not approved | Exact SRS/MFA/DB/API/retention approval + reviewed migration tool/schema |
 | 04.2 | P4-017–025 | NOT IMPLEMENTED | Approved MFA/fallback; owner session/CSRF tests |
 | 04.3 | P4-026–035 | NOT IMPLEMENTED | Approved API/schema; private CMS, publish atomicity, no draft leak |
 | 04.4 | P4-036–044 | NOT IMPLEMENTED | Media/email provider, privacy rules, integration tests |
@@ -23,3 +23,13 @@
 - GitHub-hosted Ubuntu 24.04 runner: native PostgreSQL 16 apt installation (no container services), reproducible `npm ci`, static checks and no-Docker verification.
 - **14 unit tests passed**, **1 native PostgreSQL integration test passed**; environment doctor, production SSR build, homepage/work/research/404/admin-negative HTTP smoke and dependency audit passed.
 - These checks do not constitute a Windows laptop test, full database migrations, CMS, pen test, WCAG audit, managed deployment or owner release approval.
+
+## Phase 04.1 candidate sync
+
+Phase 04.1 test-only database work is maintained in `docs/phase04/04.1_DATABASE_IMPLEMENTATION.md`; decisions in `04.1_OWNER_APPROVAL_DECISION_SHEET.md`. Original Phase 03.3 18-table DDL **remains unchanged and proposed**. Git blob SHA `d46185cf2154c207fc40f52289be451ad30f6079`; SRS candidate Git blob SHA `e621b581002b3d39ba1b7e7d3622deceb5d71420`. These are reference identities, **not** approval signatures. CI evidence must be updated after the relevant branch run.
+
+## Verified 04.1 candidate run (not schema approval)
+
+- Source code `fbf06e41d6216b13aee955ced99129e8783cd721`: [CI run #39992176512](https://github.com/tamjidniloy/portfolio-platform/actions/runs/39992176512), successful. PostgreSQL 16 installed natively on Ubuntu without Docker.
+- 21 unit tests PASS, 1 normal PostgreSQL connectivity test PASS and 7 isolated candidate-schema integration tests PASS (using dedicated disposable `devfolio_candidate_ci`). Existing SSR build/HTTP smoke, lint, npm ci, heuristic secret scan and dependency audit PASS.
+- No approved migration has been created or run. A successful candidate-schema test is **not** owner approval of SRS, MFA, schema or API contract.
