@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/devfolio/phase03.7/handoff.schema.json",
+  "type": "object",
+  "required": [
+    "project",
+    "phase",
+    "date",
+    "status",
+    "source_branch",
+    "main_snapshot_sha",
+    "qa",
+    "approval"
+  ],
+  "properties": {
+    "project": {
+      "const": "DEVFOLIO OS"
+    },
+    "phase": {
+      "const": "03.7"
+    },
+    "date": {
+      "type": "string"
+    },
+    "status": {
+      "const": "CANDIDATE_HANDOFF_NOT_OWNER_APPROVED"
+    },
+    "source_branch": {
+      "type": "string"
+    },
+    "main_snapshot_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "qa": {
+      "type": "object",
+      "properties": {
+        "historical_phase03_cases": {
+          "const": 318
+        },
+        "integration_review_cases": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "execution": {
+          "const": "NOT_RUN"
+        }
+      },
+      "required": [
+        "historical_phase03_cases",
+        "integration_review_cases",
+        "execution"
+      ]
+    },
+    "approval": {
+      "type": "object",
+      "properties": {
+        "srs": {
+          "const": "PENDING"
+        },
+        "phase03_7_owner": {
+          "const": "PENDING"
+        }
+      },
+      "required": [
+        "srs",
+        "phase03_7_owner"
+      ]
+    },
+    "gates_open": {
+      "type": "integer",
+      "minimum": 1
+    }
+  },
+  "additionalProperties": false
+}
