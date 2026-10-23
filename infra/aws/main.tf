@@ -418,3 +418,26 @@ resource "aws_budgets_budget" "cost" {
     subscriber_email_addresses = [var.alert_email]
   }
 }
+
+resource "aws_cloudwatch_log_metric_filter" "outbox_dlq" {
+  name = format("%s-outbox-dead-letter", local.prefix)
+  log_group_name = aws_cloudwatch_log_group.app.name
+  pattern = "{ $.event = \"outbox_dead_letter_alert\" }"
+  metric_transformation {
+    name = "OutboxDeadLetterAlerts"
+    namespace = format("Devfolio/%s", local.prefix)
+    value = "1"
+  }
+}
+resource "aws_cloudwatch_metric_alarm" "outbox_dlq" {
+  alarm_name = format("%s-outbox-dead-letter", local.prefix)
+  namespace = format("Devfolio/%s", local.prefix)
+  metric_name = "OutboxDeadLetterAlerts"
+  statistic = "Sum"
+  period = 300
+  evaluation_periods = 1
+  threshold = 1
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  alarm_actions = [aws_sns_topic.alerts.arn]
+  treat_missing_data = "notBreaching"
+}

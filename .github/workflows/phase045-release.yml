@@ -54,6 +54,7 @@ jobs:
           tar -czf release.tgz build server domain app scripts db ops node_modules package.json package-lock.json server.js
           sha256sum release.tgz | tee release.sha256
           sha256sum release-sbom.json > release-sbom.sha256
+          node -e 'process.stdout.write(JSON.stringify({commit:process.env.GITHUB_SHA,workflow:process.env.GITHUB_WORKFLOW,run_id:process.env.GITHUB_RUN_ID,created_at:new Date().toISOString()}))' > release-manifest.json
       - name: Configure short-lived AWS OIDC credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -68,6 +69,10 @@ jobs:
           key="releases/$TARGET_ENV/$sha.tgz"
           aws s3api put-object --bucket "$AWS_RELEASE_BUCKET" --key "$key" \
             --body release.tgz --server-side-encryption AES256 --if-none-match '*' >/dev/null
+          aws s3api put-object --bucket "$AWS_RELEASE_BUCKET" --key "releases/$TARGET_ENV/$sha.sbom.json" \
+            --body release-sbom.json --server-side-encryption AES256 --if-none-match '*' >/dev/null
+          aws s3api put-object --bucket "$AWS_RELEASE_BUCKET" --key "releases/$TARGET_ENV/$sha.manifest.json" \
+            --body release-manifest.json --server-side-encryption AES256 --if-none-match '*' >/dev/null
           cmd="set -euo pipefail; tmp=\$(mktemp -d); aws s3 cp s3://$AWS_RELEASE_BUCKET/$key \$tmp/release.tgz --only-show-errors; echo '$sha  '\$tmp'/release.tgz' | sha256sum --check --status; tar -xOzf \$tmp/release.tgz ops/aws/deploy-host.sh > \$tmp/deploy-host.sh; bash \$tmp/deploy-host.sh $sha $AWS_RELEASE_BUCKET $TARGET_ENV; rm -rf \$tmp"
           params="$(jq -n --arg command "$cmd" '{commands: [$command]}')"
           id="$(aws ssm send-command --document-name AWS-RunShellScript \
