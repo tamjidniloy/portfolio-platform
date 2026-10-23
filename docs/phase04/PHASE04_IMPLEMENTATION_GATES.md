@@ -7,7 +7,7 @@
 | 04.0 | P4-001–008 | Native Windows/CI implementation verified; formal owner gates remain open | Branch-specific CI, owner acceptance of P4-001/P4-008 |
 | 04.1 | P4-009–016 | Owner-approved 19-table DB-R1 **specification**; executable final migrations, grants and integration pending | Approved specs recorded 2026-10-24; real migration, staging/restore and evidence required |
 | 04.2 | P4-017–025 | Owner-approved AUTH-R1 **specification**, candidate session helpers, no live passkey login | Approved MFA contract; WebAuthn enrollment/login/recovery, abuse, browser tests outstanding |
-| 04.3 | P4-026–035 | NOT IMPLEMENTED | Approved API-R1 scope; private CMS, publish atomicity, no draft leak |
+| 04.3 | P4-026–035 | Candidate CMS service and guarded APIs/UI under implementation; not formally accepted | Real DB-R1 executable migrations, passkey integration and browser/staging tests |
 | 04.4 | P4-036–044 | NOT IMPLEMENTED | Media/email provider, privacy rules, integration tests |
 | 04.5 | P4-045–053 | NOT IMPLEMENTED | Cloud/provider/region/budget, staging, real backups and restore |
 | 04.6 | P4-054–062 | NOT EXECUTED | 76-requirement traceability, security, WCAG, performance, launch go/no-go |
@@ -55,3 +55,7 @@ Source and approval documents: [identity handoff](04.2_IDENTITY_AND_AUTHORIZATIO
 ## 2026-10-24 — Approved Release 1 baseline supersession
 
 Canonical owner-approved contract documents: [SRS-R1](../../docs/SRS.md) (with all FR/NFR IDs), [AUTH-R1](../../contracts/release1/AUTH_R1.md), [DB-R1](../../contracts/release1/DB_R1.md) and [API-R1](../../contracts/release1/API_R1.md). Historical 18-table/29-operation candidate references above remain *test evidence for earlier prototypes*, not authoritative Release 1 contracts. New release1 schema/API validation CI evidence to be recorded after execution. The 19-table reference DDL is NOT deployed, owner authentication is NOT live, and 37 endpoints are NOT all implemented.
+
+## Phase 04.3 engineering delivery
+
+Source handoff: [04.3 CMS implementation](04.3_CMS_IMPLEMENTATION.md). The CMS is opt-in and requires configured DB-R1, exact public origin and high-entropy CSRF secret. There is no anonymous admin login and no HTTP session issuance. Isolated `devfolio_cms_ci` integration tests do not change application databases. Production acceptance remains open.

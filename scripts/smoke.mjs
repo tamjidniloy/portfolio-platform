@@ -25,9 +25,13 @@ assert.equal(ready.response.status, 200, "PostgreSQL readiness must succeed");
 assert.deepEqual(JSON.parse(ready.body), { status: "ready" });
 
 const work = await get("/work");
-assert.equal(work.response.status, 200, "Work prelaunch route must SSR");
-assert.match(work.body, /No published content available/);
-assert.match(work.body, /noindex/);
+assert.equal(work.response.status, 200, "Legacy Work redirects to canonical Projects");
+const workRedirect = await fetch(new URL("/work", base), { redirect: "manual" });
+assert.equal(workRedirect.status, 308);
+assert.equal(workRedirect.headers.get("location"), "/projects");
+const projects = await get("/projects");
+assert.equal(projects.response.status, 200);
+assert.match(projects.body, /No published projects available/);
 
 const research = await get("/research");
 assert.equal(research.response.status, 200, "Research prelaunch route must SSR");

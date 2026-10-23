@@ -21,10 +21,9 @@ export default function Home() {
             Only owner-approved published content will become publicly visible.
           </p>
           <div className="foundation-note" role="note">
-            This is an engineering starter, not a launched portfolio. Requirements, MFA,
-            database migrations and publishing contracts await explicit approval.
+            This is an engineering starter, not a launched portfolio. Release 1 contracts are approved. Real passkey login and CMS release tests remain outstanding.
           </div>
-          <Link className="button-link primary-button" to="/work">Explore the structure <span aria-hidden="true">↗</span></Link>
+          <Link className="button-link primary-button" to="/projects">Explore the structure <span aria-hidden="true">↗</span></Link>
         </section>
         <aside className="system-panel" aria-labelledby="system-title">
           <div className="panel-top">
@@ -36,7 +35,7 @@ export default function Home() {
             <div><dt>Web delivery</dt><dd>React Router SSR</dd></div>
             <div><dt>Server</dt><dd>Node / Express</dd></div>
             <div><dt>Data service</dt><dd>PostgreSQL native</dd></div>
-            <div><dt>Identity</dt><dd>Pending owner choice</dd></div>
+            <div><dt>Identity</dt><dd>Approved passkey-first, integration pending</dd></div>
             <div><dt>Public content</dt><dd>Published only</dd></div>
           </dl>
           <p className="panel-footnote">No fake metrics, private previews, owner sessions or unreviewed public APIs are exposed.</p>
