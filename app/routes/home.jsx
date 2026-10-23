@@ -1,65 +1,47 @@
 import { Link } from "react-router";
+import { PublicShell } from "../components/public-shell.jsx";
 
 export function meta() {
   return [
     { title: "DEVFOLIO OS — Development foundation" },
-    {
-      name: "description",
-      content: "DEVFOLIO OS development foundation. Public portfolio content is not yet published.",
-    },
+    { name: "description", content: "Prelaunch engineering foundation for a published-only portfolio." },
     { name: "robots", content: "noindex, nofollow" },
   ];
 }
 
 export default function Home() {
   return (
-    <div className="site">
-      <a className="skip-link" href="#main">
-        Skip to content
-      </a>
-      <header className="topbar">
-        <Link to="/" className="wordmark" aria-label="DEVFOLIO OS home">
-          <span aria-hidden="true" className="mark">◈</span>
-          <span>DEVFOLIO <span className="wordmark-accent">OS</span></span>
-        </Link>
-        <span className="stage">ENGINEERING / 04.0</span>
-      </header>
-      <main id="main" className="main-content">
-        <div className="intro-grid">
-          <div className="intro">
-            <p className="eyebrow"><span className="status-dot" /> FOUNDATION IN PROGRESS</p>
-            <h1>Built for work that speaks for itself.</h1>
-            <p className="lede">
-              A minimal, dark-first foundation for a truthful portfolio of software,
-              AI and research work. The public portfolio and owner CMS will follow
-              approved requirements and verified implementation milestones.
-            </p>
-            <div className="foundation-note" role="note">
-              This is an engineering starter page, not a launched portfolio.
-              Content, authentication and data contracts are not finalized.
-            </div>
+    <PublicShell>
+      <div className="intro-grid">
+        <section className="intro">
+          <p className="eyebrow"><span className="status-dot" aria-hidden="true" /> FOUNDATION IN PROGRESS</p>
+          <h1>Built for work that speaks for itself.</h1>
+          <p className="lede">
+            A dark-first foundation for a truthful software, AI and research portfolio.
+            Only owner-approved published content will become publicly visible.
+          </p>
+          <div className="foundation-note" role="note">
+            This is an engineering starter, not a launched portfolio. Requirements, MFA,
+            database migrations and publishing contracts await explicit approval.
           </div>
-          <aside className="system-panel" aria-labelledby="system-title">
-            <div className="panel-top">
-              <p className="eyebrow">SYSTEM SNAPSHOT</p>
-              <span className="mono">v0.4.0</span>
-            </div>
-            <h2 id="system-title">Foundation scope</h2>
-            <dl className="spec-list">
-              <div><dt>Application</dt><dd>React Router SSR</dd></div>
-              <div><dt>Runtime</dt><dd>Node / Express</dd></div>
-              <div><dt>Data</dt><dd>PostgreSQL (local service)</dd></div>
-              <div><dt>Theme</dt><dd>Dark-first</dd></div>
-              <div><dt>Contracts</dt><dd>Awaiting approval</dd></div>
-            </dl>
-            <p className="panel-footnote">No public CMS or owner sign-in is exposed.</p>
-          </aside>
-        </div>
-      </main>
-      <footer className="footer">
-        <span>DEVFOLIO OS / FOUNDATION BUILD</span>
-        <span>REAL WORK. VERIFIABLE EVIDENCE.</span>
-      </footer>
-    </div>
+          <Link className="button-link primary-button" to="/work">Explore the structure <span aria-hidden="true">↗</span></Link>
+        </section>
+        <aside className="system-panel" aria-labelledby="system-title">
+          <div className="panel-top">
+            <p className="eyebrow">PLATFORM BASELINE</p>
+            <span className="mono">PHASE 04</span>
+          </div>
+          <h2 id="system-title">Architecture summary</h2>
+          <dl className="spec-list">
+            <div><dt>Web delivery</dt><dd>React Router SSR</dd></div>
+            <div><dt>Server</dt><dd>Node / Express</dd></div>
+            <div><dt>Data service</dt><dd>PostgreSQL native</dd></div>
+            <div><dt>Identity</dt><dd>Pending owner choice</dd></div>
+            <div><dt>Public content</dt><dd>Published only</dd></div>
+          </dl>
+          <p className="panel-footnote">No fake metrics, private previews, owner sessions or unreviewed public APIs are exposed.</p>
+        </aside>
+      </div>
+    </PublicShell>
   );
 }

@@ -12,6 +12,9 @@ app.disable("x-powered-by");
 app.use((_request, response, next) => {
   response.set("X-Content-Type-Options", "nosniff");
   response.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  response.set("X-Frame-Options", "DENY");
+  response.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  response.set("Cache-Control", "no-store");
   next();
 });
 
