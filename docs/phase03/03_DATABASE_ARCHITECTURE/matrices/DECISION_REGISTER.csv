@@ -1,0 +1,13 @@
+ID,Decision,Status,Gate
+DB-ADR-001,Versioned JSONB payload versus typed domain tables,CANDIDATE,Owner SRS and query profiles
+DB-ADR-002,Published snapshots and central published-only read view,CANDIDATE,"Leak tests, transaction design"
+DB-ADR-003,Global canonical path uniqueness and redirect conflict policy,CANDIDATE,SRS routes
+DB-ADR-004,Postgres version and migration tooling,OPEN,Phase 04 environment choice
+DB-ADR-005,Policy isolation: service guard versus RLS defense-in-depth,OPEN,Threat model and account roles
+DB-ADR-006,Media public serving and revocation semantics,OPEN,Storage provider/consent
+DB-ADR-007,"Retention windows, purge and audit immutability",BLOCKED,Owner privacy/legal decisions
+DB-ADR-008,Outbox delivery and cache invalidation contract,CANDIDATE,Worker reliability analysis
+DB-ADR-009,Backup frequency and RPO/RTO,BLOCKED,Owner budget/hosting
+DB-ADR-010,Full-text search indexes and maintenance,OPEN,User acceptance and traffic budget
+DB-ADR-011,Schema extension for multi-language/multi-admin future,DEFERRED,Release 1 out of scope
+DB-ADR-012,Contact anonymize/soft delete vs immediate hard erase,BLOCKED,Retention/privacy decision

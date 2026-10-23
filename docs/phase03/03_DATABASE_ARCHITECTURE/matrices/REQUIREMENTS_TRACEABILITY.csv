@@ -1,0 +1,14 @@
+Requirements,Data structures,Traceability note,State
+FR-001..014,"content_items, content_revisions, published_snapshots, tags, media_references","Public SSR DTOs, contact, resume, social links",CANDIDATE_UNAPPROVED
+FR-015..017,"content_tags, tags, content_relations",Filters/open-source/speaking scope: later or optional,CANDIDATE_UNAPPROVED
+FR-018..025,"admin_users, admin_sessions, content_items, content_revisions",Owner CRUD and per-type content bodies,CANDIDATE_UNAPPROVED
+FR-026..028,"media_assets, media_references, content_revisions, published_snapshots",Media + draft/publish/revisions,CANDIDATE_UNAPPROVED
+FR-029..035,"content_items, site_private_config, audit_events, slug_redirects","Settings, approved nav, SEO, logging",CANDIDATE_UNAPPROVED
+FR-036..037,none for Release 1,Defer scheduled publication and auto sync,CANDIDATE_UNAPPROVED
+FR-038..043,"admin_users, auth_challenges, admin_sessions, password_reset_tokens",Owner security boundary,CANDIDATE_UNAPPROVED
+FR-044..045,"slug_redirects, published_snapshots",No draft leakage and redirects,CANDIDATE_UNAPPROVED
+FR-046..052,"contact_messages, outbox_events, media_assets, audit_events","Notifications, upload control, ops and privacy",CANDIDATE_UNAPPROVED
+NFR-001..004,"published_snapshots, content_items",Accessibility validated in app; SEO/CWV targets,CANDIDATE_UNAPPROVED
+NFR-005..010,"admin_sessions, auth_challenges, media_assets",Crypto/session/CSRF/upload controls implemented later,CANDIDATE_UNAPPROVED
+NFR-011..014,all tables plus backup/retention operations,"Integrity, backup, TLS, privacy",CANDIDATE_UNAPPROVED
+NFR-015..024,"audit_events, outbox_events and operations",Operational and testability requirements,CANDIDATE_UNAPPROVED

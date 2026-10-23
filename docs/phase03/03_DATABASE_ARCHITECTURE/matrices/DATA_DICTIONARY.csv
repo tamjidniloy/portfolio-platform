@@ -1,0 +1,117 @@
+Table,Column,Proposed SQL type,Constraint or key,Explanation,Status
+admin_users,id,uuid,PK,Owner principal identifier,PROPOSED_NOT_APPROVED
+admin_users,email,citext/text,"UNIQUE, NOT NULL",Private verified owner email,PROPOSED_NOT_APPROVED
+admin_users,password_hash,text,NOT NULL,Argon2id PHC string,PROPOSED_NOT_APPROVED
+admin_users,status,text,NOT NULL,active/disabled,PROPOSED_NOT_APPROVED
+admin_users,created_at,timestamptz,NOT NULL,Server UTC instant,PROPOSED_NOT_APPROVED
+admin_users,updated_at,timestamptz,NOT NULL,UTC,PROPOSED_NOT_APPROVED
+auth_challenges,id,uuid,PK,Short-lived login verification,PROPOSED_NOT_APPROVED
+auth_challenges,admin_user_id,uuid,FK,Owner,PROPOSED_NOT_APPROVED
+auth_challenges,code_digest,text,NOT NULL,"Secret code verifier, not plaintext",PROPOSED_NOT_APPROVED
+auth_challenges,attempts,integer,NOT NULL,Rate-limited,PROPOSED_NOT_APPROVED
+auth_challenges,expires_at,timestamptz,NOT NULL,Challenge TTL,PROPOSED_NOT_APPROVED
+auth_challenges,used_at,timestamptz,nullable,One-use marker,PROPOSED_NOT_APPROVED
+auth_challenges,created_at,timestamptz,NOT NULL,UTC,PROPOSED_NOT_APPROVED
+admin_sessions,id,uuid,PK,Revocable session,PROPOSED_NOT_APPROVED
+admin_sessions,admin_user_id,uuid,FK,Owner,PROPOSED_NOT_APPROVED
+admin_sessions,token_digest,text,"UNIQUE, NOT NULL",Session secret hash,PROPOSED_NOT_APPROVED
+admin_sessions,issued_at,timestamptz,NOT NULL,UTC,PROPOSED_NOT_APPROVED
+admin_sessions,expires_at,timestamptz,NOT NULL,UTC,PROPOSED_NOT_APPROVED
+admin_sessions,revoked_at,timestamptz,nullable,Revocation,PROPOSED_NOT_APPROVED
+admin_sessions,last_seen_at,timestamptz,nullable,Throttled update,PROPOSED_NOT_APPROVED
+password_reset_tokens,id,uuid,PK,Reset grant,PROPOSED_NOT_APPROVED
+password_reset_tokens,admin_user_id,uuid,FK,Owner,PROPOSED_NOT_APPROVED
+password_reset_tokens,token_digest,text,"UNIQUE, NOT NULL",Reset secret hash,PROPOSED_NOT_APPROVED
+password_reset_tokens,expires_at,timestamptz,NOT NULL,Bounded reset,PROPOSED_NOT_APPROVED
+password_reset_tokens,used_at,timestamptz,nullable,Single use,PROPOSED_NOT_APPROVED
+content_items,id,uuid,PK,Editable content aggregate root,PROPOSED_NOT_APPROVED
+content_items,content_type,text,NOT NULL,Allowlisted type,PROPOSED_NOT_APPROVED
+content_items,current_slug,text,nullable,"Draft/editor slug, not a public authority",PROPOSED_NOT_APPROVED
+content_items,publication_state,text,NOT NULL,draft/published/archived,PROPOSED_NOT_APPROVED
+content_items,lock_version,bigint,NOT NULL,Optimistic concurrency,PROPOSED_NOT_APPROVED
+content_items,latest_revision_no,integer,NOT NULL,Version counter,PROPOSED_NOT_APPROVED
+content_items,created_by,uuid,FK,Owner,PROPOSED_NOT_APPROVED
+content_items,created_at,timestamptz,NOT NULL,UTC,PROPOSED_NOT_APPROVED
+content_items,updated_at,timestamptz,NOT NULL,UTC,PROPOSED_NOT_APPROVED
+content_revisions,item_id,uuid,PK(FK),Item,PROPOSED_NOT_APPROVED
+content_revisions,revision_no,integer,PK,Per-item sequence,PROPOSED_NOT_APPROVED
+content_revisions,payload,jsonb,NOT NULL,Private versioned typed edit payload,PROPOSED_NOT_APPROVED
+content_revisions,schema_version,integer,NOT NULL,Payload validator version,PROPOSED_NOT_APPROVED
+content_revisions,payload_sha256,text,NOT NULL,Change record digest,PROPOSED_NOT_APPROVED
+content_revisions,created_by,uuid,FK,Owner,PROPOSED_NOT_APPROVED
+content_revisions,created_at,timestamptz,NOT NULL,UTC,PROPOSED_NOT_APPROVED
+content_revisions,change_note,text,nullable,Private audit context,PROPOSED_NOT_APPROVED
+published_snapshots,item_id,uuid,PK(FK),Exactly one currently visible snapshot per item,PROPOSED_NOT_APPROVED
+published_snapshots,source_revision_no,integer,FK,Version committed on publication,PROPOSED_NOT_APPROVED
+published_snapshots,public_path,text,"UNIQUE, NOT NULL",Globally unique canonical route,PROPOSED_NOT_APPROVED
+published_snapshots,public_payload,jsonb,NOT NULL,Allowlisted public DTO content,PROPOSED_NOT_APPROVED
+published_snapshots,published_at,timestamptz,NOT NULL,UTC,PROPOSED_NOT_APPROVED
+published_snapshots,published_by,uuid,FK,Owner,PROPOSED_NOT_APPROVED
+published_snapshots,generation,bigint,NOT NULL,Incremented on republish,PROPOSED_NOT_APPROVED
+content_relations,source_item_id,uuid,PK(FK),Content with relationship,PROPOSED_NOT_APPROVED
+content_relations,source_revision_no,integer,PK(FK),Versioned relation,PROPOSED_NOT_APPROVED
+content_relations,target_item_id,uuid,PK(FK),Referenced content,PROPOSED_NOT_APPROVED
+content_relations,relation_kind,text,PK,Related research/skill/publication,PROPOSED_NOT_APPROVED
+content_relations,created_at,timestamptz,NOT NULL,UTC,PROPOSED_NOT_APPROVED
+tags,id,uuid,PK,Controlled taxonomy term,PROPOSED_NOT_APPROVED
+tags,slug,text,"UNIQUE, NOT NULL",Normalized tag,PROPOSED_NOT_APPROVED
+tags,label,text,NOT NULL,Display label,PROPOSED_NOT_APPROVED
+content_tags,item_id,uuid,PK(FK),Versioned content,PROPOSED_NOT_APPROVED
+content_tags,revision_no,integer,PK(FK),Source revision,PROPOSED_NOT_APPROVED
+content_tags,tag_id,uuid,PK(FK),Term,PROPOSED_NOT_APPROVED
+media_assets,id,uuid,PK,Object-storage reference,PROPOSED_NOT_APPROVED
+media_assets,storage_key,text,"UNIQUE, NOT NULL",Private object locator,PROPOSED_NOT_APPROVED
+media_assets,original_name,text,nullable,Sensitive admin-only metadata,PROPOSED_NOT_APPROVED
+media_assets,declared_mime,text,NOT NULL,Untrusted declared MIME,PROPOSED_NOT_APPROVED
+media_assets,observed_mime,text,nullable,Verified MIME signature,PROPOSED_NOT_APPROVED
+media_assets,byte_size,bigint,NOT NULL,Validated upload size,PROPOSED_NOT_APPROVED
+media_assets,sha256_hex,text,nullable,Content hash,PROPOSED_NOT_APPROVED
+media_assets,state,text,NOT NULL,staging/ready/rejected/retired,PROPOSED_NOT_APPROVED
+media_assets,created_by,uuid,FK,Owner,PROPOSED_NOT_APPROVED
+media_assets,created_at,timestamptz,NOT NULL,UTC,PROPOSED_NOT_APPROVED
+media_references,item_id,uuid,PK(FK),Versioned content,PROPOSED_NOT_APPROVED
+media_references,revision_no,integer,PK(FK),Source revision,PROPOSED_NOT_APPROVED
+media_references,media_id,uuid,PK(FK),Referenced asset,PROPOSED_NOT_APPROVED
+media_references,use_role,text,PK,"cover, gallery, resume etc.",PROPOSED_NOT_APPROVED
+slug_redirects,from_path,text,PK,Historic canonical path,PROPOSED_NOT_APPROVED
+slug_redirects,to_path,text,NOT NULL,Must resolve to live published path,PROPOSED_NOT_APPROVED
+slug_redirects,http_status,integer,NOT NULL,301 or 308,PROPOSED_NOT_APPROVED
+slug_redirects,is_active,boolean,NOT NULL,Activation toggle,PROPOSED_NOT_APPROVED
+slug_redirects,created_at,timestamptz,NOT NULL,UTC,PROPOSED_NOT_APPROVED
+contact_messages,id,uuid,PK,Private visitor submission,PROPOSED_NOT_APPROVED
+contact_messages,sender_name,text,NOT NULL,PII,PROPOSED_NOT_APPROVED
+contact_messages,sender_email,text,NOT NULL,PII,PROPOSED_NOT_APPROVED
+contact_messages,message_body,text,NOT NULL,PII,PROPOSED_NOT_APPROVED
+contact_messages,consent_at,timestamptz,nullable,Privacy basis if required,PROPOSED_NOT_APPROVED
+contact_messages,status,text,NOT NULL,new/read/closed/deleted,PROPOSED_NOT_APPROVED
+contact_messages,created_at,timestamptz,NOT NULL,UTC,PROPOSED_NOT_APPROVED
+contact_messages,deleted_at,timestamptz,nullable,Soft removal pending purge policy,PROPOSED_NOT_APPROVED
+audit_events,id,bigint,PK,Security/content event identity,PROPOSED_NOT_APPROVED
+audit_events,actor_admin_id,uuid,FK nullable,Owner actor,PROPOSED_NOT_APPROVED
+audit_events,action,text,NOT NULL,Allowlisted verb,PROPOSED_NOT_APPROVED
+audit_events,target_kind,text,NOT NULL,Target type,PROPOSED_NOT_APPROVED
+audit_events,target_id,uuid,nullable,Target identity,PROPOSED_NOT_APPROVED
+audit_events,redacted_metadata,jsonb,NOT NULL,No tokens/PII in payload,PROPOSED_NOT_APPROVED
+audit_events,created_at,timestamptz,NOT NULL,UTC,PROPOSED_NOT_APPROVED
+outbox_events,id,uuid,PK,Durable after-commit event,PROPOSED_NOT_APPROVED
+outbox_events,event_type,text,NOT NULL,Allowlisted event kind,PROPOSED_NOT_APPROVED
+outbox_events,aggregate_id,uuid,nullable,Content/message reference,PROPOSED_NOT_APPROVED
+outbox_events,dedupe_key,text,"UNIQUE, NOT NULL",Stable retry key,PROPOSED_NOT_APPROVED
+outbox_events,safe_payload,jsonb,NOT NULL,"No contact body, credentials, auth codes",PROPOSED_NOT_APPROVED
+outbox_events,attempts,integer,NOT NULL,Attempt count,PROPOSED_NOT_APPROVED
+outbox_events,available_at,timestamptz,NOT NULL,Earliest processing,PROPOSED_NOT_APPROVED
+outbox_events,claimed_until,timestamptz,nullable,Lease,PROPOSED_NOT_APPROVED
+outbox_events,processed_at,timestamptz,nullable,Completion,PROPOSED_NOT_APPROVED
+outbox_events,created_at,timestamptz,NOT NULL,UTC,PROPOSED_NOT_APPROVED
+idempotency_keys,id,uuid,PK,Command replay protection,PROPOSED_NOT_APPROVED
+idempotency_keys,scope,text,NOT NULL,Owner/action boundary,PROPOSED_NOT_APPROVED
+idempotency_keys,key_digest,text,NOT NULL,Hash of submitted idempotency key,PROPOSED_NOT_APPROVED
+idempotency_keys,request_digest,text,NOT NULL,Replays must match payload,PROPOSED_NOT_APPROVED
+idempotency_keys,status,text,NOT NULL,pending/complete,PROPOSED_NOT_APPROVED
+idempotency_keys,safe_result,jsonb,nullable,Only nonsecret response summary,PROPOSED_NOT_APPROVED
+idempotency_keys,expires_at,timestamptz,NOT NULL,Expiration,PROPOSED_NOT_APPROVED
+site_private_config,singleton_id,smallint,PK,Fixed 1 row,PROPOSED_NOT_APPROVED
+site_private_config,private_config,jsonb,NOT NULL,Internal refs only; NEVER public DTO,PROPOSED_NOT_APPROVED
+site_private_config,updated_by,uuid,FK,Owner,PROPOSED_NOT_APPROVED
+site_private_config,lock_version,bigint,NOT NULL,Concurrency,PROPOSED_NOT_APPROVED
+site_private_config,updated_at,timestamptz,NOT NULL,UTC,PROPOSED_NOT_APPROVED

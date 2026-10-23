@@ -1,0 +1,23 @@
+digraph Conceptual {
+graph [rankdir=LR,bgcolor="#10151D",pad=".32",nodesep=".45",ranksep=".9",splines=polyline,fontname="Arial",fontcolor="#F1F5F9",label="DEVFOLIO OS  |  Phase 03.3 Conceptual ERD  |  CANDIDATE",labelloc=t,fontsize=22];
+node [shape=box,style="rounded,filled",fontname="Arial",fontsize=13,color="#46586B",fillcolor="#17212D",fontcolor="#F1F5F9",margin=".16,.12"];
+edge [color="#70D9C3",fontcolor="#B0BECC",fontsize=10,arrowsize=.7];
+owner [label="Owner Identity\nPassword · OTP · Sessions",fillcolor="#213042"];
+content [label="Content Item\nProject · Research · Article\nProfile · Career · Skills ..."];
+revision [label="Private Revision\nVersioned draft payload"];
+published [label="Published Snapshot\nApproved public DTO + path",fillcolor="#164739"];
+media [label="Media Assets\nPrivate staged / verified"];
+relations [label="Content Links / Tags"];
+contact [label="Contact Inbox\nPrivate PII"];
+ops [label="Outbox · Audit\nIdempotency / Ops"];
+redirect [label="Canonical Redirects"];
+owner -> content [label="authors 1:N"];
+content -> revision [label="1:N"];
+content -> published [label="1:0..1"];
+revision -> published [label="source of approved version",style=dashed];
+revision -> relations [label="version scoped"];
+revision -> media [label="safe attachment"];
+contact -> ops [label="notification intent"];
+content -> ops [label="event and audit"];
+redirect -> published [label="valid live path",style=dashed];
+}
