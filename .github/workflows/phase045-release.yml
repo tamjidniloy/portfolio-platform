@@ -113,9 +113,14 @@ jobs:
           if (( count < minimum )); then
             echo "::error::Auto Scaling capacity below required count"; exit 4
           fi
-          for instance in $instances; do
-            [[ "$instance" =~ ^i-[0-9a-f]{8,17}$ ]] || exit 4
-            command="set -euo pipefail; tmp=\$(mktemp -d); trap 'rm -rf \"\$tmp\"' EXIT; aws s3 cp s3://$AWS_RELEASE_BUCKET/$key \$tmp/release.tgz --only-show-errors; echo '$sha  '\$tmp'/release.tgz' | sha256sum --check --status; tar -xOzf \$tmp/release.tgz ops/aws/deploy-host.sh > \$tmp/deploy-host.sh; bash \$tmp/deploy-host.sh $sha $AWS_RELEASE_BUCKET $TARGET_ENV"
+          previous_sha="$(aws ssm get-parameter --name "$AWS_RELEASE_PARAMETER" --query Parameter.Value --output text)"
+          updated_instances=()
+          deploy_instance() {
+            local instance="$1"
+            local target_sha="$2"
+            local key="releases/$TARGET_ENV/$target_sha.tgz"
+            local command params id
+            command="set -euo pipefail; tmp=\$(mktemp -d); aws s3 cp s3://$AWS_RELEASE_BUCKET/$key \$tmp/release.tgz --only-show-errors; echo '$target_sha  '\$tmp'/release.tgz' | sha256sum --check --status; tar -xOzf \$tmp/release.tgz ops/aws/deploy-host.sh > \$tmp/deploy-host.sh; bash \$tmp/deploy-host.sh $target_sha $AWS_RELEASE_BUCKET $TARGET_ENV; rm -rf \$tmp"
             params="$(jq -n --arg command "$command" '{commands: [$command]}')"
             id="$(aws ssm send-command --document-name AWS-RunShellScript \
               --instance-ids "$instance" --parameters "$params" \
@@ -123,9 +128,29 @@ jobs:
             aws ssm wait command-executed --command-id "$id" --instance-id "$instance"
             test "$(aws ssm get-command-invocation --command-id "$id" \
               --instance-id "$instance" --query Status --output text)" = Success
+          }
+          rollback_fleet_on_failure() {
+            local original_status="$?"
+            trap - ERR
+            if [[ "$previous_sha" =~ ^[0-9a-f]{64}$ && "$previous_sha" != "$sha" ]]; then
+              echo "::warning::Rolling previously updated instances back to verified prior release"
+              for old_instance in "${updated_instances[@]}"; do
+                deploy_instance "$old_instance" "$previous_sha" || echo "::error::Operator intervention required on $old_instance"
+              done
+            else
+              echo "::error::Initial deployment has no prior release for automatic fleet rollback"
+            fi
+            exit "$original_status"
+          }
+          trap rollback_fleet_on_failure ERR
+          for instance in $instances; do
+            [[ "$instance" =~ ^i-[0-9a-f]{8,17}$ ]] || exit 4
+            deploy_instance "$instance" "$sha"
+            updated_instances+=("$instance")
           done
           bash ops/aws/health-smoke.sh "$SITE_ORIGIN"
           # Only publish bootstrap pointer after EVERY existing host passes.
           aws ssm put-parameter --name "$AWS_RELEASE_PARAMETER" \
             --value "$sha" --type String --overwrite >/dev/null
+          trap - ERR
           echo "Verified SHA-256, KMS signature, attested source and deployment to $count hosts."
