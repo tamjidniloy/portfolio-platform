@@ -1,0 +1,29 @@
+digraph C4Containers {
+  graph [bgcolor="#10151D",pad=0.45,rankdir=LR,nodesep=.65,ranksep=1.15,labelloc=t,label="DEVFOLIO OS  |  03.1 CONTAINERS & TRUST BOUNDARIES (PROPOSED)",fontcolor="#F1F5F9",fontname="Arial",fontsize=21];
+  node [shape=box,style="rounded,filled",color="#60758A",fontcolor="#F1F5F9",fillcolor="#17212D",fontname="Arial",fontsize=12,margin="0.17,0.10"];
+  edge [fontname="Arial",color="#9CC0FF",fontcolor="#B0BECC",fontsize=10,arrowsize=.66];
+  Browser [label="Untrusted browser\nvisitor / owner",fillcolor="#243141"];
+  Ingress [label="HTTPS ingress\nTLS / headers / limits"];
+  subgraph cluster_node {label="Private Node Application Boundary";labelloc=t;fontcolor="#70D9C3";color="#466176";style=rounded;
+    SSR [label="Express host +\nReact Router SSR",fillcolor="#173C46"];
+    Pub [label="Published Read Service\nonly safe public projection",fillcolor="#194A4B",color="#70D9C3",penwidth=2];
+    Admin [label="Owner Guard +\nAuthoring & Publish Services",fillcolor="#293447",color="#FCD34D"];
+    Contact [label="Contact intake service\nvalidate / persist / notify"];
+    MediaSvc [label="Media authorization\nand staging service"];
+  }
+  DB [label="Private PostgreSQL\nauthoring + published versions\nsessions + inbox + audit"];
+  Files [label="Object store\nstaged vs approved public"];
+  Mail [label="Email provider"];
+  Browser -> Ingress [label="HTTPS"];
+  Ingress -> SSR [label="HTTP request"];
+  SSR -> Pub [label="anonymous loaders"];
+  SSR -> Admin [label="auth-only loaders/actions"];
+  SSR -> Contact [label="validated public action"];
+  Pub -> DB [label="published-only query"];
+  Admin -> DB [label="transactional writes"];
+  Contact -> DB [label="private messages"];
+  Admin -> MediaSvc;
+  MediaSvc -> Files;
+  Admin -> Mail [label="OTP/recovery"];
+  Contact -> Mail [label="notification retry"];
+}

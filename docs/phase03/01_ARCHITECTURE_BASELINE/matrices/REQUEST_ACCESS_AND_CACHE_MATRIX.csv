@@ -1,0 +1,26 @@
+method,route_pattern,caller,server_service,response_visibility,cache_policy,required_invariant
+GET,/,anonymous,publicPublishedRead,public,conditional,published homepage only
+GET,/projects,anonymous,publicPublishedRead,public,conditional,filtered published projects; safe sparse empty state
+GET,/projects/:slug,anonymous,publicPublishedRead,public,conditional,404 draft; redirect old public slug to published URL only
+GET,/research,anonymous,publicPublishedRead,public,conditional,truthful research stage; published records only
+GET,/research/:slug,anonymous,publicPublishedRead,public,conditional,research stage not CMS visibility; no hidden paper
+GET,/about,anonymous,publicPublishedRead,public,conditional,approved public profile fields only
+GET,/writing,anonymous,publicPublishedRead,public,conditional,nav conditional on nonempty published articles
+GET,/writing/:slug,anonymous,publicPublishedRead,public,conditional,404 drafts
+GET,/contact,anonymous,publicContent,public,no-store-if-token,form page; do not serialize inbox
+POST,/contact,anonymous-rate-limited,contactIntake,private-response,no-store,validated durable storage before confirmation
+GET,/sitemap.xml,anonymous,publishedSitemap,public,conditional,canonical published URLs only
+GET,/robots.txt,anonymous,publicStatic,public,short,disallow sensitive paths but not security boundary
+GET,/admin/login,anonymous,authChallengeUI,private,no-store,noindex; no secret in hydration
+POST,/admin/login,anonymous-rate-limited,passwordCheck,private,no-store,no full session until verified challenge
+POST,/admin/verify,pending-challenge,verifyOneTimeCode,private,no-store,"single use, TTL, attempt cap"
+GET,/admin,owner,ownerSummaryService,private,no-store,guard all nested loader data
+GET,/admin/projects,owner,authoringReadService,private,no-store,include drafts only for owner
+POST,/admin/projects/new,owner+csrf,draftService,private,no-store,safe server draft validation
+POST,/admin/projects/:id/publish,owner+csrf,publishingService,private,no-store,transaction + validated refs
+GET,/admin/preview/:type/:id,owner,privatePreviewService,private,no-store,noindex; no cache; preview not public state
+POST,/admin/media,owner+csrf,mediaStagingService,private,no-store,type/size/ACL validated on server
+GET,/admin/messages,owner,privateInboxService,private-PII,no-store,redacted logs; retention
+POST,/admin/logout,owner+csrf,sessionService,private,no-store,revokes session and clears cookie
+GET,/health/live,ops/limited,health,limited,no-store,no secrets/status dumps
+GET,/health/ready,ops/limited,health,limited,no-store,depends DB/config not verbose secrets
