@@ -8,7 +8,6 @@ export const CONTENT_TYPES = Object.freeze([
 ]);
 const types = new Set(CONTENT_TYPES);
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-const stateValues = new Set(["draft", "published", "archived"]);
 const researchStages = new Set(["idea", "in_progress", "preprint", "submitted", "accepted", "published", "completed", "paused"]);
 const roots = Object.freeze({
   project: "/projects", research: "/research", article: "/writing",
@@ -17,6 +16,31 @@ const roots = Object.freeze({
   resume: "/resume", open_source: "/projects/open-source", social_link: "/about/links",
 });
 const MAX_PAYLOAD_BYTES = 256 * 1024;
+const REQUIRED = Object.freeze({
+  profile:["biography"],site_settings:["publicTitle"],
+  project:["role","problem","approach","outcome","limitations"],
+  research:["researchStatus","researchQuestion","methods","results","limitations"],
+  publication:["venue","publicationType"],article:["body"],
+  education:["institution","qualification"],experience:["organization","role"],
+  skill:["category"],achievement:["issuer"],social_link:["platform","url"],
+  resume:["mediaAssetId"],open_source:["repository","contribution"],
+});
+const LIMITS = Object.freeze({
+  biography:10000,publicTitle:200,role:1000,problem:4000,approach:4000,
+  outcome:4000,limitations:4000,researchQuestion:4000,methods:10000,
+  results:10000,evidenceUrl:2048,venue:300,publicationType:120,
+  body:32768,institution:300,qualification:200,organization:300,
+  category:200,issuer:300,platform:120,url:2048,repository:2048,
+  contribution:4000,mediaAssetId:100,
+});
+function safeExternalUrl(value) {
+  try {
+    const u=new URL(value);
+    return u.protocol==="https:"&&!u.username&&!u.password&&u.hostname.includes(".")&&
+      !["localhost","127.0.0.1"].includes(u.hostname);
+  } catch{return false;}
+}
+
 
 export class CmsError extends Error {
   constructor(code, status, message) {
@@ -71,6 +95,11 @@ export function validateDraft(type, payload) {
   if (own(payload, "slug") && payload.slug !== "" && !validSlug(payload.slug)) throw badInput("Invalid slug");
   if (own(payload, "summary") && !optional(payload.summary, 2000)) throw badInput("Summary exceeds 2000 characters");
   if (own(payload, "researchStatus") && !researchStages.has(payload.researchStatus)) throw badInput("Unrecognized research stage");
+  for (const [key,max] of Object.entries(LIMITS)) {
+    if(own(payload,key)&&!optional(payload[key],max))throw badInput("Invalid or overlong field: "+key);
+  }
+  if(own(payload,"url")&&payload.url&&!safeExternalUrl(payload.url))throw badInput("Unsafe external URL");
+  if(own(payload,"repository")&&payload.repository&&!safeExternalUrl(payload.repository))throw badInput("Unsafe repository URL");
   return structuredClone(payload);
 }
 export function publicPathFor(type, slug) {
@@ -92,10 +121,28 @@ export function projectPublicRevision(type, raw) {
   const summary = safeString(payload.summary, 2000);
   const slug = payload.slug;
   if (!title || !summary || !validSlug(slug)) throw badInput("Publication requires title, summary and slug");
+  for (const field of REQUIRED[type]) {
+    if(field==="researchStatus"){
+      if(!researchStages.has(payload.researchStatus))throw badInput("Research status required");
+    } else if(!string(payload[field],LIMITS[field]||4000)){
+      throw badInput("Publication field required: "+field);
+    }
+  }
+  if(type==="research"&&payload.researchStatus==="published"&&!safeExternalUrl(payload.evidenceUrl))
+    throw badInput("Research published status requires verifiable HTTPS evidence");
+  if(type==="resume")checkedUuid(payload.mediaAssetId);
   const extra = {};
+  // Include only vetted published fields needed by their versioned public schema.
+  for (const field of REQUIRED[type]) {
+    if(field!=="mediaAssetId"&&typeof payload[field]==="string"&&payload[field].length<=(LIMITS[field]||4000)){
+      extra[field]=payload[field];
+    }
+  }
   if (type === "research") {
-    if (!researchStages.has(payload.researchStatus)) throw badInput("Research status required");
     extra.researchStatus = payload.researchStatus;
+    for (const key of ["researchQuestion","methods","results","limitations","evidenceUrl"]) {
+      if (typeof payload[key] === "string" && payload[key].length <= 10000) extra[key] = payload[key];
+    }
   }
   if (type === "project") {
     for (const key of ["role", "problem", "approach", "outcome", "limitations"]) {
@@ -107,6 +154,5 @@ export function projectPublicRevision(type, raw) {
   }
   const publicPath = publicPathFor(type, slug);
   const safe = Object.freeze({ contentType: type, slug, title, summary, ...extra });
-  if (!stateValues.has("published")) throw new Error("Internal status invariant");
   return Object.freeze({ publicPath, publicPayload: safe });
 }

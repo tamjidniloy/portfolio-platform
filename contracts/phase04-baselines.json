@@ -54,12 +54,21 @@
     "apiOperations": 29
   },
   "engineeringGatesStillOpen": [
-    "Execute/test real reviewed 19-table versioned migration using isolated staging and role grants",
-    "Implement and verify real WebAuthn credential enrollment/login/recovery/CSRF/owner provisioning",
-    "Implement/test 37 API operations and 41 UI/SSR routes with real source DB",
-    "Implement privacy retention and deletion jobs, privacy/legal notices and provider contracts",
-    "Backup/restore, browser E2E, security, WCAG, performance and launch signoffs"
+    "Physical Windows Hello and backup passkey enrollment; manual owner recovery rehearsal",
+    "Real staging PostgreSQL migration, independently scoped roles, encrypted backup and restore in actual provider",
+    "Authenticated browser end-to-end WCAG/accessibility, performance and CDN unpublish checks",
+    "Media/contact provider, legal-policy and full 37 API operations (remaining Phase04.4/04.5)",
+    "Formal owner launch acceptance"
   ],
   "migrations": "APPROVED_TARGET_SCHEMA_REFERENCE_NOT_YET_PRODUCTION_MIGRATED",
-  "runtimeCompletion": false
+  "runtimeCompletion": false,
+  "releaseEngineeringEvidence": {
+    "migrations": 4,
+    "appTables": 19,
+    "cryptoWebAuthnSimulated": true,
+    "retentionLegalHoldTested": true,
+    "ciEncryptedRestore": true,
+    "actualStagingTested": false,
+    "actualOwnerAuthenticatorTested": false
+  }
 }

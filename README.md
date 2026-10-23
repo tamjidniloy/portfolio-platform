@@ -45,3 +45,7 @@ Owner acceptance: [decision/evidence record](docs/phase04/RELEASE1_OWNER_ACCEPTA
 ## Phase 04.3 CMS/publishing candidate
 
 [Phase 04.3 handoff](docs/phase04/04.3_CMS_IMPLEMENTATION.md) documents the owner-bound draft/edit/history/preview/publish/unpublish/restore service, private React Router editor, published-only Work/Research SSR, canonical `/projects` and protected JSON APIs. CMS is disabled unless `CMS_API_ENABLED=true` and separate approved DB-R1/CSRF/origin settings are supplied. **Do not activate CMS against production before real WebAuthn login and migration/security tests are complete.** Native PostgreSQL CI tests use the disposable `devfolio_cms_ci` database only.
+
+## Integrated R1 DB / Passkeys / CMS
+
+Use [approved migration runbook](docs/phase04/04.1_RELEASE_MIGRATIONS_RUNBOOK.md), [offline owner WebAuthn provisioning](docs/phase04/04.2_OWNER_PASSKEY_RUNBOOK.md), [CMS implementation](docs/phase04/04.3_CMS_IMPLEMENTATION.md) and [retention operations](docs/phase04/04.3_RETENTION_OPERATIONS.md). Database migration/retention commands require exact operator confirmation; production must use distinct `CMS_DATABASE_URL` and restricted `CMS_PUBLIC_DATABASE_URL`. The `CMS_API_ENABLED` and `CMS_AUTH_ENABLED` flags remain OFF by default; no real owner device, staging or production environment was used for CI. The updated feature branch is `feat/phase04-release1-unblock`.

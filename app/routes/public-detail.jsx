@@ -1,12 +1,12 @@
 import { redirect, useLoaderData } from "react-router";
 import { PublicShell } from "../components/public-shell.jsx";
-import { getCmsPool } from "../../server/cms/pool.js";
+import { getCmsPublicPool } from "../../server/cms/pool.js";
 import { getPublicSnapshot, publishedRedirect } from "../../server/cms/public-reader.js";
 
 export async function loader({request,params}){
   const pathname=new URL(request.url).pathname;
   const area=pathname.startsWith("/research/")?"research":pathname.startsWith("/writing/")?"writing":"projects";
-  const pool=getCmsPool();
+  const pool=getCmsPublicPool();
   const item=pool?await getPublicSnapshot(pool,`/${area}/${params.slug}`):null;
   if(!item && pool) {
     const destination=await publishedRedirect(pool,`/${area}/${params.slug}`);

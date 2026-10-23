@@ -9,9 +9,11 @@ test("untrusted actors cannot access a resource by forging an ownerId property",
   assert.throws(() => assertOwnedResource(null, { created_by:"owner" }), OwnerNotAuthorized);
 });
 
-test("unapproved owner auth HTTP routes are not present in the active server/router", async () => {
+test("approved passkey routes are feature gated and password/email auth stays absent", async () => {
   const routes = await readFile("app/routes.js","utf8");
   const server = await readFile("server.js","utf8");
-  assert.doesNotMatch(routes, /admin\/login|admin\/recover|auth\/password|auth\/email/);
+  assert.match(routes, /admin\/login/);
+  assert.match(server, /CMS_AUTH_ENABLED === "true"/);
+  assert.doesNotMatch(server, /auth\/password|auth\/email/);
   assert.doesNotMatch(server, /app\.post\(["']\/api\/v1\/auth|app\.get\(["']\/admin\/login/);
 });

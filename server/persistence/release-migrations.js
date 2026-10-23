@@ -72,5 +72,5 @@ export async function applyReleaseMigrations(pool,{databaseUrl,migrations,apply=
     }
     await client.query(apply?"COMMIT":"ROLLBACK");begun=false;
     return Object.freeze({database:db,mode:apply?"applied":"dry-run",applied,unchanged});
-  }catch(error){if(begun){try{await client.query("ROLLBACK");}catch{}}throw error;}finally{client.release();}
+  }catch(error){if(begun){try{await client.query("ROLLBACK");}catch{ /* Preserve initial error. */ }}throw error;}finally{client.release();}
 }
