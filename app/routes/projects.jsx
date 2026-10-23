@@ -14,12 +14,12 @@ export function meta(){
 export default function Projects(){
   const {items}=useLoaderData();
   return <PublicShell>
-    <main className="section-content" aria-labelledby="projects-heading">
+    <section className="section-content" aria-labelledby="projects-heading">
       <p className="eyebrow">DEVFOLIO OS / WORK</p>
       <h1 id="projects-heading">Selected work</h1>
       {items.length?<ul>{items.map(x=><li key={x.slug}>
         <h2><Link to={`/projects/${x.slug}`}>{x.title}</Link></h2><p>{x.summary}</p>
       </li>)}</ul>:<p role="status">No published projects available.</p>}
-    </main>
+    </section>
   </PublicShell>;
 }

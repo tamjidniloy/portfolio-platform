@@ -34,8 +34,23 @@ export async function getPublicList(pool, { type, limit = 20, offset = 0 } = {})
   }).filter(Boolean));
 }
 export async function publishedSitemapPaths(pool) {
-  const r=await pool.query("SELECT public_path FROM published_snapshots ORDER BY public_path");
-  return Object.freeze(r.rows.map(x=>x.public_path).filter(x=>typeof x==="string"&&publicPath.test(x)));
+  const r=await pool.query("SELECT public_path,public_payload FROM published_snapshots ORDER BY public_path");
+  const routes = {
+    project:"/projects",research:"/research",article:"/writing",profile:"/about",
+    site_settings:"/",education:"/education",experience:"/experience",skill:"/skills",
+    achievement:"/achievements",publication:"/research",open_source:"/projects",
+    social_link:"/about",
+  };
+  const published=new Set();
+  for (const row of r.rows) {
+    const dto=safePublicDto(row.public_payload);
+    if (!dto || !publicPath.test(row.public_path)) continue;
+    // Include detail URLs only if a real SSR route exists; secondary items
+    // contribute their existing parent listing page instead of a 404 detail.
+    if (["project","research","article"].includes(dto.contentType)) published.add(row.public_path);
+    else if (routes[dto.contentType]) published.add(routes[dto.contentType]);
+  }
+  return Object.freeze([...published].sort());
 }
 
 /** Redirect only when the destination is still actively published. */

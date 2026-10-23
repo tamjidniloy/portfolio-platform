@@ -15,9 +15,17 @@ function checkedNote(note) {
   if (note !== undefined && (typeof note !== "string" || note.length > 1000)) throw badInput("Invalid change note");
   return note ?? null;
 }
+function canonicalJson(value, depth=0) {
+  if (depth > 50) throw badInput("JSON nesting too deep");
+  if (Array.isArray(value)) return value.map(v=>canonicalJson(v,depth+1));
+  if (value && typeof value === "object") {
+    return Object.fromEntries(Object.keys(value).sort().map(k=>[k,canonicalJson(value[k],depth+1)]));
+  }
+  return value;
+}
 function revisionJson(payload) {
-  const json = JSON.stringify(payload);
-  return { json, digest: sha(json) };
+  const json = JSON.stringify(canonicalJson(payload));
+  return {json,digest:sha(json)};
 }
 function normalizeItem(row) {
   return {
@@ -43,10 +51,13 @@ async function lockedItem(client, id, actor, version) {
 async function revisionFor(client,id,revisionNo) {
   checkedRevision(revisionNo);
   const r=await client.query(
-    "SELECT payload,revision_no FROM content_revisions WHERE item_id=$1::uuid AND revision_no=$2",
+    "SELECT payload,revision_no,payload_sha256 FROM content_revisions WHERE item_id=$1::uuid AND revision_no=$2",
     [id,revisionNo],
   );
   if (r.rows.length!==1) absent();
+  if (revisionJson(r.rows[0].payload).digest !== r.rows[0].payload_sha256) {
+    throw new CmsError("REVISION_INTEGRITY",409,"Stored revision integrity check failed");
+  }
   return r.rows[0];
 }
 async function audit(client, actorId, targetId, action) {
@@ -222,6 +233,11 @@ export async function publishRevision(pool, session, {id,revisionNo,expectedVers
           `INSERT INTO slug_redirects(from_path,to_path,http_status,is_active)
            VALUES($1,$2,308,true)
            ON CONFLICT(from_path) DO UPDATE SET to_path=excluded.to_path,is_active=true`,
+          [oldPath,publicPath],
+        );
+        // Collapse older redirect chains to the latest canonical page.
+        await client.query(
+          "UPDATE slug_redirects SET to_path=$2 WHERE to_path=$1 AND from_path<>$2",
           [oldPath,publicPath],
         );
       }
