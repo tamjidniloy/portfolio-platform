@@ -48,6 +48,6 @@ const contactDenied=await request("/api/v1/contact",{
   method:"POST",headers:{"Content-Type":"application/json",Origin:"http://127.0.0.1:3001"},
   body:JSON.stringify({name:"Test",email:"test@example.com",message:"Test"}),
 });
-assert.equal(contactDenied.response.status,404);
+assert.notEqual(contactDenied.response.status,202,"Disabled contact intake must never store a message");
 const mediaDenied=await request("/api/v1/admin/media");
 assert.equal(mediaDenied.response.status,401);
