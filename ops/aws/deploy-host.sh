@@ -22,7 +22,12 @@ grep -q '^CMS_PUBLIC_DATABASE_URL=postgres' /etc/devfolio/runtime.env.next || { 
 chown root:devfolio /etc/devfolio/runtime.env.next
 chmod 0640 /etc/devfolio/runtime.env.next
 if grep -q '^NODE_ENV=' /etc/devfolio/runtime.env.next; then
-  grep -q '^NODE_ENV=productiongrep -q '^CMS_API_ENABLED=true$' /etc/devfolio/runtime.env || { echo "CMS not explicitly enabled" >&2; exit 3; }
+  grep -q '^NODE_ENV=production$' /etc/devfolio/runtime.env.next || { echo "Nonproduction runtime secret refused" >&2; exit 3; }
+fi
+grep -q '^CMS_PUBLIC_ORIGIN=https://' /etc/devfolio/runtime.env.next || { echo "Production HTTPS origin missing" >&2; exit 3; }
+grep -q '^CMS_AUTH_ENABLED=true$' /etc/devfolio/runtime.env.next || { echo "Passkey auth not enabled" >&2; exit 3; }
+grep -q '^CMS_API_ENABLED=true$' /etc/devfolio/runtime.env.next || { echo "CMS is disabled" >&2; exit 3; }
+mv -f /etc/devfolio/runtime.env.next /etc/devfolio/runtime.env
 directory="/opt/devfolio/releases/$release_sha"
 temp="$(mktemp -d)"
 trap 'rm -rf "$temp"' EXIT
