@@ -1,0 +1,41 @@
+Check ID,Class,Check,Status,Responsibility,Evidence expected,Evidence ref
+DB33-001,MODEL,All tables mapped to domains,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-002,MODEL,Public snapshot uniqueness,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-003,MODEL,Revision composite FK,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-004,MODEL,Slug normalization and redirect safety,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-005,MODEL,Content type allowlist,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-006,MODEL,Singleton profile/settings policy,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-007,MODEL,Research status separates visibility,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-008,MODEL,Published-only tag/link/media projection,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-009,SECURITY,Admin session revocation,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-010,SECURITY,OTP replay rejection,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-011,SECURITY,Password reset one use,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-012,SECURITY,Contact PII isolation,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-013,SECURITY,Media unpublished protection,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-014,SECURITY,Public query negative draft test,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-015,SECURITY,No PII in outbox,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-016,SECURITY,No raw payload serialization,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-017,TRANSACTIONS,Draft save optimistic conflict,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-018,TRANSACTIONS,Publish atomicity,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-019,TRANSACTIONS,Unpublish immediate DB visibility,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-020,TRANSACTIONS,Restore creates new draft revision,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-021,TRANSACTIONS,Outbox retry idempotent,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-022,TRANSACTIONS,Rollback publication on failed SQL,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-023,TRANSACTIONS,Slug collision rollback,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-024,TRANSACTIONS,Concurrent publish race,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-025,OPERATIONS,Index coverage and query budgets,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-026,OPERATIONS,Backup snapshot consistency,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-027,OPERATIONS,PITR restore drill,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-028,OPERATIONS,Schema migration rollback,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-029,OPERATIONS,Compatibility deploy ordering,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-030,OPERATIONS,Data retention purge,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-031,OPERATIONS,Audit redaction review,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-032,OPERATIONS,Staging seed fake-data flags,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-033,TRACEABILITY,FR IDs mapped to entities,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-034,TRACEABILITY,NFR-001 accessibility deferred actual app,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-035,TRACEABILITY,NFR-003 SSR published DTO,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-036,TRACEABILITY,NFR-011 FK/unique/transaction,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-037,TRACEABILITY,NFR-012 backup restore evidence,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-038,TRACEABILITY,SRS approval still blocked,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-039,TRACEABILITY,API contracts still unlocked,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
+DB33-040,TRACEABILITY,Penpot 142 QA unchanged,NOT_RUN,Owner/architect/tester,Document or execution evidence required,NONE
