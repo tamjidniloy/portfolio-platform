@@ -7,6 +7,14 @@ import {
   isRouteErrorResponse,
 } from "react-router";
 import "./styles.css";
+import { getCmsPool } from "../server/cms/pool.js";
+import { getPublicList } from "../server/cms/public-reader.js";
+
+export async function loader() {
+  const pool=getCmsPool();
+  const articles=pool ? await getPublicList(pool,{type:"article",limit:1}) : [];
+  return Response.json({showWriting:articles.length>0},{headers:{"Cache-Control":"no-store"}});
+}
 
 export function Layout({ children }) {
   return (

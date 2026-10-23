@@ -1,5 +1,8 @@
 import { createRequestHandler } from "@react-router/express";
 import express from "express";
+import { createCmsApiRouter } from "./server/cms/http.js";
+import { getCmsPool, closeCmsPool } from "./server/cms/pool.js";
+import { publishedSitemapPaths } from "./server/cms/public-reader.js";
 import { readConfig } from "./server/config.js";
 import { createDatabaseReadiness } from "./server/database.js";
 import { createReadinessHandler, livenessHandler } from "./server/probes.js";
@@ -20,6 +23,26 @@ app.use((_request, response, next) => {
 
 app.get("/healthz", livenessHandler);
 app.get("/readyz", createReadinessHandler(database.check));
+
+const cmsPool = getCmsPool();
+if (cmsPool) {
+  app.use("/api/v1", createCmsApiRouter({
+    pool: cmsPool,
+    publicOrigin: process.env.CMS_PUBLIC_ORIGIN,
+    csrfSecret: process.env.CMS_CSRF_SECRET,
+    isProduction: config.isProduction,
+  }));
+  app.get("/sitemap.xml", async (_request, response) => {
+    try {
+      const paths = await publishedSitemapPaths(cmsPool);
+      const origin = new URL(process.env.CMS_PUBLIC_ORIGIN).origin;
+      const xml = ['<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+        ...paths.map(path=>'<url><loc>'+origin+path+'</loc></url>'), '</urlset>'].join("");
+      response.type("application/xml").send(xml);
+    } catch { response.status(503).type("text/plain").send("Sitemap unavailable"); }
+  });
+}
 
 let vite;
 if (config.isProduction) {
@@ -51,7 +74,7 @@ const server = app.listen(config.port, config.host, () => {
 
 async function shutdown() {
   server.close();
-  await Promise.allSettled([database.close(), vite?.close()]);
+  await Promise.allSettled([database.close(), closeCmsPool(), vite?.close()]);
 }
 
 process.once("SIGINT", () => void shutdown());
