@@ -1,0 +1,21 @@
+decision_id,topic,proposed_or_preserved_direction,approval_or_resolution,source_stages,decision_gate,verification_expectation
+ADRI-01,Runtime & host,React Router Framework Mode SSR with candidate Express custom server,CANDIDATE_DIRECTION,"03.1,03.2",before Phase04 scaffold,"Benchmark hosting/framework compatibility, SSR auth boundaries"
+ADRI-02,Structure,"Single deployment modular monolith, domain ports and adapter isolation",DESIGN_DIRECTION_APPROVED_IN_03_2,03.2,implement in Phase04 scaffold,Automated forbidden imports and unit tests
+ADRI-03,Public content isolation,Published-only projection and explicit DTO allowlist; separate private revision access,DESIGN_DIRECTION_APPROVED_IN_03_2,"03.2,03.3,03.4",P0 invariant,Anonymous negative SSR/API/sitemap/cache tests
+ADRI-04,Auth primary method,Password plus email challenge historical; WebAuthn/passkey or TOTP stronger option,CONFLICT_REQUIRES_OWNER_DECISION,03.5,before auth implementation,Update approved SRS and threat model; do not claim AAL2 for email
+ADRI-05,Session and CSRF,"Revocable server sessions, secure HttpOnly cookies, origin + CSRF checks",PROPOSED_DESIGN,"03.4,03.5",before protected endpoints,Cookie/session/CSRF integration and replay testing
+ADRI-06,Database persistence,PostgreSQL; private content revisions and published snapshots,CANDIDATE_UNTIL_SRS,03.3,before migrations,"Sign off ERD, constraints, backup/retention rules"
+ADRI-07,Concurrency,Expected revision/If-Match for conflicting edits/publish,CANDIDATE_UNTIL_SRS,"03.2,03.4",before mutation endpoints,409/412/428 and conflict behavior tests
+ADRI-08,Durable work,"Publication commit + outbox; post-commit notifications, idempotent worker",PROPOSED_DESIGN,"03.2,03.3",before workflows,"Transactional rollback, retry, no premature success"
+ADRI-09,Caching,Conservative cache for publish-sensitive content; no shared cache private preview,PROPOSED_DESIGN,"03.4,03.6",before public traffic,Delayed invalidation/unpublish leak tests
+ADRI-10,API surface,SSR loaders/actions primary; narrow JSON resource routes & OpenAPI candidate,CANDIDATE_UNTIL_SRS,03.4,before endpoint lock,Reconcile 29 candidate ops/26 paths; prevent duplicate auth logic
+ADRI-11,Media,Private staging and signature/size/ownership verification before public linkage,PROPOSED_DESIGN,"03.2,03.4,03.5",before media upload,"Signature, ACL, linked-delete, unpublish tests"
+ADRI-12,Contact/privacy,Stored receipt independent of mail success; retention owner decision,PRIVACY_POLICY_OPEN,"03.3,03.4,03.5",before contact launch,"PII retention, replay/idempotency, failure injection"
+ADRI-13,Infrastructure,Staging/production separation and managed host default candidate,PROVIDER_PENDING,03.6,before provider setup,Availability/cost/region and environment control review
+ADRI-14,CI/CD,"Least-privilege OIDC where supported, immutable artifact provenance and review policy",PROPOSED_TEMPLATE_ONLY,03.6,before production CI,Validate actual repo plan permissions and negative deploy checks
+ADRI-15,DR,Backups/PITR and asset alignment; targets are hypotheses,OBJECTIVES_PENDING,"03.3,03.6",before go-live,"Isolated restore and measured RTO/RPO, not paper claim"
+ADRI-16,Observability,"Redacted structured events, meaningful alerting, incident runbooks",PROPOSED_DESIGN,"03.5,03.6",before staging launch,"No secret/PII logs, runbook game-day"
+ADRI-17,Accessibility,"WCAG 2.2 AA as test target, not design-system certification",IMPLEMENTATION_QA_OPEN,"02,03.5,03.7",before production release,Manual keyboard/screen reader plus automated browser checks
+ADRI-18,Visual appearance,Approved dark tokens; Release1 light toggle not approved,DESIGN_DECISION_RECORDED,"02.9,03.0",before theme implementation,Do not ship light toggle; exact font and brand pending
+ADRI-19,Research truthfulness,Research scientific stage distinct from CMS publish state,DESIGN_DIRECTION_APPROVED,"02.7,03.2",P0,Content and model validation
+ADRI-20,GitHub integration,Complete source evidence across stacked branches then main,MERGE_SYNCHRONIZATION_OPEN,"03.5,03.6,03.7",before main handoff closure,Merge PR31 then retarget PR32; inspect actual main tree

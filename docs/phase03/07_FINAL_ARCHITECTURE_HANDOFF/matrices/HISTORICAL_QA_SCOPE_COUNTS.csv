@@ -1,0 +1,6 @@
+phase,planned_cases,original_relative_register,execution_status,source
+03.2,42,matrices/QA_REVIEW_REGISTER.csv,NOT_RUN_IN_DESIGN_HANDOFF,verified original Phase03 source file
+03.3,40,review/QA_REGISTER.csv,NOT_RUN_IN_DESIGN_HANDOFF,verified original Phase03 source file
+03.4,60,review/API34_QA_REGISTER.csv,NOT_RUN_IN_DESIGN_HANDOFF,verified original Phase03 source file
+03.5,80,review/SECURITY_TEST_REGISTER.csv,NOT_RUN_IN_DESIGN_HANDOFF,verified original Phase03 source file
+03.6,96,review/DEVOPS_QA_REGISTER.csv,NOT_RUN_IN_DESIGN_HANDOFF,verified original Phase03 source file

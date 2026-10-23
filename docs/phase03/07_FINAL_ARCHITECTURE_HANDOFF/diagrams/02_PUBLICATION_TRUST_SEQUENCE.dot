@@ -1,0 +1,15 @@
+digraph FLOW {
+ graph [label="Content Lifecycle and Public-Private Trust Gates (candidate)",labelloc=t,fontsize=22,bgcolor="#0f1724",fontcolor="#e4eaf2",pad=.5,ranksep=.6];
+ node [shape=box,style="rounded,filled",fillcolor="#1a293a",color="#6c879c",fontcolor="#eff7fd",fontname="DejaVu Sans",fontsize=10];edge[color="#70d9c3",fontcolor="#a8c8d9",fontsize=9];rankdir=LR;
+ A[label="Owner auth + CSRF\nobject-level authorization",fillcolor="#403044"];
+ B[label="Draft validate +\nexpected revision"];
+ C[label="Transaction: revision\n+ audit + stored draft"];
+ D[label="Private preview\nno-store / noindex",fillcolor="#403044"];
+ E[label="Publish validation\nexpected revision + ACL"];
+ F[label="Transaction: publish snapshot\n+ revision + outbox",fillcolor="#143f39"];
+ G[label="Public-only SSR/API\n+ canonical sitemap",fillcolor="#143f39"];
+ H[label="Worker retries cache\ninvalidations / email"];
+ I[label="Unpublish revokes public\nread authority immediately",fillcolor="#60302e"];
+ A->B->C->D->E->F->G;F->H[style=dashed,label="after commit"];G->I[label="owner command"];
+ I->G[style=dashed,color="#e89f93",label="must deny after revoke"];
+}
