@@ -41,7 +41,17 @@ Run:
 
 Enter your private email address and a strong password (at least 12 characters). The password input is hidden in the interactive terminal and stored as a salted scrypt hash in PostgreSQL, not as plaintext in .env.
 
-This setup intentionally refuses to create a second owner. To reset your password, use a controlled database administrator procedure, not public signup. Back up your database and password securely.
+This setup intentionally refuses to create a second owner. It cannot be used to change your existing password.
+
+### Changing your owner password safely
+
+If you know your current password, run this in your local WebStorm terminal (with your existing `.env` and PostgreSQL database):
+
+    npm run portfolio:change-password
+
+Enter your existing admin email, current password, new password (at least 12 characters), and confirmation. Password input is hidden. You do not need to stop the server, drop tables, change your admin email or recreate the database. A successful change immediately revokes all previous owner sessions and pending verification codes; sign in again with your **new password** and a new six-digit email code.
+
+The command requires the **current** password. If you forgot it, do not delete your database or rerun setup. Use a controlled local database administrator recovery procedure instead. Never put your password in a shared SQL script, URL, screenshots, `.env`, or Git commits.
 
 ## 4. Start the portfolio
 
