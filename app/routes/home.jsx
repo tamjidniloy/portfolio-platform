@@ -52,7 +52,8 @@ function ProjectCard({ project, index }) {
     </div>
     <div className="exp-project-details">
       <div><p className="exp-project-type">{project.category || "Selected work"}{project.year ? " · " + project.year : ""}</p>
-        <h3>{project.title}</h3><p className="exp-project-description">{project.description}</p></div>
+        <h3>{project.title}</h3><p className="exp-project-description">{project.description}</p>
+        {project.outcome && <p className="exp-project-outcome"><strong>OUTCOME</strong>{project.outcome}</p>}</div>
       {project.stack && <span className="exp-project-stack">{project.stack}</span>}
     </div>
     <div className="exp-project-links">
