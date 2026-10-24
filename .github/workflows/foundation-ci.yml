@@ -12,6 +12,8 @@ jobs:
       DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_ci
       HOST: 127.0.0.1
       PORT: "3000"
+      # Ephemeral CI-only HMAC key; never use on a real deployment.
+      PORTFOLIO_AUTH_SECRET: ci-only-portfolio-authentication-fixture-key-not-for-deployment
       INTEGRATION_TEST_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_integrations_ci
       RETENTION_TEST_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_retention_ci
       RELEASE_MIGRATION_TEST_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_release_migration_ci
@@ -112,6 +114,8 @@ jobs:
             sleep 1
           done
           node scripts/smoke.mjs
+      - name: Authenticated OTP to React Router dashboard regression
+        run: node scripts/studio-auth-smoke.mjs
       - name: Grant CMS test database public read facade and deny private access
         shell: bash
         run: |
