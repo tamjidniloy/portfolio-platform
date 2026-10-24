@@ -93,7 +93,7 @@ test("contact form requires consent and validates bounded fields", () => {
   assert.throws(() => validateContact({ ...valid, consent: false }), /agree/);
   assert.throws(() => validateContact({ ...valid, email: "not-an-email" }), /email/);
   assert.throws(() => validateContact({ ...valid, message: "short" }), /20/);
-  assert.throws(() => validateContact({ ...valid, subject: "a\\nb" }), /subject/);
+  assert.throws(() => validateContact({ ...valid, subject: "a" + String.fromCharCode(10) + "b" }), /subject/);
   assert.throws(() => validateContact({ ...valid, website: "automated-entry" }), /Unable/);
 });
 
