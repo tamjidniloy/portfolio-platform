@@ -48,6 +48,9 @@ test("neither ASG initialization nor release SSM executes artifact scripts befor
     assert.ok(sha>=0&&sha<kms,name+" must verify SHA before signature verification");
   }
   assert.match(workflow,/aws s3 cp s3:\/\/\$AWS_RELEASE_BUCKET\/releases\/\$TARGET_ENV\/\$target_sha\.sig/);
+  assert.ok(block.indexOf("source /etc/devfolio/host.env") < block.indexOf("aws s3 cp"),"SSM shell must initialize AWS credentials region first");
+  assert.match(block,/export AWS_DEFAULT_REGION=/);
+
 });
 test("failed release restores both previous code AND previous runtime credentials",()=>{
   const deploy=read("ops/aws/deploy-host.sh");
