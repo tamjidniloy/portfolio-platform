@@ -1,0 +1,17 @@
+
+{
+  "watch": [
+    "server.js",
+    "server",
+    "domain",
+    ".env"
+  ],
+  "ext": "js,mjs,cjs,json,env",
+  "ignore": [
+    "node_modules/**",
+    "build/**",
+    ".git/**"
+  ],
+  "delay": "300ms",
+  "exec": "node --env-file-if-exists=.env server.js"
+}

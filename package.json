@@ -43,18 +43,18 @@
     "qa:perf:fixture": "node scripts/phase046-performance.mjs"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "3.1136.0",
+    "@aws-sdk/s3-presigned-post": "3.1136.0",
     "@react-router/express": "7.18.4",
     "@react-router/node": "7.18.4",
+    "@simplewebauthn/browser": "14.0.0",
+    "@simplewebauthn/server": "14.0.3",
     "express": "5.1.0",
     "isbot": "5.1.31",
     "pg": "8.16.3",
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "react-router": "7.18.4",
-    "@simplewebauthn/server": "14.0.3",
-    "@simplewebauthn/browser": "14.0.0",
-    "@aws-sdk/client-s3": "3.1136.0",
-    "@aws-sdk/s3-presigned-post": "3.1136.0"
+    "react-router": "7.18.4"
   },
   "devDependencies": {
     "@eslint/js": "9.39.1",
@@ -63,6 +63,7 @@
     "eslint": "9.39.1",
     "eslint-plugin-react": "7.37.5",
     "globals": "16.5.0",
+    "nodemon": "^3.1.14",
     "prettier": "3.6.2",
     "vite": "7.3.7"
   }
