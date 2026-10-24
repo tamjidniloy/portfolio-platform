@@ -58,3 +58,7 @@ Use [approved migration runbook](docs/phase04/04.1_RELEASE_MIGRATIONS_RUNBOOK.md
 ## Phase 04.5 — Deployment infrastructure reference (not provisioned)
 
 The no-Docker Terraform AWS staging reference, OIDC-restricted/manual deployment release workflow, safe structured HTTP telemetry, alarms, PITR/restore drill and operating runbooks are documented in [04.5 deployment and observability](docs/phase04/04.5_DEPLOYMENT_INFRA_OBSERVABILITY.md). **Do not confuse merged code or CI verification with running hosting.** AWS provider/region/budget, GitHub Environment permissions, real deployment, DB migrations, passkeys, external provider functionality and measured operational drills are pending owner-controlled execution and approval. Phase 04.6 final QA remains unexecuted.
+
+## Phase 04.6 engineering QA and launch status
+
+[Master QA/launch handoff](docs/phase04/04.6_FINAL_QA_HANDOFF.md), [QA case triage](docs/phase04/04.6_CASE_TRIAGE.csv), [launch gates](docs/phase04/04.6_LAUNCH_DECISION.md) and [reviewable acceptance matrix](docs/phase04/04.6_EXECUTION_MATRIX.csv) cover all nine P4-054–062 engineering workstreams. New real Chromium anonymous axe/keyboard/responsive, HTTP negative, native DB, case count integrity and bounded local performance CI exist. **Formal production readiness remains NO GO** until live staging, provider/owner passkeys, verified restore/rollback, real content/privacy/legal, WCAG assistive technology, security review and explicit owner approval.

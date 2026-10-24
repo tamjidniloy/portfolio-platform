@@ -34,7 +34,7 @@ export default function Contact({loaderData}){
    formElement.reset();
   }catch(e){setError(e.message);}finally{setBusy(false);}
  }
- return <PublicShell><main className="section-content">
+ return <PublicShell><section className="section-content">
   <h1>Contact</h1>
   {enabled?<form onSubmit={submit}>
    <label htmlFor="contact-name">Name</label><input id="contact-name" name="name" required maxLength={120}/>
@@ -49,5 +49,5 @@ export default function Contact({loaderData}){
    <button type="submit" disabled={busy}>{busy?"Submitting…":"Send message"}</button>
   </form>:<p role="status">The contact form is not accepting messages right now.</p>}
   {result&&<p role="status">{result}</p>}{error&&<p role="alert">{error}</p>}
- </main></PublicShell>;
+ </section></PublicShell>;
 }

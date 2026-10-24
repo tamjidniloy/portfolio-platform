@@ -48,6 +48,22 @@ export function auditSources(load=(path)=>readFileSync(path,"utf8")){
   const gaps=parseCsv(load(sources[1][1]));
   for(const gap of gaps)assert.ok(requirements.includes(gap.requirement_id),"Unmapped gap requirement: "+gap.requirement_id);
   const inherited=["architecture32","database33","api34","security35","devops36"].reduce((s,k)=>s+register[k].total,0);
+  const triage=parseCsv(load("docs/phase04/04.6_CASE_TRIAGE.csv"));
+  const reconciliation=parseCsv(load("docs/phase04/04.6_REQUIREMENTS_R1_RECONCILIATION.csv"));
+  const gapReview=parseCsv(load("docs/phase04/04.6_GAP_REVIEW.csv"));
+  assert.equal(triage.length,460,"All inherited cases must be explicitly inventoried");
+  assert.equal(reconciliation.length,76,"All R1 requirements must be recorded");
+  assert.equal(gapReview.length,18,"All 18 gap cases must be reviewed");
+  const expectedCases=new Set(Object.entries(register).filter(([k])=>k!=="requirement"&&k!=="gap").flatMap(([,v])=>v.identifiers));
+  assert.equal(expectedCases.size,460,"Unique historical IDs expected");
+  for(const row of triage){
+    assert.ok(expectedCases.delete(row.case_id),"Unexpected or duplicated original case ID "+row.case_id);
+    assert.equal(row.execution_state,"NOT_REEXECUTED_AS_HISTORICAL_CASE");
+  }
+  assert.equal(expectedCases.size,0,"No historical case may be dropped");
+  assert.deepEqual(reconciliation.map(r=>r.requirement_id),requirements);
+  assert.deepEqual(gapReview.map(r=>r.gap_id),gaps.map(r=>r.proposed_test_id));
+
   assert.equal(inherited,318);
   return {requirement_count:76,gap_count:18,phase02_cases:142,phase03_cases:318,total_inherited_cases:460,
     inventory_checked:true,case_execution_derived:false,real_browser_wcag_verified:false,
