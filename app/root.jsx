@@ -7,14 +7,6 @@ import {
   isRouteErrorResponse,
 } from "react-router";
 import "./styles.css";
-import { getCmsPublicPool } from "../server/cms/pool.js";
-import { getPublicList } from "../server/cms/public-reader.js";
-
-export async function loader() {
-  const pool=getCmsPublicPool();
-  const articles=pool ? await getPublicList(pool,{type:"article",limit:1}) : [];
-  return Response.json({showWriting:articles.length>0},{headers:{"Cache-Control":"no-store"}});
-}
 
 export function Layout({ children }) {
   return (
@@ -44,7 +36,7 @@ export function ErrorBoundary({ error }) {
     <main className="error-layout">
       <p className="eyebrow">DEVFOLIO OS</p>
       <h1>{status === 404 ? "Page not found" : "This page is unavailable"}</h1>
-      <p>Return to the foundation homepage to continue.</p>
+      <p>Return to the portfolio homepage.</p>
       <a className="button-link" href="/">
         Go home
       </a>
