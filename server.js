@@ -1,5 +1,6 @@
 import { createRequestHandler } from "@react-router/express";
 import express from "express";
+import { trustedProxySubnet } from "./server/network/trusted-proxy.js";
 import { requestObservability } from "./server/observability.js";
 import { createCmsApiRouter } from "./server/cms/http.js";
 import { createOwnerAuthRouter } from "./server/identity/auth-http.js";
@@ -13,6 +14,8 @@ import { createReadinessHandler, createApplicationReadiness, livenessHandler } f
 const config = readConfig(process.env);
 const database = createDatabaseReadiness(config.databaseUrl);
 const app = express();
+const proxySubnet = trustedProxySubnet(process.env.TRUST_PROXY_CIDR);
+if (proxySubnet) app.set("trust proxy", proxySubnet);
 
 app.disable("x-powered-by");
 app.use(requestObservability());

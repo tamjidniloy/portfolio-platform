@@ -14,6 +14,8 @@ command -v systemctl >/dev/null
 source /etc/devfolio/host.env
 export AWS_DEFAULT_REGION="$AWS_REGION" AWS_REGION
 test -n "$ENV_SECRET_ARN" && test -n "$AWS_REGION" && test -n "$RELEASE_SIGNING_KEY_ARN"
+temp="$(mktemp -d)"
+trap 'rm -rf "$temp"; rm -f /etc/devfolio/runtime.env.next' EXIT
 aws secretsmanager get-secret-value --region "$AWS_REGION" --secret-id "$ENV_SECRET_ARN" \
   --query SecretString --output text > /etc/devfolio/runtime.env.next
 test -s /etc/devfolio/runtime.env.next || { echo "Runtime secret is unset" >&2; exit 3; }
@@ -28,10 +30,7 @@ fi
 grep -q '^CMS_PUBLIC_ORIGIN=https://' /etc/devfolio/runtime.env.next || { echo "Production HTTPS origin missing" >&2; exit 3; }
 grep -q '^CMS_AUTH_ENABLED=true$' /etc/devfolio/runtime.env.next || { echo "Passkey auth not enabled" >&2; exit 3; }
 grep -q '^CMS_API_ENABLED=true$' /etc/devfolio/runtime.env.next || { echo "CMS is disabled" >&2; exit 3; }
-mv -f /etc/devfolio/runtime.env.next /etc/devfolio/runtime.env
 directory="/opt/devfolio/releases/$release_sha"
-temp="$(mktemp -d)"
-trap 'rm -rf "$temp"' EXIT
 aws s3 cp "s3://$artifact_bucket/releases/$environment/$release_sha.tgz" "$temp/release.tgz" --only-show-errors
 echo "$release_sha  $temp/release.tgz" | sha256sum --check --status
 aws s3 cp "s3://$artifact_bucket/releases/$environment/$release_sha.sig" "$temp/release.sig" --only-show-errors
@@ -54,21 +53,40 @@ else
   test -f "$directory/build/server/index.js"
   test -f "$directory/server.js"
   test -d "$directory/node_modules"
-  chown -R devfolio:devfolio "$directory"
   touch "$directory/.ready"
 fi
+# Production code is never writable by the unprivileged application process.
+chown -R root:devfolio "$directory"
+chmod -R a+rX,go-w "$directory"
 old="$(readlink -f /opt/devfolio/current || true)"
+had_previous_runtime=0
+if [[ -f /etc/devfolio/runtime.env ]]; then
+  cp -p /etc/devfolio/runtime.env "$temp/previous-runtime.env"
+  had_previous_runtime=1
+fi
+rollback_previous_release() {
+  if [[ "$had_previous_runtime" -eq 1 ]]; then
+    cp -p "$temp/previous-runtime.env" /etc/devfolio/runtime.env
+  else
+    rm -f /etc/devfolio/runtime.env
+  fi
+  if [[ -n "$old" && -f "$old/.ready" ]]; then
+    ln -sfn "$old" /opt/devfolio/current.next
+    mv -Tf /opt/devfolio/current.next /opt/devfolio/current
+    systemctl restart devfolio.service || true
+  else
+    systemctl stop devfolio.service || true
+  fi
+}
+# Change credential file only AFTER verified, safely extracted, ownership-locked artifact.
+mv -f /etc/devfolio/runtime.env.next /etc/devfolio/runtime.env
 ln -sfn "$directory" /opt/devfolio/current.next
 mv -Tf /opt/devfolio/current.next /opt/devfolio/current
 systemctl daemon-reload
 systemctl enable devfolio.service
 if ! systemctl restart devfolio.service; then
   echo "Service restart failed; beginning rollback" >&2
-  if [[ -n "$old" && -f "$old/.ready" ]]; then
-    ln -sfn "$old" /opt/devfolio/current.next
-    mv -Tf /opt/devfolio/current.next /opt/devfolio/current
-    systemctl restart devfolio.service || true
-  fi
+  rollback_previous_release
   exit 4
 fi
 healthy=0
@@ -78,13 +96,7 @@ for n in $(seq 1 30); do
 done
 if [[ "$healthy" != 1 ]]; then
   echo "Readiness failed, reverting previous release" >&2
-  if [[ -n "$old" && -f "$old/.ready" ]]; then
-    ln -sfn "$old" /opt/devfolio/current.next
-    mv -Tf /opt/devfolio/current.next /opt/devfolio/current
-    systemctl restart devfolio.service || true
-  else
-    systemctl stop devfolio.service || true
-  fi
+  rollback_previous_release
   exit 4
 fi
 echo "Release verified, readiness passed; SHA-256: $release_sha"

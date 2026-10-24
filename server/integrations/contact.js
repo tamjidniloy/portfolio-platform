@@ -117,7 +117,7 @@ export function createContactRouter({pool,publicOrigin,noticeVersion,ipPepper,en
       if(req.headers.origin!==origin)throw fail("CONTACT_ORIGIN",403,"Origin mismatch");
       const data=await receiveContact(pool,{
         payload:req.body,noticeVersion,
-        ipDigest:digestClientIp(req.socket.remoteAddress||"",ipPepper),
+        ipDigest:digestClientIp(req.ip||req.socket.remoteAddress||"",ipPepper),
       });
       res.set("Cache-Control","no-store").status(202).json(data);
     }catch(error){next(error);}
