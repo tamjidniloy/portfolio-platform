@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useLoaderData } from "react-router";
 import { getStudioContent } from "../../server/studio/index.js";
+import { contactDeliveryEnabled } from "../../server/studio/contact.js";
 import { PublicShell } from "../components/public-shell.jsx";
 
 export async function loader() {
-  return Response.json(await getStudioContent(), { headers: { "Cache-Control": "no-store" } });
+  return Response.json({ ...(await getStudioContent()), contactFormEnabled: contactDeliveryEnabled() }, { headers: { "Cache-Control": "no-store" } });
 }
 
 export function meta({ data }) {
@@ -119,8 +120,74 @@ function ContactActions({ email }) {
   </div>;
 }
 
+
+function ContactForm() {
+  const [fields, setFields] = useState({ name: "", email: "", subject: "", message: "", website: "", consent: false });
+  const [busy, setBusy] = useState(false);
+  const [status, setStatus] = useState("");
+  const [error, setError] = useState("");
+
+  function update(key, value) {
+    setFields((before) => ({ ...before, [key]: value }));
+  }
+
+  async function submit(event) {
+    event.preventDefault();
+    setBusy(true);
+    setError("");
+    setStatus("");
+    try {
+      const result = await fetch("/api/studio/contact", {
+        method: "POST", credentials: "same-origin",
+        headers: { "Content-Type": "application/json", "X-Studio-Request": "1" },
+        body: JSON.stringify(fields),
+      });
+      const data = await result.json().catch(() => ({}));
+      if (!result.ok) throw new Error(data.error || "Could not send your message. Please email directly instead.");
+      setFields({ name: "", email: "", subject: "", message: "", website: "", consent: false });
+      setStatus("Message sent. Thank you for reaching out!");
+    } catch (err) {
+      setError(err.message || "Could not send your message.");
+    } finally { setBusy(false); }
+  }
+
+  return <form className="exp-contact-form" onSubmit={submit} aria-label="Send a portfolio enquiry">
+    <div className="exp-contact-fields">
+      <label>YOUR NAME
+        <input name="name" type="text" autoComplete="name" maxLength={80} minLength={2} required
+          value={fields.name} onChange={(e) => update("name", e.target.value)} placeholder="Your name" />
+      </label>
+      <label>YOUR EMAIL
+        <input name="email" type="email" autoComplete="email" maxLength={254} required
+          value={fields.email} onChange={(e) => update("email", e.target.value)} placeholder="you@company.com" />
+      </label>
+    </div>
+    <label>WHAT'S THIS ABOUT?
+      <input name="subject" type="text" minLength={4} maxLength={120} required
+        value={fields.subject} onChange={(e) => update("subject", e.target.value)} placeholder="A role, a collaboration, or an idea…" />
+    </label>
+    <label>YOUR MESSAGE
+      <textarea name="message" rows={4} minLength={20} maxLength={3000} required
+        value={fields.message} onChange={(e) => update("message", e.target.value)} placeholder="Tell me a little about what you're imagining…" />
+    </label>
+    <div className="exp-honey-field" aria-hidden="true">
+      <label>Website <input tabIndex={-1} autoComplete="off" value={fields.website} onChange={(e) => update("website", e.target.value)} /></label>
+    </div>
+    <label className="exp-contact-consent">
+      <input type="checkbox" checked={fields.consent} onChange={(e) => update("consent", e.target.checked)} required/>
+      <span>I agree to send my details for the purpose of receiving a reply. See the <a href="/privacy">privacy notice</a>.</span>
+    </label>
+    <button className="exp-button exp-button-light exp-send-button" type="submit" disabled={busy}>
+      {busy ? "Sending…" : "Send enquiry"} <Arrow diagonal/>
+    </button>
+    <p className="exp-form-caption">Your enquiry goes directly to my inbox. No account needed.</p>
+    {status && <p className="exp-form-success" role="status">{status}</p>}
+    {error && <p className="exp-form-error" role="alert">{error} You can use the direct email link above.</p>}
+  </form>;
+}
+
 export default function Home() {
-  const { content: c } = useLoaderData();
+  const { content: c, contactFormEnabled } = useLoaderData();
   const firstName = c.name.trim().split(/\s+/)[0];
   const projects = [...c.projects].sort((a, b) => Number(b.featured) - Number(a.featured));
   const expertise = c.skills.slice(0, 12);
@@ -243,6 +310,7 @@ export default function Home() {
         <h2 id="contact-heading">{c.contactHeadline}</h2>
         <p className="exp-contact-description">Whether it's a full-time role, a collaboration or a project worth exploring, I'd love to hear about it.</p>
         <ContactActions email={c.email}/>
+        {contactFormEnabled && c.email && <ContactForm/>}
         {c.socials.some((social) => social.url) && <div className="exp-socials"><span className="exp-overline">ELSEWHERE ON THE INTERNET</span>
           <div>{c.socials.filter((social) => social.url).map((social) => <a key={social.id} href={social.url} target="_blank" rel="noopener noreferrer">{social.label} <Arrow diagonal/></a>)}</div>
         </div>}
