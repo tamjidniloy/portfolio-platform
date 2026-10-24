@@ -1,9 +1,0 @@
-contract,candidate_content,gates,source,restriction
-PostgreSQL DDL,Candidate 18-table 03.3 schema,"G-01,G-03,G-07",03.3 schema and data dictionary,No migrations authorized as final
-API OpenAPI 3.1.2,"29 proposed ops, 26 API paths","G-01,G-04,G-02",03.4 OpenAPI and security matrix,No external stable API promised
-Owner auth,Password then emailed code historical; passkey/TOTP options,"G-01,G-02,G-05",03.5 MFA ADR,No email code AAL2 assertion
-Publishing and privacy,"Published snapshots, revisions, outbox, no-draft-leak","G-01,G-03,G-04","03.2,03.3,03.4",P0 behavior invariant; implementation unverified
-Provider selection,"Managed runtime, DB, object store, email candidates","G-06,G-08,G-14",03.6 provider scorecard,No procured or deployed provider
-Data retention,Contact/session/audit/backups deletion policy,G-07,03.3/03.5 privacy specs,Requires explicit owner policy
-Reliability,99.9% aspirational; RTO 4h and RPO 24h candidate only,"G-08,G-19",03.6 SLO register,No SLA or measured guarantee
-UI Design QA,Penpot native + 142 Phase02 tests,"G-09,G-10,G-12",Phase02.14,No WCAG claim

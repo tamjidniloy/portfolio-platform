@@ -1,9 +1,0 @@
-service,purpose,candidate_implementation,security_requirement,isolation,accountable,principal
-Web SSR runtime,Public/owner HTTP,Node/Express + React Router Framework SSR,No private drafts in public DTO,Staging & production,Owner/ops,Application runtime identity
-Outbox worker,Postcommit retry/sitemap/email,Single codebase optional worker,Idempotent delivery,Staging & production,Owner/ops,Narrow runtime identity
-PostgreSQL,Source of truth,Managed DB candidate,TLS/private endpoint/RBAC,Separate databases,Owner/DB operator,"App, migration, backup roles"
-Object storage,Uploads/public derivatives,Managed bucket candidate,Private staging and revocation,Separate buckets,Owner/ops,Media adapter role
-Email provider,OTP/notifications,Transactional provider candidate,"Quota, SPF/DKIM, no raw logs",Sandbox vs live,Owner/ops,Mail sender role
-GitHub Actions,Build/test/deploy orchestration,CI + optional release workflow,OIDC/permission least privilege,Repo,Owner/release,"CI read, deploy OIDC"
-Observability,Metrics/log/trace alerts,Managed or self-hosted choice,Redact contact drafts OTP,Separate datasets,Owner/ops,Telemetry writer
-Backup vault,Recovery artifacts,Isolated encrypted backup store,Immutable/restricted deletion,Independent scope,Owner/ops,Backup role

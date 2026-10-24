@@ -1,8 +1,0 @@
-{
-  "type": "about:blank",
-  "title": "Precondition Failed",
-  "status": 412,
-  "detail": "The resource revision changed. Refresh before retrying.",
-  "code": "PRECONDITION_FAILED",
-  "requestId": "req-demo-0001"
-}

@@ -1,9 +1,0 @@
-digraph GH {
- graph [label="GitHub Documentation Synchronization (snapshot)",labelloc=t,fontsize=22,bgcolor="#0f1724",fontcolor="#e4eaf2",pad=.55,rankdir=LR,ranksep=.7];node[shape=box,style="rounded,filled",fillcolor="#1c2b39",fontcolor="#e3eff8",color="#637e92",fontname="DejaVu Sans",fontsize=11];edge[color="#70d9c3",fontsize=10];
- MAIN[label="main\nPhase03.0–03.4 docs present",fillcolor="#183c3c"];
- P31[label="PR #31 (DRAFT)\nSync 03.5 + 03.6 to main",fillcolor="#4c3d27"];
- P32[label="Phase03.7 handoff PR (DRAFT)\nretarget to main after #31",fillcolor="#4c3d27"];
- SRS[label="Separate SRS approval\nNOT implied by merges",fillcolor="#572c3a"];
- QA[label="Runtime QA and signoffs\nNOT implied by merges",fillcolor="#572c3a"];
- MAIN->P31[label="review + merge"];P31->P32[label="retarget / review"];SRS->P32[style=dashed,label="gate stays open"];QA->P32[style=dashed,label="gate stays open"];
-}
