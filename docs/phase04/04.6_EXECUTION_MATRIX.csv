@@ -1,0 +1,10 @@
+work_item,planned_scope,engineering_activity,acceptance_state,unverified_dependency
+P4-054,76_FR_NFR_and_18_gap_checks,SOURCE_INVENTORY_AND_R1_RECONCILIATION_IMPLEMENTED,PARTIAL_EVIDENCE,Full per-requirement implementation trace and external validation
+P4-055,318_inherited_Phase03_cases,ALL_318_INVENTORIED_AND_TRIAGED,NOT_FULLY_EXECUTED,Case-by-case original assertion re-execution or justified supersession
+P4-056,142_Phase02_design_cases,ALL_142_INVENTORIED,NOT_FULLY_EXECUTED,Manual design/browser viewport testing per inherited scenario
+P4-057,WCAG_22_AA,CHROMIUM_AXE_KEYBOARD_RESPONSIVE_CHECKS_IN_CI,PARTIAL_EVIDENCE,Manual AT and owner UI authenticated journeys
+P4-058,OWASP_ASVS,ISOLATED_NATIVE_DB_SECURITY_NEGATIVE_AND_DEP_AUDIT,PARTIAL_EVIDENCE,Independent ASVS full assessment and live attack surface clearance
+P4-059,Performance_CWV,BOUND_LOCAL_SSR_SAMPLE,PARTIAL_EVIDENCE,Real content and production CWV/load results
+P4-060,Real_content_SEO_legal,PUBLISHED_ONLY_SSR_CHECKS,NOT_ACCEPTED,Owner content source and actual privacy legal signoff
+P4-061,Staging_E2E_restore_rollback,CI_DISPOSABLE_DB_RESTORE_AND_RELEASE_GUARDS,NOT_EXECUTED_LIVE,Cloud owner hardware and real restore game day issue48
+P4-062,Production_GO_NO_GO,FAIL_CLOSED_LAUNCH_POLICY,NO_GO,No owner production GO or real operational evidence
