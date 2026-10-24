@@ -1,9 +1,7 @@
-
 {
   "watch": [
     "server.js",
     "server",
-    "domain",
     ".env"
   ],
   "ext": "js,mjs,cjs,json,env",
