@@ -67,7 +67,7 @@ export default function Home() {
       <div className="hero-bottom-rail"><span>SCROLL TO EXPLORE <span aria-hidden="true">↓</span></span><span>CRAFTED WITH CARE & CURIOSITY</span></div>
     </section>
 
-    <div className="ticker" aria-label="Areas of expertise"><div className="ticker-track" aria-hidden="true">
+    <div className="ticker"><div className="ticker-track" aria-hidden="true">
       {[0, 1].map((k) => <span key={k}>{(c.skills.length ? c.skills : ["CREATIVE THINKING", "PROBLEM SOLVING", "DIGITAL EXPERIENCES", "CONTINUOUS LEARNING"]).map((s, i) =>
         <span className="ticker-item" key={i}><b>✳</b> {s}</span>)}</span>)}
     </div></div>
