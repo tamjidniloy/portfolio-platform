@@ -163,13 +163,13 @@ export default function Admin() {
                   { id: "skills", title: "Share your strengths", caption: "Add your tools, skills and technologies." },
                   { id: "contact", title: "Connect with people", caption: "Set your public email and contact headline." },
                 ].map((item) => <button key={item.id} type="button" onClick={() => setTab(item.id)}
-                  style={{ textAlign: "left", padding: 24, border: "1px solid #e6e0ee", background: "#fcfbff", borderRadius: 12, margin: "0 0 20px", cursor: "pointer" }}>
-                  <strong style={{ display: "block", fontSize: 16, marginBottom: 9 }}>{item.title} ↗</strong>
-                  <span style={{ color: "#807989", fontSize: 13, lineHeight: 1.6 }}>{item.caption}</span></button>)}
+                  className="studio-quick-card">
+                  <strong>{item.title} ↗</strong>
+                  <span>{item.caption}</span></button>)}
               </div>
             </Panel>
             <Panel title="How publishing works" description="A simple three-step workflow.">
-              <p style={{ lineHeight: 2, color: "#696373", fontSize: 14 }}>① Choose a section on the left. &nbsp; ② Fill in the fields or upload an image. &nbsp; ③ Click <strong>Publish updates</strong>. Refresh the public homepage to see it instantly.</p>
+              <p className="studio-how">① Choose a section on the left. &nbsp; ② Fill in the fields or upload an image. &nbsp; ③ Click <strong>Publish updates</strong>. Refresh the public homepage to see it instantly.</p>
             </Panel>
           </>}
           {tab === "profile" && <>
@@ -201,11 +201,11 @@ export default function Admin() {
           ], "Add your work, upload images and choose which projects appear first.")}
           {tab === "skills" && <Panel title="Your toolkit" description="Type one skill at a time, then click Add skill. Tap the × next to any skill to remove it.">
             <div className="skills-grid" style={{ marginBottom: 25 }}>{draft.skills.map((skill) => <button key={skill} type="button" onClick={() => change("skills", draft.skills.filter((s) => s !== skill))}
-              style={{ border: "1px solid #dbd8e5", borderRadius: 40, padding: "10px 15px", background: "#f5f1fd", color: "#4d3d74" }}>{skill} ×</button>)}</div>
+              className="studio-skill-pill" aria-label={"Remove skill " + skill}>{skill} ×</button>)}</div>
             <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
               <input aria-label="New skill" value={skillEntry} maxLength={45} placeholder="e.g. React / Python / Figma" onChange={(e) => setSkillEntry(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); if (skillEntry.trim() && !draft.skills.includes(skillEntry.trim())) change("skills", [...draft.skills, skillEntry.trim()]); setSkillEntry(""); } }}
-                style={{ flex: 1, minWidth: 0, border: "1px solid #dcd9e6", borderRadius: 9, padding: 14 }}/>
+                className="studio-skill-input"/>
               <button type="button" className="studio-save" onClick={() => { if (skillEntry.trim() && !draft.skills.includes(skillEntry.trim())) change("skills", [...draft.skills, skillEntry.trim()]); setSkillEntry(""); }}>+ Add skill</button>
             </div>
           </Panel>}
