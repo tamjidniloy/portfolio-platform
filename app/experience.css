@@ -528,3 +528,7 @@ html[data-color-mode="dark"] .studio-appearance-guide .theme-control{--exp-ink:#
 @media(max-width:640px){.exp-contact-fields{grid-template-columns:1fr;gap:0}.exp-contact-form{padding:23px}}
 
 @keyframes exp-spin {to{transform:rotate(360deg)}}
+
+.exp-project-outcome{display:flex;align-items:flex-start;gap:12px;max-width:650px;margin:19px 0 0;padding-top:14px;border-top:1px solid var(--exp-line);color:var(--exp-ink);font-size:14px;line-height:1.6;}
+.exp-project-outcome strong{flex-shrink:0;font-size:10px;font-weight:800;letter-spacing:.14em;color:var(--exp-accent-strong);padding-top:4px;}
+@media(max-width:640px){.exp-project-outcome{flex-direction:column;gap:5px;}}
