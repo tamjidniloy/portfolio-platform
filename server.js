@@ -20,6 +20,10 @@ app.use((_request, response, next) => {
   response.set("X-Content-Type-Options", "nosniff");
   response.set("Referrer-Policy", "strict-origin-when-cross-origin");
   response.set("X-Frame-Options", "DENY");
+  response.set("Content-Security-Policy", "base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'");
+  response.set("Cross-Origin-Opener-Policy", "same-origin");
+  response.set("X-Permitted-Cross-Domain-Policies", "none");
+  if (config.isProduction) response.set("Strict-Transport-Security", "max-age=31536000");
   response.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
   response.set("Cache-Control", "no-store");
   next();

@@ -9,10 +9,6 @@ jobs:
   browser:
     runs-on: ubuntu-24.04
     timeout-minutes: 25
-    env:
-      NODE_ENV: production
-      HOST: 127.0.0.1
-      PORT: "3000"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

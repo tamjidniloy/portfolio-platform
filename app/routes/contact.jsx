@@ -20,7 +20,8 @@ export default function Contact({loaderData}){
  const [busy,setBusy]=useState(false),[result,setResult]=useState(""),[error,setError]=useState("");
  async function submit(event){
   event.preventDefault();setBusy(true);setError("");setResult("");
-  const form=new FormData(event.currentTarget);
+  const formElement=event.currentTarget;
+  const form=new FormData(formElement);
   try{
    const r=await fetch("/api/v1/contact",{method:"POST",credentials:"same-origin",
     headers:{"Content-Type":"application/json"},body:JSON.stringify({
@@ -30,7 +31,7 @@ export default function Contact({loaderData}){
    });
    if(!r.ok)throw new Error(r.status===429?"Too many messages. Try again later.":"Message could not be accepted. Verify the fields and consent.");
    setResult("Your message was stored successfully. Email delivery may happen later.");
-   event.currentTarget.reset();
+   formElement.reset();
   }catch(e){setError(e.message);}finally{setBusy(false);}
  }
  return <PublicShell><main className="section-content">
