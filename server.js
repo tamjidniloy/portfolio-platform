@@ -112,10 +112,51 @@ const server = app.listen(config.port, config.host, () => {
   console.info(`DEVFOLIO OS listening on ${config.host}:${config.port} (${config.mode})`);
 });
 
-async function shutdown() {
-  server.close();
-  await Promise.allSettled([database.close(), closeCmsPool(), closeCmsPublicPool(), closeStudio(), storage?.close(), vite?.close()]);
+// Handle Ctrl+C, Nodemon reloads and WebStorm Stop without leaving port 3000 open.
+let shuttingDown = false;
+async function shutdown(reason = "signal") {
+  if (shuttingDown) return;
+  shuttingDown = true;
+
+  // WebSocket upgrades, pending requests and external integrations must not hang exit.
+  const deadline = setTimeout(() => {
+    console.error("DEVFOLIO OS shutdown timed out; forcing process exit.");
+    process.exit(1);
+  }, config.isProduction ? 30000 : 5000);
+  deadline.unref();
+
+  const serverClosed = new Promise((resolve, reject) => {
+    server.close((error) => error ? reject(error) : resolve());
+    server.closeIdleConnections?.();
+  });
+  const results = await Promise.allSettled([
+    serverClosed, database.close(), closeCmsPool(), closeCmsPublicPool(),
+    closeStudio(), storage?.close(), vite?.close(),
+  ]);
+  const failed = results.some((result) => result.status === "rejected");
+  if (failed) console.error("DEVFOLIO OS: one or more resources failed to close cleanly.");
+  else console.info(`DEVFOLIO OS stopped (${reason}).`);
+  clearTimeout(deadline);
+  process.exit(failed ? 1 : 0);
 }
 
-process.once("SIGINT", () => void shutdown());
-process.once("SIGTERM", () => void shutdown());
+process.once("SIGINT", () => void shutdown("SIGINT"));
+process.once("SIGTERM", () => void shutdown("SIGTERM"));
+
+// If WebStorm force-kills the supervisor, terminate the orphaned child server too.
+if (!config.isProduction && process.env.DEV_SUPERVISOR_PID) {
+  const supervisorPid = Number(process.env.DEV_SUPERVISOR_PID);
+  if (Number.isSafeInteger(supervisorPid) && supervisorPid > 0) {
+    const parentCheck = setInterval(() => {
+      try {
+        process.kill(supervisorPid, 0);
+      } catch (error) {
+        if (error?.code === "ESRCH") {
+          clearInterval(parentCheck);
+          void shutdown("development supervisor exited");
+        }
+      }
+    }, 1000);
+    parentCheck.unref();
+  }
+}
