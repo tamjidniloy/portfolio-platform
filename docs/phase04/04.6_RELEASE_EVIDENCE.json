@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "report_date": "2026-10-24",
-  "source_revision": "PR #50 currently in engineering review",
+  "source_revision": "PR #50 merged 1d63949a5eaa6c07ffa71c5c79a3335bd9263f80; live validation pending",
   "explicit_owner_decision": "NOT_GIVEN",
   "unmitigated_critical_count": null,
   "unmitigated_high_count": null,
