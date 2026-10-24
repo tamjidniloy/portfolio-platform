@@ -13,7 +13,7 @@ let initialized;
 const hash = (value) => createHash("sha256").update(value).digest("hex");
 const authKey = () => {
   const value = process.env.PORTFOLIO_AUTH_SECRET;
-  if (!value || Buffer.byteLength(value) < 32) throw new StudioError(503, "Set PORTFOLIO_AUTH_SECRET (32+ random characters) in .env");
+  if (!value || value.startsWith("REPLACE_WITH") || Buffer.byteLength(value) < 32) throw new StudioError(503, "Set PORTFOLIO_AUTH_SECRET (32+ random characters) in .env");
   return value;
 };
 const digest = (value) => createHmac("sha256", authKey()).update(value).digest("hex");
