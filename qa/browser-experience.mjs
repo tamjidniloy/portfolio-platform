@@ -57,7 +57,13 @@ try {
   await page.getByRole("button", { name: "Hide password" }).click();
   assert.equal(await password.getAttribute("type"), "password");
   const loginAxe = await new AxeBuilder({ page }).analyze();
-  assert.deepEqual(loginAxe.violations.filter((v) => ["critical","serious"].includes(v.impact)).map((v) => v.id), []);
+  const loginSevere = loginAxe.violations.filter((v) => ["critical", "serious"].includes(v.impact));
+  if (loginSevere.length) {
+    console.error("Login accessibility findings:", JSON.stringify(loginSevere.map((v) => ({
+      id: v.id, nodes: v.nodes.map((node) => ({ target: node.target, summary: node.failureSummary })),
+    }))));
+  }
+  assert.deepEqual(loginSevere.map((v) => v.id), []);
 
   console.info("UI QA: five viewports, mobile navigation, persistent themes, reduced motion, login visibility and accessibility passed.");
   await context.close();
