@@ -24,7 +24,7 @@ app/
   routes/admin-login.jsx      Owner email/password + OTP interface
   routes/admin.jsx            Accessible, structured owner editor
   components/public-shell.jsx Shared public navigation and layout
-  styles.css                  Design system and responsive styling
+  styles.css                  Existing visual editor styling\n  experience.css              Public design tokens, animation and responsive layouts\n  components/theme-control.jsx Persistent accessible light/dark UI toggle
 server/
   studio/
     index.js                  Stable server-side API boundary
@@ -32,7 +32,7 @@ server/
     db.js                     PostgreSQL pool, schema, content persistence
     auth.js                   Password, OTP, rate limits and sessions
     http.js                   Express routes, authorization, HTTP errors
-    media.js                  Validated local image upload and serving
+    media.js                  Validated local image upload and serving\n    contact.js                Validated rate-limited optional email contact form
     errors.js                 Typed domain errors
   config.js                   Environment parsing
   database.js                 DB readiness
@@ -84,6 +84,17 @@ GitHub Actions checks npm installation, lint, unit tests, SSR build, public/anon
 | `POST /api/studio/logout` | Owner | Revoke session |
 | `PUT /api/studio/content` | Owner | Validate and publish content |
 | `POST /api/studio/upload` | Owner | JPG/PNG/WebP upload ≤ 5 MB |
-| `GET /media/:name` | Public | Uploaded portfolio images |
+| `GET /media/:name` | Public | Uploaded portfolio images |\n| `POST /api/studio/contact` | Public, same-origin | Validated owner email enquiry when delivery enabled |
 
 No public signup or password reset endpoint exists.
+
+## Frontend experience
+
+- Deliberate editorial typography and hierarchy with a CSS-only hero sculpture and subtle motion.
+- Light/dark themes, remembered per browser; respects reduced-motion preferences.
+- Responsive layouts and accessible touch-sized navigation from 320px phones through wide monitors.
+- Category filters for published projects, actual experience and skill counts (no fabricated testimonials or rankings).
+- Direct `mailto:` and copy-email actions always remain available when a public contact email is set in Admin → Contact.
+- A visitor enquiry form appears **only** when `RESEND_API_KEY` and `PORTFOLIO_FROM_EMAIL` are configured; it sends directly to the public contact email. It stores no message bodies in PostgreSQL. Run provider and inbox-delivery acceptance tests before deploying.
+
+All appearance work is in existing React/CSS; no animation or UI dependency was added. All content remains editable in the existing no-code dashboard.
