@@ -86,6 +86,35 @@ export async function createInitialOwner(email, password) {
   } catch (error) { await client.query("ROLLBACK"); throw error; }
   finally { client.release(); }
 }
+/**
+ * Change the single owner password only after verifying their current password.
+ * The change and session revocation are one atomic database transaction.
+ */
+export async function changeStudioPassword(email, currentPassword, newPassword) {
+  await initializeStudio();
+  const normalized = typeof email === "string" ? email.trim().toLowerCase() : "";
+  // Validate the new password before beginning the transaction.
+  if (currentPassword === newPassword) throw new StudioError(422, "Choose a different new password.");
+  const nextHash = await makePasswordHash(newPassword);
+  const client = await studioPool().connect();
+  try {
+    await client.query("BEGIN");
+    // Lock the owner to serialize concurrent password changes.
+    const owners = await client.query("SELECT id,email,password_hash FROM portfolio_studio_owner FOR UPDATE");
+    const record = owners.rows.find((owner) => owner.email === normalized);
+    const valid = await matchesPassword(currentPassword, record?.password_hash || "00000000000000000000000000000000:" + "0".repeat(128));
+    if (!record || !valid) throw failures();
+    await client.query("UPDATE portfolio_studio_owner SET password_hash=$1 WHERE id=$2", [nextHash, record.id]);
+    await client.query("DELETE FROM portfolio_studio_sessions WHERE owner_id=$1", [record.id]);
+    await client.query("DELETE FROM portfolio_studio_challenges WHERE owner_id=$1", [record.id]);
+    await client.query("COMMIT");
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
+}
 function allowedOrigin(request) {
   const submitted = request.headers.origin;
   const configured = process.env.PORTFOLIO_PUBLIC_ORIGIN || process.env.CMS_PUBLIC_ORIGIN || "http://127.0.0.1:3000";
