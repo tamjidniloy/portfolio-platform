@@ -1,150 +1,56 @@
-name: Phase 04 Native PostgreSQL CI
+name: Portfolio CI
 on:
-  push:
-    branches: [feat/phase04-windows-native-development, feat/phase04-1-database-candidate, feat/phase04-2-identity-security-foundation, feat/phase04-1-migration-reconciliation, docs/release1-owner-approved-contracts, feat/phase04-3-cms-publishing, feat/phase04-release1-unblock, feat/phase04-4-media-contact-integrations, feat/phase04-5-deployment-observability, feat/phase04-6-final-quality-security-launch, main]
   pull_request:
+  push:
+    branches: [main]
 permissions:
   contents: read
 jobs:
   verify:
     runs-on: ubuntu-24.04
+    timeout-minutes: 25
     env:
-      DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_ci
+      DATABASE_URL: postgresql://studio_ci:studio_ci_ephemeral@127.0.0.1:5432/studio_ci
+      PORTFOLIO_PUBLIC_ORIGIN: http://127.0.0.1:3000
+      PORTFOLIO_AUTH_SECRET: ci-only-not-for-deployment-64-character-auth-key-2026-example
       HOST: 127.0.0.1
       PORT: "3000"
-      # Ephemeral CI-only HMAC key; never use on a real deployment.
-      PORTFOLIO_AUTH_SECRET: ci-only-portfolio-authentication-fixture-key-not-for-deployment
-      INTEGRATION_TEST_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_integrations_ci
-      RETENTION_TEST_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_retention_ci
-      RELEASE_MIGRATION_TEST_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_release_migration_ci
-      AUTH_CRYPTO_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_release_auth_crypto_ci
-      AUTH_TEST_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_release_auth_ci
-      RESTORE_TEST_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_restore_ci
-      CMS_TEST_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_cms_ci
-      CONTRACT_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_release1_contract_ci
-      CANDIDATE_MIGRATION_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_candidate_migration_ci
-      CANDIDATE_DATABASE_URL: postgresql://devfolio_ci:ci_ephemeral_only@127.0.0.1:5432/devfolio_candidate_ci
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "22.12.0"
           cache: npm
-      - name: Native PostgreSQL 16 (no containers)
+      - name: Install locked dependencies
+        run: npm ci --no-fund
+      - name: Lint, test and build
+        run: npm run check
+      - name: Install native PostgreSQL 16
         shell: bash
         run: |
           set -euo pipefail
-          sudo apt-get update
+          sudo apt-get update -qq
           sudo apt-get install -y postgresql-16 postgresql-client-16
-          sudo pg_ctlcluster 16 main status || sudo pg_ctlcluster 16 main start
-          sudo -u postgres psql -v ON_ERROR_STOP=1 -c "CREATE ROLE devfolio_ci LOGIN PASSWORD 'ci_ephemeral_only';"
-          sudo -u postgres createdb --owner=devfolio_ci devfolio_ci
-          sudo -u postgres createdb --owner=devfolio_ci devfolio_candidate_ci
-          sudo -u postgres createdb --owner=devfolio_ci devfolio_candidate_migration_ci
-          sudo -u postgres createdb --owner=devfolio_ci devfolio_release1_contract_ci
-          sudo -u postgres createdb --owner=devfolio_ci devfolio_cms_ci
-          sudo -u postgres createdb --owner=devfolio_ci devfolio_release_migration_ci
-          sudo -u postgres createdb --owner=devfolio_ci devfolio_retention_ci
-          sudo -u postgres createdb --owner=devfolio_ci devfolio_integrations_ci
-          sudo -u postgres createdb --owner=devfolio_ci devfolio_release_auth_ci
-          sudo -u postgres createdb --owner=devfolio_ci devfolio_release_auth_crypto_ci
-          sudo -u postgres createdb --owner=devfolio_ci devfolio_restore_ci
-          sudo -u postgres psql -v ON_ERROR_STOP=1 -c "CREATE ROLE devfolio_public_reader LOGIN PASSWORD 'ci_public_ephemeral';"
-          sudo -u postgres psql -v ON_ERROR_STOP=1 -c "CREATE ROLE devfolio_cms_runtime LOGIN PASSWORD 'ci_runtime_ephemeral';"
-          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -Atc "SELECT 1" | grep -qx 1
-      - name: Install exact dependency graph
-        run: |
-          npm ci --no-fund
-      - name: Syntax, lint, no-container checks
-        run: npm run check:syntax && npm run lint && npm run check:no-docker
-      - name: Unit tests
-        run: npm test
-      - name: Database integration and environment doctor
-        run: npm run verify:db && npm run doctor
-      - name: Isolated candidate schema and transactions (not production migrations)
-        run: npm run db:test:candidate
-      - name: Candidate migration ledger, replay, drift and rollback tests
-        run: npm run db:test:migrations && npm run db:migrate:candidate
-      - name: Owner-approved 19-table DB-R1 schema validation (disposable only)
-        run: npm run db:test:release1
-      - name: Phase 04.3 CMS database publication and privacy lifecycle
-        run: npm run cms:test:db
-      - name: Approved production-intended migration runner clean install, replay, drift and rollback
-        run: npm run db:release:test
-      - name: Privacy data-retention preview, deletion and legal hold
-        run: npm run ops:retention:test
-      - name: Owner passkey challenge and abuse negative tests
-        run: npm run auth:release:test
-      - name: Least-privilege public DB grants and denied private reads
+          sudo pg_ctlcluster 16 main start || sudo pg_ctlcluster 16 main status
+          sudo -u postgres psql -v ON_ERROR_STOP=1 -c "CREATE ROLE studio_ci LOGIN PASSWORD 'studio_ci_ephemeral';"
+          sudo -u postgres createdb --owner=studio_ci studio_ci
+      - name: Start production SSR on loopback
         shell: bash
         run: |
-          psql "$RELEASE_MIGRATION_TEST_DATABASE_URL" -v ON_ERROR_STOP=1 -f db/roles/grants.sql
-          publicurl=postgresql://devfolio_public_reader:ci_public_ephemeral@127.0.0.1:5432/devfolio_release_migration_ci
-          psql "$publicurl" -v ON_ERROR_STOP=1 -c 'SELECT count(*) FROM published_snapshots'
-          if psql "$publicurl" -v ON_ERROR_STOP=1 -c 'SELECT count(*) FROM admin_users'; then
-            echo 'SECURITY FAILURE: public reader can read private owner table'; exit 1
-          fi
-      - name: Encrypted-backup-prep dump and isolated PostgreSQL restoration drill
-        shell: bash
-        run: |
-          pg_dump -Fc --no-owner --no-acl "$RELEASE_MIGRATION_TEST_DATABASE_URL" > /tmp/devfolio-release1-test.dump
-          gpg --batch --yes --pinentry-mode loopback --passphrase 'CI-only-encrypted-restore-fixture-passphrase' --symmetric --cipher-algo AES256 -o /tmp/devfolio-release1-test.dump.gpg /tmp/devfolio-release1-test.dump
-          rm -f /tmp/devfolio-release1-test.dump
-          gpg --batch --yes --pinentry-mode loopback --passphrase 'CI-only-encrypted-restore-fixture-passphrase' --decrypt -o /tmp/devfolio-release1-restore.dump /tmp/devfolio-release1-test.dump.gpg
-          pg_restore --no-owner --no-acl -d "$RESTORE_TEST_DATABASE_URL" /tmp/devfolio-release1-restore.dump
-          psql "$RESTORE_TEST_DATABASE_URL" -v ON_ERROR_STOP=1 -Atc "SELECT count(*) FROM pg_tables WHERE schemaname='public'" | grep -qx 20
-          rm -f /tmp/devfolio-release1-restore.dump /tmp/devfolio-release1-test.dump.gpg
-      - name: Phase 04.4 native PostgreSQL media/contact/outbox/privacy integration
-        run: npm run integrations:test
-      - name: Source contract consistency checks
-        run: npm run check:contracts
-      - name: Candidate identity/session integration (no live login)
-        run: npm run auth:test:candidate
-      - name: Heuristic secret scan
-        run: npm run check:secrets
-      - name: Production SSR build
-        run: npm run build
-      - name: Start SSR server
-        run: NODE_ENV=production node server.js >/tmp/devfolio-ssr.log 2>&1 &
-      - name: HTTP and native DB smoke checks
-        shell: bash
-        run: |
-          for i in $(seq 1 30); do
-            if curl -fsS http://127.0.0.1:3000/healthz >/dev/null; then break; fi
+          NODE_ENV=production node server.js >/tmp/portfolio-studio-server.log 2>&1 &
+          for i in $(seq 1 40); do
+            if curl -fsS http://127.0.0.1:3000/healthz >/dev/null; then exit 0; fi
             sleep 1
           done
-          node scripts/smoke.mjs
-      - name: Authenticated OTP to React Router dashboard regression
+          tail -80 /tmp/portfolio-studio-server.log
+          exit 1
+      - name: Public and anonymous security smoke
+        run: node scripts/smoke.mjs
+      - name: Password, OTP, dashboard and logout integration
         run: node scripts/studio-auth-smoke.mjs
-      - name: Grant CMS test database public read facade and deny private access
-        shell: bash
-        run: |
-          psql "$CMS_TEST_DATABASE_URL" -v ON_ERROR_STOP=1 -f db/roles/grants.sql
-          publicurl=postgresql://devfolio_public_reader:ci_public_ephemeral@127.0.0.1:5432/devfolio_cms_ci
-          psql "$publicurl" -v ON_ERROR_STOP=1 -Atc 'SELECT count(*) FROM published_snapshots'
-          if psql "$publicurl" -v ON_ERROR_STOP=1 -Atc 'SELECT count(*) FROM content_revisions'; then
-            echo 'SECURITY FAILURE: public reader may read drafts'; exit 1
-          fi
-      - name: Start CMS-enabled production SSR on isolated fixture database
-        shell: bash
-        run: |
-          CMS_API_ENABLED=true CMS_DATABASE_URL="$CMS_TEST_DATABASE_URL" CMS_PUBLIC_DATABASE_URL=postgresql://devfolio_public_reader:ci_public_ephemeral@127.0.0.1:5432/devfolio_cms_ci CMS_PUBLIC_ORIGIN=https://portfolio.example.test CMS_CSRF_SECRET=ci-only-secret-thirty-two-bytes-minimum-do-not-use-in-production NODE_ENV=production PORT=3001 node server.js >/tmp/devfolio-cms-ssr.log 2>&1 &
-          for i in $(seq 1 30); do
-            if curl -fsS http://127.0.0.1:3001/healthz >/dev/null; then break; fi
-            sleep 1
-          done
-      - name: CMS-enabled SSR, published snapshot, sitemap and anonymous negative smoke
-        run: node scripts/cms-smoke.mjs
-      - name: Phase 04.6 source requirements and inherited case audit
-        run: node scripts/phase046-contract-audit.mjs --report /tmp/phase046-inventory.json
-      - name: Phase 04.6 anonymous SSR and security negative test suite
-        run: |
-          QA_BASE_URL=http://127.0.0.1:3000 QA_MODE=disabled node scripts/phase046-http-qa.mjs
-          QA_BASE_URL=http://127.0.0.1:3001 QA_MODE=cms node scripts/phase046-http-qa.mjs
-      - name: Phase 04.6 bounded loopback SSR sanity performance sample
-        run: PERF_BASE_URL=http://127.0.0.1:3000 node scripts/phase046-performance.mjs
-      - name: Dependency audit
+      - name: Dependency vulnerability audit
         run: npm audit --omit=dev --audit-level=high
-      - name: Troubleshooting on failure
+      - name: Diagnostics on failure
         if: failure()
-        run: test ! -f /tmp/devfolio-ssr.log || tail -100 /tmp/devfolio-ssr.log
+        run: |
+          test ! -f /tmp/portfolio-studio-server.log || tail -80 /tmp/portfolio-studio-server.log

@@ -1,85 +1,88 @@
-# DEVFOLIO OS
+# DEVFOLIO OS — Portfolio Studio
 
-JavaScript React Router Framework Mode SSR + Express + PostgreSQL. Professional **single-deployable modular monolith**, dark-first visual baseline. **Prelaunch development, not a production portfolio.** Phase 00–03 architecture documents remain intact.
+A personal portfolio with a private, no-code owner dashboard. Built as a **server-rendered modular monolith** with React Router, Express, Node.js 22 and PostgreSQL 16.
 
-## Windows 11 / WebStorm / npm / PostgreSQL / Postman
+## Run on Windows / WebStorm
 
-Install Node 22, Git for Windows, WebStorm, native PostgreSQL 16 and pgAdmin, and Postman. No Docker is needed locally or in CI. For the complete beginner-friendly walkthrough see [Windows setup](docs/phase04/WINDOWS11_WEBSTORM_SETUP.md).
+1. Install Node.js 22+ and PostgreSQL 16.
+2. Run `npm ci`.
+3. Copy `.env.example` to your **untracked** `.env`. Set `DATABASE_URL`, `PORTFOLIO_PUBLIC_ORIGIN=http://127.0.0.1:3000` and a random `PORTFOLIO_AUTH_SECRET` (at least 32 bytes).
+4. For local OTP testing only, set `PORTFOLIO_DEV_PRINT_OTP=true`. For deployed email, configure Resend using a verified sender instead.
+5. Run `npm run portfolio:setup` **once**, choosing your real admin email and a password of at least 12 characters.
+6. Run `npm run dev`, visit http://127.0.0.1:3000/ and click **Login**.
+7. Edit content in `/admin` and select **Publish updates**.
 
-Clone GitHub `tamjidniloy/portfolio-platform` inside WebStorm and use **main** for the merged foundation. The owner-approved Release 1 contract work is available for review on branch `docs/release1-owner-approved-contracts` until its PR is merged. In WebStorm PowerShell:
+Generate a secret using `node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"`. Never commit or share it.
 
-```powershell
-Copy-Item .env.example .env
-# Edit the .env database URL; keep your private password out of Git.
-npm ci
-npm run check
-npm run dev
+To change your password, run `npm run portfolio:change-password` and follow the hidden terminal prompts. It requires your current password and revokes active sessions.
+
+## Architecture
+
+```text
+app/
+  routes/home.jsx             Public SSR portfolio
+  routes/admin-login.jsx      Owner email/password + OTP interface
+  routes/admin.jsx            Accessible, structured owner editor
+  components/public-shell.jsx Shared public navigation and layout
+  styles.css                  Design system and responsive styling
+server/
+  studio/
+    index.js                  Stable server-side API boundary
+    content.js                Portfolio data contract and validation
+    db.js                     PostgreSQL pool, schema, content persistence
+    auth.js                   Password, OTP, rate limits and sessions
+    http.js                   Express routes, authorization, HTTP errors
+    media.js                  Validated local image upload and serving
+    errors.js                 Typed domain errors
+  config.js                   Environment parsing
+  database.js                 DB readiness
+  probes.js                   /healthz and /readyz
+  observability.js            Redacted structured request logs
+scripts/
+  dev-supervisor.mjs          Windows-friendly development process lifecycle
+  portfolio-setup.mjs         Initial single-owner registration
+  portfolio-change-password.mjs
+  smoke.mjs                   Anonymous HTTP checks
+  studio-auth-smoke.mjs       PostgreSQL-backed authentication flow checks
+tests/
+  portfolio-studio.test.js    Content/auth security regression tests
+server.js                     HTTP bootstrap and SSR integration
 ```
 
-Open http://127.0.0.1:3000/; import checked-in [Postman collection](postman/DEVFOLIO_OS_Foundation.postman_collection.json). `GET /healthz` shows process liveness; `GET /readyz` returns 200 with native PostgreSQL or 503 without it.
+**Stable interface:** route loaders import public Studio operations from `server/studio/index.js`. API handlers in `http.js` enforce authentication and same-origin mutations; `auth.js` owns identity and sessions; `db.js` alone owns Studio persistence. SQL is parameterized; the owner password is stored as a salted scrypt hash; session cookies are HttpOnly and SameSite=Strict, with Secure enabled in production.
 
-**Release 1 SRS/MFA/DB/API engineering contracts were explicitly owner-approved on 2026-10-24.** This does not make historical candidate SQL production-ready: do not execute unreviewed migration SQL against real databases, or expose login until real passkey verification and negative security tests pass. Read [the owner gates](docs/phase04/PHASE04_IMPLEMENTATION_GATES.md), [updated architecture](docs/phase04/PHASE04_REVISED_ARCHITECTURE.md), and [Phase 03 master handoff](docs/phase03/PHASE03_MASTER_HANDOFF/PHASE03_MASTER_ARCHITECTURE_AND_HANDOFF.md).
+The repository also contains **older Phase 04 CMS/route implementation** retained for compatibility. Its optional features require separate configuration, and it should not be confused with Portfolio Studio. Avoid extending those modules for new portfolio features; migrate or remove them deliberately with route and database compatibility tests.
 
-Verification scripts: `npm run check:syntax`, `npm run lint`, `npm test`, `npm run check:no-docker`, `npm run check:secrets`, `npm run build`. Use `npm ci` for reproducible dependency installs.
+## Verification
 
-## Phase 04.1 persistence work (candidate only)
+```powershell
+npm run check      # syntax + ESLint + unit tests + SSR build
+npm run dev        # development
+npm run build      # production bundle
+npm start          # production (after building; configure HTTPS/reverse proxy)
+```
 
-The historical [database implementation review packet](docs/phase04/04.1_DATABASE_IMPLEMENTATION.md) and [owner approval decision sheet](docs/phase04/04.1_OWNER_APPROVAL_DECISION_SHEET.md) explain the 18-table proposal and what requires explicit signoff. A transaction helper, public-only read facade and prototype draft/publish/unpublish commands are implemented **only as isolated test code**. They are not wired to live HTTP routes or deployed migrations.
+GitHub Actions checks npm installation, lint, unit tests, SSR build, public/anonymous requests and the **real OTP → server cookie → owner dashboard → logout** flow against an ephemeral PostgreSQL database.
 
-`npm run db:test:candidate` must **only** be run with `CANDIDATE_DATABASE_URL` pointing to a separately created disposable local database named `devfolio_candidate_test` or `devfolio_candidate_ci`. It deliberately fails on your normal `devfolio_dev` database, remote hosts and production. Do not copy the Phase 03 proposed DDL to production migration directories or execute it against real app data.
+## Operating and security notes
 
-## Phase 04.2 isolated authentication foundation
+- **Do not delete or recreate PostgreSQL tables** when updating code. `portfolio_studio_*` contains live owner data.
+- Keep `.env` private. Keep `data/uploads/` outside Git and back it up **along with** the PostgreSQL database.
+- Current Studio initialization creates missing tables automatically. A reviewed versioned migration process and least-privilege database roles are still needed before a high-assurance deployment.
+- Use HTTPS, a verified email sender, persistent upload storage, backup/restore drills, and real-browser security/accessibility testing before a public production launch. CI is necessary but not proof of production readiness.
+- Legacy CMS code may still be present. No automatic import is performed from the legacy CMS into Portfolio Studio.
 
-[Session, CSRF and owner authorization handoff](docs/phase04/04.2_IDENTITY_AND_AUTHORIZATION_HANDOFF.md) and [required owner MFA decision](docs/phase04/04.2_OWNER_MFA_DECISION.md). No owner login/signup/private CMS endpoint is activated. The candidate identity integration tests run **after** candidate Phase 04.1 schema tests in a separate disposable PostgreSQL database: `npm run db:test:candidate` then `npm run auth:test:candidate`. **Never run these against `devfolio_dev` or production.** The CI pipeline executes both on GitHub's isolated native PostgreSQL service.
+## API surface
 
-## Disposable 04.1 migration verification (GitHub CI)
+| Endpoint | Access | Purpose |
+| --- | --- | --- |
+| `GET /api/studio/public` | Public | Published portfolio |
+| `GET /api/studio/session` | Public, cookie-aware | Owner session status |
+| `POST /api/studio/login/start` | Same-origin | Password check; start OTP |
+| `POST /api/studio/login/verify` | Same-origin | Consume OTP; set cookie |
+| `POST /api/studio/logout` | Owner | Revoke session |
+| `PUT /api/studio/content` | Owner | Validate and publish content |
+| `POST /api/studio/upload` | Owner | JPG/PNG/WebP upload ≤ 5 MB |
+| `GET /media/:name` | Public | Uploaded portfolio images |
 
-New source files under `db/candidate_migrations/` and `server/persistence/candidate-migrator.js` implement an **isolated 18-table candidate SQL baseline**, version/checksum ledger, transaction locks, idempotent retries and rollback tests. They deliberately do **not** install application migrations, expose a new API or modify your normal `devfolio_dev` database. Read [04.1 migration reconciliation](docs/phase04/04.1_MIGRATION_RECONCILIATION.md) for optional PowerShell testing in a separately named disposable DB. `npm run check:contracts` verifies SRS/DB/API candidate counts; it is not a declaration that those contracts are owner-approved.
-
-## Owner-approved Release 1 contract baseline
-
-Owner acceptance: [decision/evidence record](docs/phase04/RELEASE1_OWNER_ACCEPTANCE.md). Canonical authority: [SRS-R1](docs/SRS.md) + [all 76 requirements](docs/REQUIREMENTS_CATALOG.md), [AUTH-R1](contracts/release1/AUTH_R1.md), [DB-R1 reference](contracts/release1/DB_R1.md) with [19-table SQL](contracts/release1/DB_R1.sql), [API-R1](contracts/release1/API_R1.md) and [OpenAPI 3.1.2 JSON](contracts/release1/openapi.json) (37 operations), [41 planned SSR routes](contracts/release1/SSR_UI_ROUTES.csv). All older `docs/phase01/proposals/` / `docs/phase03/` documents and `db/candidate_migrations/` files remain **historical candidate** design/test fixtures.
-
-`npm run check:contracts` validates the approved metadata. GitHub native PostgreSQL CI also applies the **new 19-table reference DDL only to a dedicated disposable local database** using `npm run db:test:release1`. No automatic migration, WebAuthn endpoint or production CMS is activated by owner specification approval. Engineering and launch QA gates remain open.
-
-## Phase 04.3 CMS/publishing candidate
-
-[Phase 04.3 handoff](docs/phase04/04.3_CMS_IMPLEMENTATION.md) documents the owner-bound draft/edit/history/preview/publish/unpublish/restore service, private React Router editor, published-only Work/Research SSR, canonical `/projects` and protected JSON APIs. CMS is disabled unless `CMS_API_ENABLED=true` and separate approved DB-R1/CSRF/origin settings are supplied. **Do not activate CMS against production before real WebAuthn login and migration/security tests are complete.** Native PostgreSQL CI tests use the disposable `devfolio_cms_ci` database only.
-
-## Integrated R1 DB / Passkeys / CMS
-
-Use [approved migration runbook](docs/phase04/04.1_RELEASE_MIGRATIONS_RUNBOOK.md), [offline owner WebAuthn provisioning](docs/phase04/04.2_OWNER_PASSKEY_RUNBOOK.md), [CMS implementation](docs/phase04/04.3_CMS_IMPLEMENTATION.md) and [retention operations](docs/phase04/04.3_RETENTION_OPERATIONS.md). Database migration/retention commands require exact operator confirmation; production must use distinct `CMS_DATABASE_URL` and restricted `CMS_PUBLIC_DATABASE_URL`. The `CMS_API_ENABLED` and `CMS_AUTH_ENABLED` flags remain OFF by default; no real owner device, staging or production environment was used for CI. The updated feature branch is `feat/phase04-release1-unblock`.
-
-## Phase 04.4 — Media, Contact and privacy integrations
-
-[Phase 04.4 operator and engineering runbook](docs/phase04/04.4_MEDIA_CONTACT_INTEGRATIONS.md) covers isolated private S3-compatible browser upload, verification, immutable references and safe deletion; consent-based contact intake and owner inbox; Resend postcommit notification worker with retry/DLQ, optional Cloudflare cache purging and published-only SEO; scheduled retention/orphan cleanup. All external provider and contact features remain disabled until reviewed and configured. `npm run integrations:test` requires only the dedicated ephemeral `devfolio_integrations_ci` database.
-
-
-## Phase 04.5 — Deployment infrastructure reference (not provisioned)
-
-The no-Docker Terraform AWS staging reference, OIDC-restricted/manual deployment release workflow, safe structured HTTP telemetry, alarms, PITR/restore drill and operating runbooks are documented in [04.5 deployment and observability](docs/phase04/04.5_DEPLOYMENT_INFRA_OBSERVABILITY.md). **Do not confuse merged code or CI verification with running hosting.** AWS provider/region/budget, GitHub Environment permissions, real deployment, DB migrations, passkeys, external provider functionality and measured operational drills are pending owner-controlled execution and approval. Phase 04.6 final QA remains unexecuted.
-
-## Phase 04.6 engineering QA and launch status
-
-[Master QA/launch handoff](docs/phase04/04.6_FINAL_QA_HANDOFF.md), [QA case triage](docs/phase04/04.6_CASE_TRIAGE.csv), [launch gates](docs/phase04/04.6_LAUNCH_DECISION.md) and [reviewable acceptance matrix](docs/phase04/04.6_EXECUTION_MATRIX.csv) cover all nine P4-054–062 engineering workstreams. New real Chromium anonymous axe/keyboard/responsive, HTTP negative, native DB, case count integrity and bounded local performance CI exist. **Formal production readiness remains NO GO** until live staging, provider/owner passkeys, verified restore/rollback, real content/privacy/legal, WCAG assistive technology, security review and explicit owner approval.
-
-## Windows development process lifecycle
-
-`npm run dev` uses a small supervisor around Nodemon. On Windows it watches
-the original npm/terminal process chain, so closing WebStorm's terminal also
-stops Nodemon and its Node/Vite children. Nodemon still restarts on changes to
-server files. The server also closes HTTP, Vite, database and studio resources
-on SIGINT/SIGTERM, with a timeout to avoid leaving port 3000 occupied.
-
-**One-time cleanup for processes left behind by older versions:** in a *new*
-PowerShell terminal run `Get-NetTCPConnection -LocalPort 3000 -State Listen`;
-inspect each owning PID with `Get-CimInstance Win32_Process -Filter
-"ProcessId = <PID>"`, and only if its command line points to your portfolio
-server run `taskkill /PID <PID> /T /F`. Never kill unrelated processes.
-
-After pulling the fix, run `npm ci`, `npm run dev`, then use Ctrl+C in
-the **same** terminal (or WebStorm's Run/Stop controls). Verify with
-`Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction
-SilentlyContinue`: no rows means the port is free. You can also request
-`http://localhost:3000/healthz` from a new tab to avoid mistaking a cached
-page for a running server.
+No public signup or password reset endpoint exists.

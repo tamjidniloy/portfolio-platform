@@ -3,6 +3,9 @@ import { performance } from "node:perf_hooks";
 
 export function requestRouteGroup(path = "") {
   if (path === "/healthz" || path === "/readyz") return "health";
+  if (path.startsWith("/api/studio/login/")) return "auth";
+  if (path.startsWith("/api/studio/")) return "admin_api";
+  if (path.startsWith("/media/")) return "public_media";
   if (path.startsWith("/api/v1/auth/")) return "auth";
   if (path.startsWith("/api/v1/admin/")) return "admin_api";
   if (path.startsWith("/api/v1/")) return "public_api";
