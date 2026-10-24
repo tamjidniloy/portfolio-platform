@@ -5,6 +5,7 @@ import { StudioError } from "./errors.js";
 import { allowedOrigin, beginLogin, verifyLogin, studioSession, failures, hash } from "./auth.js";
 const COOKIE = "portfolio_owner";
 import { uploadStudioImage } from "./media.js";
+import { submitContact } from "./contact.js";
 
 // HTTP transports translate validated domain operations to JSON responses.
 export function createStudioRouter() {
@@ -20,6 +21,7 @@ export function createStudioRouter() {
     }
     next();
   });
+  router.post("/contact", express.json({ limit: "8kb" }), wrap(submitContact));
   router.post("/login/start", json, wrap(beginLogin));
   router.post("/login/verify", json, wrap(verifyLogin));
   // Authorization must finish BEFORE calling next(): no mutation may bypass this check.
