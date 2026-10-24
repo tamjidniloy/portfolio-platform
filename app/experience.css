@@ -84,12 +84,12 @@ html[data-color-mode="light"] .portfolio-site.theme-peach { --exp-accent: #af573
   -webkit-backdrop-filter: blur(18px);
   color: var(--exp-ink);
 }
-.portfolio-site .header-inner { max-width: 1480px; height: 82px; padding-inline: clamp(20px,5.2vw,80px); gap: 22px; }
-.portfolio-site .portfolio-logo { color: var(--exp-ink); font-size: 19px; letter-spacing: -.045em; min-width: 0; }
+.portfolio-site .header-inner { display:flex; align-items:center; justify-content:space-between; max-width: 1480px; height: 82px; padding-inline: clamp(20px,5.2vw,80px); gap: 22px; }
+.portfolio-site .portfolio-logo { display:flex;align-items:center;gap:12px;text-decoration:none;white-space:nowrap;font-weight:750; color: var(--exp-ink); font-size: 19px; letter-spacing: -.045em; min-width: 0; }
 .portfolio-site .logo-wordmark { overflow: hidden; text-overflow: ellipsis; }
 .portfolio-site .portfolio-logo small { color: var(--exp-subtle); letter-spacing: .1em; }
-.portfolio-site .logo-glyph { color: var(--exp-accent); animation-duration: 36s; }
-.portfolio-site .portfolio-nav { gap: clamp(12px, 2vw, 30px); }
+.portfolio-site .logo-glyph { color: var(--exp-accent); animation: exp-spin 36s linear infinite; }
+.portfolio-site .portfolio-nav { display:flex;align-items:center;gap: clamp(12px, 2vw, 30px); }
 .portfolio-site .portfolio-nav a {
   color: var(--exp-muted); font-size: 13px; font-weight: 650;
   position: relative; transition: color .2s ease;
@@ -336,7 +336,7 @@ html[data-color-mode="light"] .portfolio-site.theme-peach { --exp-accent: #af573
 .exp-socials a:hover {color:#d1bbff;}
 
 /* Footer matches color mode while maintaining separate navigation. */
-.portfolio-site .portfolio-footer {background:var(--exp-hero);color:var(--exp-ink);border-top:1px solid var(--exp-line);padding:35px clamp(20px,5.2vw,80px);gap:30px;}
+.portfolio-site .portfolio-footer {display:flex;align-items:center;justify-content:space-between;background:var(--exp-hero);color:var(--exp-ink);border-top:1px solid var(--exp-line);padding:35px clamp(20px,5.2vw,80px);gap:30px;}
 .footer-brand {display:flex;align-items:center;gap:13px;}
 .footer-brand>div {display:flex;flex-direction:column;gap:2px;}
 .portfolio-site .footer-spark {font-size:36px;color:var(--exp-accent);}
@@ -526,3 +526,5 @@ html[data-color-mode="dark"] .studio-live-text{color:#d2c6df}
 .studio-appearance-guide .theme-control{--exp-ink:#282033;--exp-line:#d5cbdf;--exp-bg-soft:#eee8f6;--exp-accent:#7151c7}
 html[data-color-mode="dark"] .studio-appearance-guide .theme-control{--exp-ink:#f8f2ff;--exp-line:#645872;--exp-bg-soft:#383046;--exp-accent:#c5a8fb}
 @media(max-width:640px){.exp-contact-fields{grid-template-columns:1fr;gap:0}.exp-contact-form{padding:23px}}
+
+@keyframes exp-spin {to{transform:rotate(360deg)}}
