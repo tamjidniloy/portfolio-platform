@@ -1,6 +1,7 @@
 import { useId, useState } from "react";
 import { Link, redirect, useLoaderData } from "react-router";
 import { getStudioContent, studioSession } from "../../server/studio/index.js";
+import { ThemeControl } from "../components/theme-control.jsx";
 
 export async function loader({ request }) {
   if (!(await studioSession(request))) throw redirect("/admin/login");
@@ -144,7 +145,8 @@ export default function Admin() {
     </aside>
     <div className="studio-main">
       <header className="studio-top"><span className="studio-breadcrumb">WORKSPACE <span aria-hidden="true"> / </span> <strong>{active.label}</strong></span>
-        <div className="studio-top-right"><span className="studio-live-dot" aria-hidden="true"/><span style={{ fontSize: 12, color: "#777182" }}>Live website</span>
+        <div className="studio-top-right"><span className="studio-live-dot" aria-hidden="true"/><span className="studio-live-text">Live website</span>
+          <div className="studio-appearance-control"><ThemeControl compact /></div>
           <Link to="/" target="_blank" rel="noopener noreferrer" className="studio-preview-link">Preview ↗</Link></div></header>
       <div className="studio-heading"><div><p className="studio-kicker">YOUR PORTFOLIO / YOUR WAY</p><h1>{tab === "overview" ? "Good to see you." : active.label}</h1><p>{active.description} {dirty ? "You have unpublished edits." : "Your changes go live when you save."}</p></div>
         <button className="studio-save" type="button" onClick={save} disabled={saving || uploading || !dirty}>{saving ? "Saving…" : "Publish updates ↗"}</button></div>
@@ -236,7 +238,8 @@ export default function Admin() {
               <option value="violet">Lilac / Studio Violet</option><option value="mint">Fresh Mint</option><option value="peach">Warm Peach</option>
             </select></div>
             <Field label="Projects section heading" value={draft.projectsHeading} onChange={(v) => change("projectsHeading", v)} maxLength={100} placeholder="Selected work"/>
-            <p className="studio-inline-note">Your changes update the portfolio visuals on the next page refresh.</p>
+            <p className="studio-inline-note">The color palette is published for visitors. The light/dark switch changes your own viewing preference on each device.</p>
+            <div className="studio-appearance-guide"><ThemeControl /> <span className="studio-inline-note">Preview both contrast modes in your dashboard, then open the public site to check the finished result.</span></div>
           </Panel>}
           <div className="studio-bottom-save"><span className="studio-inline-note">{dirty ? "Unsaved changes" : "Everything is up to date"}</span>
             <button className="studio-save" type="button" disabled={saving || uploading || !dirty} onClick={save}>{saving ? "Saving…" : "Publish updates ↗"}</button></div>
