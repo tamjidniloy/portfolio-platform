@@ -5,7 +5,7 @@ import AxeBuilder from "@axe-core/playwright";
 const origin=process.env.QA_BROWSER_BASE||"http://127.0.0.1:3000";
 const u=new URL(origin);
 if(!["127.0.0.1","localhost"].includes(u.hostname))throw Error("Browser QA must use isolated loopback fixture only");
-const browser=await chromium.launch({headless:true});
+const browser=await chromium.launch({channel:"chrome",headless:true});
 const failures=[];
 const results=[];
 try{
@@ -29,6 +29,7 @@ try{
   try{
    const response=await page.goto(origin+route,{waitUntil:"networkidle"});
    assert.equal(response.status(),200);
+   assert.equal(await page.getByRole("main").count(),1,"One main landmark expected "+route);
    const headings=await page.locator("h1").count();
    assert.ok(headings>0,"Expected page title "+route);
    const resultsAxe=await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21aa","wcag22aa"]).analyze();

@@ -22,7 +22,7 @@ jobs:
       - name: Install pinned ephemeral browser QA tooling (not shipped)
         run: |
           npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund @playwright/test@1.56.1 @axe-core/playwright@4.10.2
-          npx playwright install --with-deps chromium
+          google-chrome --version
       - name: Start anonymous SSR fixture (CMS and external providers disabled)
         shell: bash
         run: |
