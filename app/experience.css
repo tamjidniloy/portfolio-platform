@@ -532,3 +532,11 @@ html[data-color-mode="dark"] .studio-appearance-guide .theme-control{--exp-ink:#
 .exp-project-outcome{display:flex;align-items:flex-start;gap:12px;max-width:650px;margin:19px 0 0;padding-top:14px;border-top:1px solid var(--exp-line);color:var(--exp-ink);font-size:14px;line-height:1.6;}
 .exp-project-outcome strong{flex-shrink:0;font-size:10px;font-weight:800;letter-spacing:.14em;color:var(--exp-accent-strong);padding-top:4px;}
 @media(max-width:640px){.exp-project-outcome{flex-direction:column;gap:5px;}}
+
+/* Auth microcopy must meet readable contrast in either appearance mode. */
+.studio-login-steps {color:#564374;}
+.studio-login-box>span {color:#6540b6;}
+.studio-login-box .studio-field small {color:#62536c;}
+html[data-color-mode="dark"] .studio-login-steps {color:#d6c7e9;}
+html[data-color-mode="dark"] .studio-login-box>span {color:#d6bfff;}
+html[data-color-mode="dark"] .studio-login-box .studio-field small {color:#d7cce5;}
