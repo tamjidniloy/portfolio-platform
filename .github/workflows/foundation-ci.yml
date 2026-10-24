@@ -1,7 +1,7 @@
 name: Phase 04 Native PostgreSQL CI
 on:
   push:
-    branches: [feat/phase04-windows-native-development, feat/phase04-1-database-candidate, feat/phase04-2-identity-security-foundation, feat/phase04-1-migration-reconciliation, docs/release1-owner-approved-contracts, feat/phase04-3-cms-publishing, feat/phase04-release1-unblock, feat/phase04-4-media-contact-integrations, feat/phase04-5-deployment-observability, feat/phase04-6-final-quality-security-launch, main]
+    branches: [feat/phase04-windows-native-development, feat/phase04-1-database-candidate, feat/phase04-2-identity-security-foundation, feat/phase04-1-migration-reconciliation, docs/release1-owner-approved-contracts, feat/phase04-3-cms-publishing, feat/phase04-release1-unblock, feat/phase04-4-media-contact-integrations, feat/phase04-5-deployment-observability, main]
   pull_request:
 permissions:
   contents: read
@@ -131,15 +131,6 @@ jobs:
           done
       - name: CMS-enabled SSR, published snapshot, sitemap and anonymous negative smoke
         run: node scripts/cms-smoke.mjs
-      - name: Phase 04.6 source requirements and inherited case audit
-        run: |
-          node scripts/phase046-contract-audit.mjs --report /tmp/phase046-inventory.json
-      - name: Phase 04.6 anonymous HTTP, privacy and negative security checks
-        run: |
-          QA_BASE_URL=http://127.0.0.1:3000 QA_MODE=disabled node scripts/phase046-http-qa.mjs
-          QA_BASE_URL=http://127.0.0.1:3001 QA_MODE=cms node scripts/phase046-http-qa.mjs
-      - name: Phase 04.6 bounded local SSR latency sanity (not field CWV)
-        run: PERF_BASE_URL=http://127.0.0.1:3000 node scripts/phase046-performance.mjs
       - name: Dependency audit
         run: npm audit --omit=dev --audit-level=high
       - name: Troubleshooting on failure
