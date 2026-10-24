@@ -6,9 +6,6 @@ export function requestRouteGroup(path = "") {
   if (path.startsWith("/api/studio/login/")) return "auth";
   if (path.startsWith("/api/studio/")) return "admin_api";
   if (path.startsWith("/media/")) return "public_media";
-  if (path.startsWith("/api/v1/auth/")) return "auth";
-  if (path.startsWith("/api/v1/admin/")) return "admin_api";
-  if (path.startsWith("/api/v1/")) return "public_api";
   if (path.startsWith("/admin")) return "admin_ui";
   return "public_page";
 }

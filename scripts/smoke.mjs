@@ -48,6 +48,17 @@ const invalidOrigin = await request("/api/studio/login/start", {
 });
 assert.equal(invalidOrigin.status, 403, "Invalid cross-origin mutations are denied");
 
+const projects = await request("/projects");
+assert.equal(projects.status, 302, "Old project listing links should redirect to the new homepage section");
+assert.equal(projects.headers.get("location"), "/#work");
+const contact = await request("/contact");
+assert.equal(contact.status, 302);
+assert.equal(contact.headers.get("location"), "/#contact");
+
+const robots = await request("/robots.txt");
+assert.equal(robots.status, 200);
+assert.match(await robots.text(), /Disallow: \/|Sitemap:/);
+
 const missing = await request("/not-a-real-page");
 assert.equal(missing.status, 404, "Unknown paths must return 404");
 
