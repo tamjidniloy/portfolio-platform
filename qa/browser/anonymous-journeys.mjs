@@ -10,7 +10,8 @@ const failures=[];
 const results=[];
 try{
  for(const width of [320,390,768,1440]){
-  const page=await browser.newPage({viewport:{width,height:900},reducedMotion:"reduce"});
+  const context=await browser.newContext({viewport:{width,height:900},reducedMotion:"reduce"});
+  const page=await context.newPage();
   try{
    await page.goto(origin+"/",{waitUntil:"networkidle"});
    assert.equal((await page.locator("h1").count())>0,true);
@@ -20,10 +21,11 @@ try{
    const focused=await page.evaluate(()=>document.activeElement?.textContent?.trim());
    assert.match(focused||"",/Skip to content/);
    results.push({case:"responsive-home-keyboard",viewport:width,status:"PASS"});
-  }finally{await page.close();}
+  }finally{await context.close();}
  }
  for(const route of ["/","/projects","/research","/contact","/privacy"]){
-  const page=await browser.newPage({viewport:{width:390,height:850},reducedMotion:"reduce"});
+  const context=await browser.newContext({viewport:{width:390,height:850},reducedMotion:"reduce"});
+  const page=await context.newPage();
   try{
    const response=await page.goto(origin+route,{waitUntil:"networkidle"});
    assert.equal(response.status(),200);
@@ -33,15 +35,16 @@ try{
    const critical=resultsAxe.violations.filter(x=>x.impact==="critical"||x.impact==="serious");
    if(critical.length)failures.push({route,violations:critical.map(v=>({id:v.id,impact:v.impact,targets:v.nodes.map(n=>n.target).slice(0,5)}))});
    results.push({case:"axe-wcag-a-aa-automated",route,rule_count:resultsAxe.passes.length,violations:resultsAxe.violations.length,serious_or_critical:critical.length});
-  }finally{await page.close();}
+  }finally{await context.close();}
  }
- const anon=await browser.newPage();
+ const anonContext=await browser.newContext();
+ const anon=await anonContext.newPage();
  try{
   const admin=await anon.goto(origin+"/admin");
   assert.equal(admin.status(),404,"Anonymous admin must not be accessible");
   const bad=await anon.goto(origin+"/api/v1/auth/password");
   assert.equal(bad.status(),404,"Deprecated password route must not be active");
- }finally{await anon.close();}
+ }finally{await anonContext.close();}
  assert.deepEqual(failures,[],"Serious/critical automated accessibility violations: "+JSON.stringify(failures));
  console.log(JSON.stringify({status:"PASS",scope:"anonymous Chromium headless / automated axe / fixture only",
   tested_automated_wcag:true,manual_keyboard_at_screenreader_signoff:false,recorded:results},null,2));
