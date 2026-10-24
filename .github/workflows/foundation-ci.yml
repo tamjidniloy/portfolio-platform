@@ -48,6 +48,12 @@ jobs:
         run: node scripts/smoke.mjs
       - name: Password, OTP, dashboard and logout integration
         run: node scripts/studio-auth-smoke.mjs
+      - name: Install isolated browser QA packages (not deployed)
+        run: |
+          npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund @playwright/test@1.56.1 @axe-core/playwright@4.10.2
+          google-chrome --version
+      - name: Responsive, theme, accessibility and login browser checks
+        run: node qa/browser-experience.mjs
       - name: Dependency vulnerability audit
         run: npm audit --omit=dev --audit-level=high
       - name: Diagnostics on failure

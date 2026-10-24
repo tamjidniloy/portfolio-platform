@@ -4,6 +4,7 @@ import { DEFAULT_PORTFOLIO, validatePortfolio } from "../server/studio/content.j
 import { makePasswordHash, matchesPassword, cookieToken } from "../server/studio/index.js";
 import { allowedOrigin } from "../server/studio/auth.js";
 import { mediaDirectory } from "../server/studio/media.js";
+import { validateContact, contactDeliveryEnabled } from "../server/studio/contact.js";
 
 test("default portfolio satisfies the published content contract", () => {
   assert.deepEqual(validatePortfolio(DEFAULT_PORTFOLIO), DEFAULT_PORTFOLIO);
@@ -77,4 +78,30 @@ test("media storage defaults to an ignored data directory", () => {
   } finally {
     if (previous !== undefined) process.env.PORTFOLIO_UPLOAD_DIR = previous;
   }
+});
+
+test("contact form requires consent and validates bounded fields", () => {
+  const valid = {
+    name: "Prospective teammate",
+    email: "person@example.com",
+    subject: "Let's discuss a developer role",
+    message: "Hello, I would like to talk about a software engineering opportunity.",
+    consent: true,
+    website: "",
+  };
+  assert.equal(validateContact(valid).email, "person@example.com");
+  assert.throws(() => validateContact({ ...valid, consent: false }), /agree/);
+  assert.throws(() => validateContact({ ...valid, email: "not-an-email" }), /email/);
+  assert.throws(() => validateContact({ ...valid, message: "short" }), /20/);
+  assert.throws(() => validateContact({ ...valid, subject: "a" + String.fromCharCode(10) + "b" }), /subject/);
+  assert.throws(() => validateContact({ ...valid, website: "automated-entry" }), /Unable/);
+});
+
+test("public contact form is enabled only with configured verified delivery", () => {
+  assert.equal(contactDeliveryEnabled({}), false);
+  assert.equal(contactDeliveryEnabled({ RESEND_API_KEY: "key" }), false);
+  assert.equal(contactDeliveryEnabled({ PORTFOLIO_FROM_EMAIL: "owner@example.com" }), false);
+  assert.equal(contactDeliveryEnabled({
+    RESEND_API_KEY: "configured", PORTFOLIO_FROM_EMAIL: "Portfolio <verified@example.com>",
+  }), true);
 });

@@ -16,12 +16,16 @@ export function ThemeControl({ compact = false }) {
     }
     document.documentElement.dataset.colorMode = preferred;
     setMode(preferred);
+    const synchronize = (event) => setMode(event.detail);
+    window.addEventListener("devfolio-theme-change", synchronize);
+    return () => window.removeEventListener("devfolio-theme-change", synchronize);
   }, []);
 
   function toggle() {
     const next = mode === "dark" ? "light" : "dark";
     setMode(next);
     document.documentElement.dataset.colorMode = next;
+    window.dispatchEvent(new CustomEvent("devfolio-theme-change", { detail: next }));
     try { window.localStorage.setItem(STORAGE_KEY, next); } catch { /* Storage is optional. */ }
   }
 

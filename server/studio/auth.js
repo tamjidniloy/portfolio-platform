@@ -110,7 +110,7 @@ export async function studioSession(request) {
   await initializeStudio();
   return ownerFromRequest(request);
 }
-async function throttle(key, max, windowSeconds) {
+export async function throttle(key, max, windowSeconds) {
   const result = await studioPool().query(
     "INSERT INTO portfolio_studio_attempts(key_digest,attempts,reset_at) VALUES($1,1,now()+($2::int*interval '1 second')) ON CONFLICT(key_digest) DO UPDATE SET attempts=CASE WHEN portfolio_studio_attempts.reset_at<now() THEN 1 ELSE portfolio_studio_attempts.attempts+1 END, reset_at=CASE WHEN portfolio_studio_attempts.reset_at<now() THEN now()+($2::int*interval '1 second') ELSE portfolio_studio_attempts.reset_at END RETURNING attempts",
     [digest(key), windowSeconds],

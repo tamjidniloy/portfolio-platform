@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, redirect } from "react-router";
 import { studioSession } from "../../server/studio/index.js";
+import { ThemeControl } from "../components/theme-control.jsx";
 
 export async function loader({ request }) {
   if (await studioSession(request)) throw redirect("/admin");
@@ -23,6 +24,7 @@ export default function AdminLogin() {
   const [stage, setStage] = useState("password");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [code, setCode] = useState("");
   const [challengeId, setChallengeId] = useState("");
   const [busy, setBusy] = useState(false);
@@ -56,28 +58,42 @@ export default function AdminLogin() {
     </div>
     <div className="studio-login-form-wrap">
       <div className="studio-login-box">
-        <Link className="studio-back" to="/">← Back to portfolio</Link>
+        <div className="studio-login-toolbar">
+          <Link className="studio-back" to="/">← Back to portfolio</Link>
+          <ThemeControl compact />
+        </div>
+        <div className="studio-login-steps" aria-label={stage === "password" ? "Step 1 of 2: password" : "Step 2 of 2: verification code"}>
+          {stage === "password" ? "STEP 01 / 02 · YOUR CREDENTIALS" : "STEP 02 / 02 · CONFIRM IT'S YOU"}
+        </div>
         <span>PRIVATE OWNER ACCESS</span>
         <h1>{stage === "password" ? "Welcome back." : "Check your inbox."}</h1>
         <p>{stage === "password" ? "Sign in to make your portfolio entirely your own." :
-          "Enter the six-digit verification code for " + email + ". The code expires in 10 minutes."}</p>
+          "Enter the six-digit verification code for " + email + ". It expires in 10 minutes."}</p>
         <form onSubmit={submit}>
           {stage === "password" ? <>
             <div className="studio-field"><label htmlFor="login-email">Email address</label>
               <input id="login-email" type="email" autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required/></div>
             <div className="studio-field"><label htmlFor="login-password">Password</label>
-              <input id="login-password" type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Your password" required/></div>
+              <div className="studio-password-wrap"><input id="login-password" type={showPassword ? "text" : "password"}
+                autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)}
+                placeholder="Your password" required/>
+                <button type="button" className="studio-show-password"
+                  onClick={() => setShowPassword((visible) => !visible)}
+                  aria-label={showPassword ? "Hide password" : "Show password"} aria-pressed={showPassword}>
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div></div>
           </> : <div className="studio-field"><label htmlFor="login-code">Verification code</label>
             <input id="login-code" className="studio-pin" autoComplete="one-time-code" inputMode="numeric" pattern="[0-9]{6}" type="text"
               maxLength={6} minLength={6} autoFocus value={code} onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))} placeholder="000000" required/>
-            <small>Use the latest code in your email.</small></div>}
+            <small>Use the newest code from your email or, when testing locally, your WebStorm terminal. You can paste all six digits.</small></div>}
           {error && <p className="studio-error" role="alert">{error}</p>}
           <button type="submit" disabled={busy} className="studio-login-submit">
             {busy ? "Please wait…" : stage === "password" ? "Continue securely →" : "Verify and enter studio →"}
           </button>
         </form>
         {stage === "code" && <button type="button" onClick={() => { setStage("password"); setCode(""); setError(""); }} style={{ background: "none", border: 0, color: "#7656dd", fontWeight: 700, marginTop: 22 }}>← Start over</button>}
-        <p className="studio-login-help">Private dashboard · No public sign-up · Secure session<br/>Need help? Check your local setup guide.</p>
+        <p className="studio-login-help">Private owner dashboard · Two-step verification<br/>Your password and code are never shared with visitors.</p>
       </div>
     </div>
   </main>;

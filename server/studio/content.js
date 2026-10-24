@@ -77,6 +77,8 @@ export function validatePortfolio(input) {
     id, title: text(p.title, "project.title", 140, true),
     category: text(p.category, "project.category", 80),
     description: text(p.description, "project.description", 1500),
+    // Optional proof of results; older saved projects remain valid.
+    outcome: text(typeof p.outcome === "string" ? p.outcome : "", "project.outcome", 280),
     year: text(p.year, "project.year", 30),
     cover: link(p.cover, "project.cover", true),
     stack: text(p.stack, "project.stack", 260),
