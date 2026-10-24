@@ -42,7 +42,9 @@ try{
  const anon=await anonContext.newPage();
  try{
   const admin=await anon.goto(origin+"/admin");
-  assert.equal(admin.status(),404,"Anonymous admin must not be accessible");
+  assert.equal(admin.status(),200,"Anonymous admin should redirect to the public login form");
+  assert.ok(anon.url().endsWith("/admin/login"),"Anonymous admin must redirect to login, never show dashboard");
+  assert.equal(await anon.getByText("Publish updates").count(),0,"Private editor must not render without authentication");
   const bad=await anon.goto(origin+"/api/v1/auth/password");
   assert.equal(bad.status(),404,"Deprecated password route must not be active");
  }finally{await anonContext.close();}

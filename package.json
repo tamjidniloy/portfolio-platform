@@ -40,7 +40,9 @@
     "ops:outbox:once": "node --env-file-if-exists=.env server/integrations/outbox-run.mjs",
     "qa:inventory": "node scripts/phase046-contract-audit.mjs",
     "qa:http": "node scripts/phase046-http-qa.mjs",
-    "qa:perf:fixture": "node scripts/phase046-performance.mjs"
+    "qa:perf:fixture": "node scripts/phase046-performance.mjs",
+    "portfolio:setup": "node --env-file-if-exists=.env scripts/portfolio-setup.mjs",
+    "portfolio:test": "node --test tests/portfolio-studio.test.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.1136.0",

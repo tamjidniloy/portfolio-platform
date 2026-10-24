@@ -9,7 +9,8 @@ async function get(path) {
 
 const home = await get("/");
 assert.equal(home.response.status, 200, "SSR homepage must succeed");
-assert.match(home.body, /Built for work that speaks for itself/);
+assert.match(home.body, /Thoughtful code\. Remarkable experiences\./);
+assert.match(home.body, /href="\/admin\/login"/, "Public visitors can see the Login link");
 assert.match(home.body, /<html/);
 assert.match(home.body, /noindex/);
 assert.equal(home.response.headers.get("x-frame-options"), "DENY");
@@ -37,13 +38,18 @@ const research = await get("/research");
 assert.equal(research.response.status, 200, "Research prelaunch route must SSR");
 
 const login = await get("/admin/login");
-assert.equal(login.response.status, 404, "no owner login until verified MFA is approved");
+assert.equal(login.response.status, 200, "Public login form is available without granting owner access");
+assert.match(login.body, /Welcome back\./);
 
 const passwordApi = await get("/api/v1/auth/password");
 assert.equal(passwordApi.response.status, 404, "no unapproved password API is exposed");
 
 const admin = await get("/admin");
-assert.equal(admin.response.status, 404, "no owner/admin page exposed before MFA signoff");
+assert.equal(admin.response.status, 200, "Anonymous request is redirected to public login form");
+const adminRedirect = await fetch(new URL("/admin", base), { redirect: "manual" });
+assert.equal(adminRedirect.status, 302, "Anonymous cannot access editor without a session");
+assert.equal(adminRedirect.headers.get("location"), "/admin/login");
+assert.doesNotMatch(admin.body, /Publish updates/, "The private editor is not served anonymously");
 
 const missing = await get("/not-a-real-route");
 assert.equal(missing.response.status, 404, "unknown pages must be HTTP 404");

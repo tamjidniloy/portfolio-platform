@@ -28,8 +28,9 @@ const sitemap=await request("/sitemap.xml");
 assert.equal(sitemap.response.status,200);
 assert.match(sitemap.body,/https:\/\/portfolio\.example\.test\/research\/science-demo/);
 assert.doesNotMatch(sitemap.body,/private-project|secret-new-slug|PRIVATE_RESEARCH_CONTEXT/);
-const owner=await request("/admin");
-assert.equal(owner.response.status,401);
+const owner=await request("/admin",{redirect:"manual"});
+assert.equal(owner.response.status,302,"Private studio redirects anonymous visitors to login");
+assert.equal(owner.response.headers.get("location"),"/admin/login");
 const ownerApi=await request("/api/v1/admin/content");
 assert.equal(ownerApi.response.status,401);
 const anonymousMutation=await request("/api/v1/admin/content",{
@@ -37,8 +38,9 @@ const anonymousMutation=await request("/api/v1/admin/content",{
   body:JSON.stringify({contentType:"project",payload:{title:"attack"}}),
 });
 assert.equal(anonymousMutation.response.status,401);
-const oldLogin=await request("/admin/login");
-assert.equal(oldLogin.response.status,404);
+const ownerLogin=await request("/admin/login");
+assert.equal(ownerLogin.response.status,200,"Public owner sign-in page remains available");
+assert.match(ownerLogin.body,/Welcome back/);
 console.log("CMS-enabled SSR, public data, sitemap and anonymous auth-denial smoke PASS");
 
 const robots=await request("/robots.txt");
