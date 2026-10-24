@@ -3,6 +3,7 @@ import { validatePortfolio } from "./content.js";
 import { getStudioContent, studioPool } from "./db.js";
 import { StudioError } from "./errors.js";
 import { allowedOrigin, beginLogin, verifyLogin, studioSession, failures, hash } from "./auth.js";
+const COOKIE = "portfolio_owner";
 import { uploadStudioImage } from "./media.js";
 
 // HTTP transports translate validated domain operations to JSON responses.
