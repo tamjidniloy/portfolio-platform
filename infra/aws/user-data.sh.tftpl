@@ -29,6 +29,7 @@ Environment=AWS_REGION=${aws_region}
 Environment=AWS_DEFAULT_REGION=${aws_region}
 Environment=HOST=0.0.0.0
 Environment=PORT=3000
+Environment=TRUST_PROXY_CIDR=10.62.0.0/16
 EnvironmentFile=/etc/devfolio/runtime.env
 ExecStart=/usr/bin/node-22 server.js
 Restart=on-failure
@@ -133,6 +134,10 @@ if approved_sha="$(aws ssm get-parameter --name "$RELEASE_PARAMETER" --region "$
   trap 'rm -rf "$tmp"' EXIT
   aws s3 cp "s3://$RELEASE_BUCKET/releases/$RELEASE_ENVIRONMENT/$approved_sha.tgz" "$tmp/release.tgz" --only-show-errors
   echo "$approved_sha  $tmp/release.tgz" | sha256sum --check --status
+  aws s3 cp "s3://$RELEASE_BUCKET/releases/$RELEASE_ENVIRONMENT/$approved_sha.sig" "$tmp/release.sig" --only-show-errors
+  python3 -c 'import sys;sys.stdout.buffer.write(bytes.fromhex(sys.argv[1]))' "$approved_sha" > "$tmp/release.digest"
+  verified="$(aws kms verify --region "$AWS_REGION" --key-id "$RELEASE_SIGNING_KEY_ARN" --message-type DIGEST --signing-algorithm RSASSA_PSS_SHA_256 --message "fileb://$tmp/release.digest" --signature "fileb://$tmp/release.sig" --query SignatureValid --output text)"
+  test "$verified" = True || { echo "Trusted release verification failed; instance stays out of service" >&2; exit 5; }
   tar -xOzf "$tmp/release.tgz" ops/aws/deploy-host.sh > "$tmp/deploy-host.sh"
   bash "$tmp/deploy-host.sh" "$approved_sha" "$RELEASE_BUCKET" "$RELEASE_ENVIRONMENT"
 else

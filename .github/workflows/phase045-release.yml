@@ -120,7 +120,7 @@ jobs:
             local target_sha="$2"
             local key="releases/$TARGET_ENV/$target_sha.tgz"
             local command params id
-            command="set -euo pipefail; tmp=\$(mktemp -d); aws s3 cp s3://$AWS_RELEASE_BUCKET/$key \$tmp/release.tgz --only-show-errors; echo '$target_sha  '\$tmp'/release.tgz' | sha256sum --check --status; tar -xOzf \$tmp/release.tgz ops/aws/deploy-host.sh > \$tmp/deploy-host.sh; bash \$tmp/deploy-host.sh $target_sha $AWS_RELEASE_BUCKET $TARGET_ENV; rm -rf \$tmp"
+            command="set -euo pipefail; tmp=\$(mktemp -d); aws s3 cp s3://$AWS_RELEASE_BUCKET/$key \$tmp/release.tgz --only-show-errors; echo '$target_sha  '\$tmp'/release.tgz' | sha256sum --check --status; aws s3 cp s3://$AWS_RELEASE_BUCKET/releases/$TARGET_ENV/$target_sha.sig \$tmp/release.sig --only-show-errors; python3 -c 'import sys;sys.stdout.buffer.write(bytes.fromhex(sys.argv[1]))' '$target_sha' > \$tmp/release.digest; verified=\$(aws kms verify --key-id $AWS_RELEASE_SIGNING_KEY_ARN --message-type DIGEST --signing-algorithm RSASSA_PSS_SHA_256 --message fileb://\$tmp/release.digest --signature fileb://\$tmp/release.sig --query SignatureValid --output text); test \"\$verified\" = True; tar -xOzf \$tmp/release.tgz ops/aws/deploy-host.sh > \$tmp/deploy-host.sh; bash \$tmp/deploy-host.sh $target_sha $AWS_RELEASE_BUCKET $TARGET_ENV; rm -rf \$tmp"
             params="$(jq -n --arg command "$command" '{commands: [$command]}')"
             id="$(aws ssm send-command --document-name AWS-RunShellScript \
               --instance-ids "$instance" --parameters "$params" \
