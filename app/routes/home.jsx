@@ -213,7 +213,7 @@ export default function Home() {
             <span>{c.title} <span aria-hidden="true">/</span> {c.location}</span>
           </div>
         </div>
-        <div className="exp-hero-art" aria-label={c.avatar ? "Portrait of " + c.name : "Decorative glowing sculptural orb"}>
+        <div className="exp-hero-art">
           <div className="exp-art-orbit exp-art-orbit-one" aria-hidden="true"/>
           <div className="exp-art-orbit exp-art-orbit-two" aria-hidden="true"/>
           <div className="exp-art-orbit exp-art-orbit-three" aria-hidden="true"/>
@@ -227,7 +227,7 @@ export default function Home() {
       <div className="exp-hero-end exp-contained"><span>SCROLL TO EXPLORE <span aria-hidden="true">↓</span></span><span>DESIGN × DEVELOPMENT × DETAIL</span></div>
     </section>
 
-    <div className="exp-marquee" aria-label="Skills and capabilities">
+    <div className="exp-marquee" aria-hidden="true">
       <div className="exp-marquee-track" aria-hidden="true">
         {[0, 1].map((repeat) => <div key={repeat} className="exp-marquee-sequence">
           {(c.skills.length ? c.skills : ["CREATIVE PROBLEM SOLVING", "DESIGN-LED ENGINEERING", "HUMAN-CENTERED EXPERIENCES", "CURIOUS BY DEFAULT"]).map((skill, index) =>
@@ -250,7 +250,7 @@ export default function Home() {
           <p className="exp-about-lead">{c.headline}</p>
           <p>{c.bio}</p>
           {c.resumeUrl && <a className="exp-about-resume" href={c.resumeUrl} target="_blank" rel="noopener noreferrer">View my résumé <Arrow diagonal/></a>}
-          <div className="exp-about-stats" aria-label="Portfolio highlights">
+          <div className="exp-about-stats" role="group" aria-label="Portfolio highlights">
             <div><strong>{String(c.projects.length).padStart(2,"0")}</strong><span>Projects</span></div>
             <div><strong>{String(c.skills.length).padStart(2,"0")}</strong><span>Skills</span></div>
             <div><strong>{String(c.experience.length).padStart(2,"0")}</strong><span>Roles</span></div>
