@@ -259,7 +259,8 @@ export function createStudioRouter() {
     await writeFile(path.join(mediaDirectory(), filename), req.body, { flag: "wx", mode: 0o644 });
     res.status(201).json({ url: "/media/" + filename });
   }));
-  router.use((error, _req, res, _next) => {
+  router.use((error, _req, res, next) => {
+    void next;
     const status = error.status >= 400 && error.status < 600 ? error.status : 500;
     if (status === 500) console.error("Portfolio studio request failed:", error);
     res.status(status).json({ error: status === 500 ? "Something went wrong. Try again." : error.message });
