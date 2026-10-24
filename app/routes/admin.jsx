@@ -23,7 +23,7 @@ const TABS = [
   { id: "appearance", label: "Appearance", icon: "◐", description: "Choose colors and headings for the site." },
 ];
 const defaults = {
-  projects: { title: "", category: "", description: "", year: "", cover: "", stack: "", liveUrl: "", sourceUrl: "", featured: false },
+  projects: { title: "", category: "", description: "", outcome: "", year: "", cover: "", stack: "", liveUrl: "", sourceUrl: "", featured: false },
   experience: { role: "", company: "", period: "", description: "" },
   education: { degree: "", school: "", period: "", description: "" },
   services: { title: "", description: "" },
@@ -195,6 +195,7 @@ export default function Admin() {
             { key: "year", label: "Year", placeholder: "2026", maxLength: 30 },
             { key: "stack", label: "Technologies used", placeholder: "React, Node.js, PostgreSQL", maxLength: 260 },
             { key: "description", label: "Project description", wide: true, textarea: true, maxLength: 1500 },
+            { key: "outcome", label: "Result or impact (optional)", placeholder: "What changed because of this work? Use real outcomes only.", wide: true, maxLength: 280 },
             { key: "liveUrl", label: "Live demo URL", placeholder: "https://…" },
             { key: "sourceUrl", label: "Source code URL", placeholder: "https://github.com/…" },
           ], "Add your work, upload images and choose which projects appear first.")}
