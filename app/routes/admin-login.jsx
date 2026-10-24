@@ -35,6 +35,13 @@ export default function AdminLogin() {
         setChallengeId(result.challengeId); setStage("code"); setPassword("");
       } else {
         await post("/login/verify", { challengeId, code });
+        // Verify the browser retained the new session cookie before leaving the OTP form.
+        // Otherwise an apparently successful login would bounce right back to this page.
+        const sessionResponse = await fetch("/api/studio/session", { credentials: "same-origin", cache: "no-store" });
+        const session = await sessionResponse.json().catch(() => ({}));
+        if (!sessionResponse.ok || !session.authenticated) {
+          throw new Error("Code verified, but the browser did not save your session. Allow first-party cookies and use the same localhost address throughout login.");
+        }
         window.location.assign("/admin");
       }
     } catch (err) { setError(err.message || "Sign-in failed"); }

@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { DEFAULT_PORTFOLIO, validatePortfolio } from "../server/studio/content.js";
-import { makePasswordHash, matchesPassword } from "../server/studio/index.js";
+import { makePasswordHash, matchesPassword, cookieToken } from "../server/studio/index.js";
 
 test("starter content is safe for public rendering", () => {
   const result = validatePortfolio(DEFAULT_PORTFOLIO);
@@ -48,4 +48,17 @@ test("passwords are salted, hashed and verified safely", async () => {
   assert.equal(await matchesPassword("correct-horse-battery-staple", first), true);
   assert.equal(await matchesPassword("wrong-password", first), false);
   await assert.rejects(makePasswordHash("short"), /Password must/);
+});
+
+test("owner session cookies are parsed in React Router SSR and Express HTTP requests", () => {
+  const token = "a".repeat(43);
+  const value = "visitor=ok; portfolio_owner=" + token;
+  const expressRequest = { headers: { cookie: value } };
+  const ssrRequest = new Request("http://127.0.0.1:3000/admin", { headers: { cookie: value } });
+  assert.equal(cookieToken(expressRequest), token);
+  assert.equal(cookieToken(ssrRequest), token);
+  assert.equal(cookieToken(new Request("http://127.0.0.1:3000/admin")), "");
+  assert.equal(cookieToken({headers: { cookie: "portfolio_owner=invalid" }}), "");
+  assert.equal(cookieToken({headers: { cookie: value + "; portfolio_owner=" + token }}), "");
+  assert.equal(cookieToken({headers: { cookie: "not_portfolio_owner=" + token }}), "");
 });

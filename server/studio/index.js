@@ -122,8 +122,11 @@ function allowedOrigin(request) {
   if (process.env.NODE_ENV !== "production") allowed.push("http://127.0.0.1:3000", "http://localhost:3000");
   return typeof submitted === "string" && allowed.includes(submitted) && request.get("sec-fetch-site") !== "cross-site";
 }
-function cookieToken(request) {
-  const value = request.headers.cookie;
+// Express requests expose an object; React Router SSR loaders receive a WHATWG Request.
+// Reading only .headers.cookie silently rejected valid cookies on /admin after OTP login.
+export function cookieToken(request) {
+  const headers = request?.headers;
+  const value = typeof headers?.get === "function" ? headers.get("cookie") : headers?.cookie;
   if (typeof value !== "string" || value.length > 4096) return "";
   const pairs = value.split(";").map((part) => part.trim()).filter((part) => part.startsWith(COOKIE + "="));
   if (pairs.length !== 1) return "";
