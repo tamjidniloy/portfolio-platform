@@ -10,7 +10,7 @@ export function trustedProxySubnet(value) {
   const [address, prefix] = value.split("/");
   if (address.split(".").some(s => Number(s) > 255 || !/^\d{1,3}$/.test(s)))
     throw new Error("TRUST_PROXY_CIDR has invalid octets");
-  if (Number(prefix) < 8 || Number(prefix) > 32)
+  if (Number(prefix) < 16 || Number(prefix) > 32)
     throw new Error("TRUST_PROXY_CIDR must be a scoped subnet, not a public network");
   const first = Number(address.split(".")[0]);
   if (first !== 10 && !(first === 172 && Number(address.split(".")[1]) >= 16 && Number(address.split(".")[1]) <= 31)

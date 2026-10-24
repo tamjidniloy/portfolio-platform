@@ -11,7 +11,7 @@ test("reverse-proxy configuration must be explicit, scoped and private",()=>{
   assert.equal(trustedProxySubnet("10.62.0.0/16"),"10.62.0.0/16");
   assert.equal(trustedProxySubnet("172.18.0.0/24"),"172.18.0.0/24");
   assert.equal(trustedProxySubnet("192.168.50.0/24"),"192.168.50.0/24");
-  for(const bad of ["true","0.0.0.0/0","1.1.1.1/32","8.8.8.8/8","192.0.2.0/24","10.0.0.0/0","256.1.2.3/20","127.0.0.0/8"]){
+  for(const bad of ["true","0.0.0.0/0","1.1.1.1/32","8.8.8.8/8","192.0.2.0/24","10.0.0.0/0","256.1.2.3/20","127.0.0.0/8","10.0.0.0/8","172.18.0.0/12","192.168.50.0/8"]){
     assert.throws(()=>trustedProxySubnet(bad),/TRUST_PROXY_CIDR/,"bad CIDR "+bad);
   }
 });
