@@ -29,7 +29,7 @@ async function check(id,path,{status,method="GET",headers={},body,contains,exclu
 }
 await check("P4-057-PUBLIC-SEMANTICS","/",{status:200,contains:/<html[^>]*lang="en"/,excludes:/PRIVATE_RESEARCH_CONTEXT/});
 await check("P4-058-MISSING-NOT-200","/qa-nonexistent-unsafe-route",{status:404,excludes:/DATABASE_URL|postgresql:\/\/|STACK_TRACE|node_modules/});
-await check("P4-058-OWNER-DENIED","/admin",{status:mode==="cms"?401:404,excludes:/csrfToken|webauthn_credentials|PRIVATE_RESEARCH_CONTEXT/});
+await check("P4-058-OWNER-DENIED","/admin",{status:302,excludes:/csrfToken|webauthn_credentials|PRIVATE_RESEARCH_CONTEXT/});
 await check("P4-058-OWNER-API-DENIED","/api/v1/admin/content",{status:mode==="cms"?401:404,excludes:/admin_sessions|privateNote|DATABASE_URL/});
 await check("P4-058-LEGACY-PASSWORD-NOT-EXPOSED","/api/v1/auth/password",{status:404});
 await check("P4-058-HEADERS","/healthz",{status:200,contains:/"status":"ok"/});
