@@ -8,6 +8,7 @@ import { createPrivateObjectStorage } from "./server/integrations/object-storage
 import { getCmsPool, getCmsPublicPool, closeCmsPool, closeCmsPublicPool } from "./server/cms/pool.js";
 import { publishedSitemapPaths } from "./server/cms/public-reader.js";
 import { readConfig } from "./server/config.js";
+import { initializeStudio, createStudioRouter, serveStudioImage, closeStudio } from "./server/studio/index.js";
 import { createDatabaseReadiness } from "./server/database.js";
 import { createReadinessHandler, createApplicationReadiness, livenessHandler } from "./server/probes.js";
 
@@ -33,6 +34,8 @@ app.use((_request, response, next) => {
 });
 
 app.get("/healthz", livenessHandler);
+app.use("/api/studio", createStudioRouter());
+app.get("/media/:name", (request, response) => void serveStudioImage(request, response));
 
 const cmsPool = getCmsPool();
 const storage = cmsPool && process.env.MEDIA_ENABLED === "true" ?
@@ -103,13 +106,15 @@ if (config.isProduction) {
   );
 }
 
+// The new one-owner portfolio tables are isolated from the legacy Release 1 CMS.
+await initializeStudio();
 const server = app.listen(config.port, config.host, () => {
   console.info(`DEVFOLIO OS listening on ${config.host}:${config.port} (${config.mode})`);
 });
 
 async function shutdown() {
   server.close();
-  await Promise.allSettled([database.close(), closeCmsPool(), closeCmsPublicPool(), storage?.close(), vite?.close()]);
+  await Promise.allSettled([database.close(), closeCmsPool(), closeCmsPublicPool(), closeStudio(), storage?.close(), vite?.close()]);
 }
 
 process.once("SIGINT", () => void shutdown());
