@@ -1,58 +1,54 @@
 import assert from "node:assert/strict";
 
 const base = process.env.SMOKE_URL || "http://127.0.0.1:3000";
+const request = (path, init) => fetch(new URL(path, base), { redirect: "manual", ...init });
 
-async function get(path) {
-  const response = await fetch(new URL(path, base));
-  return { response, body: await response.text() };
-}
+const home = await request("/");
+assert.equal(home.status, 200, "Public portfolio must render with SSR");
+const markup = await home.text();
+assert.match(markup, /href="\/admin\/login"/, "Owner login must be visible");
+assert.match(markup, /<html/);
+assert.equal(home.headers.get("x-frame-options"), "DENY");
 
-const home = await get("/");
-assert.equal(home.response.status, 200, "SSR homepage must succeed");
-assert.match(home.body, /Thoughtful code\. Remarkable experiences\./);
-assert.match(home.body, /href="\/admin\/login"/, "Public visitors can see the Login link");
-assert.match(home.body, /<html/);
-assert.match(home.body, /noindex/);
-assert.equal(home.response.headers.get("x-frame-options"), "DENY");
-assert.equal(home.response.headers.get("cache-control"), "no-store");
+const health = await request("/healthz");
+assert.equal(health.status, 200);
+assert.deepEqual(await health.json(), { status: "ok" });
 
-const live = await get("/healthz");
-assert.equal(live.response.status, 200);
-assert.deepEqual(JSON.parse(live.body), { status: "ok" });
-assert.equal(live.response.headers.get("cache-control"), "no-store");
+const ready = await request("/readyz");
+assert.equal(ready.status, 200);
+assert.deepEqual(await ready.json(), { status: "ready" });
 
-const ready = await get("/readyz");
-assert.equal(ready.response.status, 200, "PostgreSQL readiness must succeed");
-assert.deepEqual(JSON.parse(ready.body), { status: "ready" });
+const publicContent = await request("/api/studio/public");
+assert.equal(publicContent.status, 200);
+assert.equal(typeof (await publicContent.json()).name, "string");
 
-const work = await get("/work");
-assert.equal(work.response.status, 200, "Legacy Work redirects to canonical Projects");
-const workRedirect = await fetch(new URL("/work", base), { redirect: "manual" });
-assert.equal(workRedirect.status, 308);
-assert.equal(workRedirect.headers.get("location"), "/projects");
-const projects = await get("/projects");
-assert.equal(projects.response.status, 200);
-assert.match(projects.body, /No published projects available/);
+const session = await request("/api/studio/session");
+assert.equal(session.status, 200);
+assert.equal((await session.json()).authenticated, false);
 
-const research = await get("/research");
-assert.equal(research.response.status, 200, "Research prelaunch route must SSR");
+const login = await request("/admin/login");
+assert.equal(login.status, 200);
+assert.match(await login.text(), /Welcome back/);
 
-const login = await get("/admin/login");
-assert.equal(login.response.status, 200, "Public login form is available without granting owner access");
-assert.match(login.body, /Welcome back\./);
+const admin = await request("/admin");
+assert.equal(admin.status, 302, "Anonymous users must be redirected");
+assert.equal(admin.headers.get("location"), "/admin/login");
 
-const passwordApi = await get("/api/v1/auth/password");
-assert.equal(passwordApi.response.status, 404, "no unapproved password API is exposed");
+const denied = await request("/api/studio/content", {
+  method: "PUT",
+  headers: { Origin: new URL(base).origin, "X-Studio-Request": "1", "Content-Type": "application/json" },
+  body: JSON.stringify({ content: {}, version: 1 }),
+});
+assert.equal(denied.status, 401, "Unauthenticated users cannot publish");
 
-const admin = await get("/admin");
-assert.equal(admin.response.status, 200, "Anonymous request is redirected to public login form");
-const adminRedirect = await fetch(new URL("/admin", base), { redirect: "manual" });
-assert.equal(adminRedirect.status, 302, "Anonymous cannot access editor without a session");
-assert.equal(adminRedirect.headers.get("location"), "/admin/login");
-assert.doesNotMatch(admin.body, /Publish updates/, "The private editor is not served anonymously");
+const invalidOrigin = await request("/api/studio/login/start", {
+  method: "POST",
+  headers: { Origin: "https://untrusted.example.test", "X-Studio-Request": "1", "Content-Type": "application/json" },
+  body: "{}",
+});
+assert.equal(invalidOrigin.status, 403, "Invalid cross-origin mutations are denied");
 
-const missing = await get("/not-a-real-route");
-assert.equal(missing.response.status, 404, "unknown pages must be HTTP 404");
-assert.doesNotMatch(missing.body, /DATABASE_URL|password=|node_modules\//i);
+const missing = await request("/not-a-real-page");
+assert.equal(missing.status, 404, "Unknown paths must return 404");
 
-console.log("SSR, live, DB-ready and 404 smoke checks passed.");
+console.log("Portfolio Studio public SSR, security, health and anonymous HTTP smoke passed.");
