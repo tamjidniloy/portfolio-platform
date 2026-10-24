@@ -1,0 +1,40 @@
+name: Phase 04.6 Browser accessibility and responsive QA (isolated)
+on:
+  pull_request:
+  push:
+    branches: [feat/phase04-6-final-quality-security-launch, main]
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.12.0"
+          cache: npm
+      - name: Install and build approved application from lockfile
+        run: |
+          npm ci --no-fund
+          npm run build
+      - name: Install pinned ephemeral browser QA tooling (not shipped)
+        run: |
+          npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund @playwright/test@1.56.1 @axe-core/playwright@4.10.2
+          google-chrome --version
+      - name: Start anonymous SSR fixture (CMS and external providers disabled)
+        shell: bash
+        run: |
+          NODE_ENV=production HOST=127.0.0.1 PORT=3000 node server.js >/tmp/devfolio-phase046-browser.log 2>&1 &
+          for i in $(seq 1 40); do
+            if curl -fsS http://127.0.0.1:3000/healthz >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          tail -80 /tmp/devfolio-phase046-browser.log
+          exit 1
+      - name: Chromium keyboard, responsive and axe automated WCAG checks
+        run: node qa/browser/anonymous-journeys.mjs
+      - name: Debug sanitized startup on failure
+        if: failure()
+        run: test ! -f /tmp/devfolio-phase046-browser.log || tail -80 /tmp/devfolio-phase046-browser.log

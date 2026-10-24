@@ -37,7 +37,10 @@
     "ops:retention:apply": "node --env-file-if-exists=.env scripts/retention-run.mjs --apply",
     "ops:retention:test": "node --test tests/retention/*.test.js",
     "integrations:test": "node --test tests/integrations/*.test.js",
-    "ops:outbox:once": "node --env-file-if-exists=.env server/integrations/outbox-run.mjs"
+    "ops:outbox:once": "node --env-file-if-exists=.env server/integrations/outbox-run.mjs",
+    "qa:inventory": "node scripts/phase046-contract-audit.mjs",
+    "qa:http": "node scripts/phase046-http-qa.mjs",
+    "qa:perf:fixture": "node scripts/phase046-performance.mjs"
   },
   "dependencies": {
     "@react-router/express": "7.18.4",

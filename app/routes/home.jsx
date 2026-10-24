@@ -29,7 +29,7 @@ export default function Home() {
           <h1>{site?.title || profile?.title || "Built for work that speaks for itself."}</h1>
           <p className="lede">{site?.summary || profile?.summary || "A dark-first foundation for a truthful software, AI and research portfolio. Only owner-approved published content will become publicly visible."}</p>
           <div className="foundation-note" role="note">
-            This is an engineering starter, not a launched portfolio. Release 1 contracts are approved. Real passkey login and CMS release tests remain outstanding.
+            This is an engineering starter, not a launched portfolio. Release 1 contracts are approved. Passkey and CMS services are implemented; live owner-device and staging release acceptance are still outstanding.
           </div>
           <Link className="button-link primary-button" to="/projects">Explore the structure <span aria-hidden="true">↗</span></Link>
         </section>
@@ -43,7 +43,7 @@ export default function Home() {
             <div><dt>Web delivery</dt><dd>React Router SSR</dd></div>
             <div><dt>Server</dt><dd>Node / Express</dd></div>
             <div><dt>Data service</dt><dd>PostgreSQL native</dd></div>
-            <div><dt>Identity</dt><dd>Approved passkey-first, integration pending</dd></div>
+            <div><dt>Identity</dt><dd>Passkey-first; real owner enrollment pending</dd></div>
             <div><dt>Public content</dt><dd>Published only</dd></div>
           </dl>
           <p className="panel-footnote">No fake metrics, private previews, owner sessions or unreviewed public APIs are exposed.</p>

@@ -83,3 +83,8 @@ Native PostgreSQL 16 CI covers **4 numbered/checksummed DB-R1 migrations**, roll
 ## Phase 04.5 reference implementation (engineering only)
 
 [04.5 deployment/infrastructure/observability handoff](04.5_DEPLOYMENT_INFRA_OBSERVABILITY.md), [runbooks](04.5_OPERATIONS_RUNBOOKS.md), and [acceptance matrix](04.5_ACCEPTANCE_MATRIX.md) describe the reviewable no-container AWS Terraform reference, manual OIDC deploy/rollback, safe request telemetry, CloudWatch/SNS/Budgets alerts, managed RDS PITR and isolated restore rehearsal script. All are subject to owner/provider/budget/region and operational acceptance; no AWS account, GitHub deployment environment, live domain or cloud database was provisioned as part of the implementation.
+
+
+## Phase 04.6 Engineering QA is being implemented; production is NO GO
+
+[Final QA handoff](04.6_FINAL_QA_HANDOFF.md), [legacy QA case triage](04.6_CASE_TRIAGE.csv), [requirements reconciliation](04.6_REQUIREMENTS_R1_RECONCILIATION.csv), [18 gap review](04.6_GAP_REVIEW.csv), [launch decision](04.6_LAUNCH_DECISION.md) and [execution matrix](04.6_EXECUTION_MATRIX.csv) explicitly distinguish CI-derived evidence from unexecuted historical and hosted/manual checks. Automated anonymous Chromium/axe, negative HTTP/SSR, native PostgreSQL and local SSR performance sanity are newly added; exact passing CI run links must be recorded before acceptance. Production owner signoff and real Phase04.5 operational verification remain OPEN. Never mark historical 318+142 QA cases passed just because an inventory exists.
