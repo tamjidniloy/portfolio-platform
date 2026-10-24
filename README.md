@@ -38,6 +38,7 @@ server/
   database.js                 DB readiness
   probes.js                   /healthz and /readyz
   observability.js            Redacted structured request logs
+  network/trusted-proxy.js     Explicit limited reverse-proxy trust
 scripts/
   dev-supervisor.mjs          Windows-friendly development process lifecycle
   portfolio-setup.mjs         Initial single-owner registration
@@ -51,7 +52,7 @@ server.js                     HTTP bootstrap and SSR integration
 
 **Stable interface:** route loaders import public Studio operations from `server/studio/index.js`. API handlers in `http.js` enforce authentication and same-origin mutations; `auth.js` owns identity and sessions; `db.js` alone owns Studio persistence. SQL is parameterized; the owner password is stored as a salted scrypt hash; session cookies are HttpOnly and SameSite=Strict, with Secure enabled in production.
 
-The repository also contains **older Phase 04 CMS/route implementation** retained for compatibility. Its optional features require separate configuration, and it should not be confused with Portfolio Studio. Avoid extending those modules for new portfolio features; migrate or remove them deliberately with route and database compatibility tests.
+The earlier Phase 04 CMS, WebAuthn prototype, historical schemas and deployment artifacts were retired from this source tree. **The only active content engine is Portfolio Studio.** Older /projects, /work and /contact URLs now redirect to their homepage sections. No legacy CMS records are imported or deleted from PostgreSQL.
 
 ## Verification
 
@@ -70,7 +71,7 @@ GitHub Actions checks npm installation, lint, unit tests, SSR build, public/anon
 - Keep `.env` private. Keep `data/uploads/` outside Git and back it up **along with** the PostgreSQL database.
 - Current Studio initialization creates missing tables automatically. A reviewed versioned migration process and least-privilege database roles are still needed before a high-assurance deployment.
 - Use HTTPS, a verified email sender, persistent upload storage, backup/restore drills, and real-browser security/accessibility testing before a public production launch. CI is necessary but not proof of production readiness.
-- Legacy CMS code may still be present. No automatic import is performed from the legacy CMS into Portfolio Studio.
+- The old CMS database tables are left untouched in existing PostgreSQL databases; removal of old source files does not drop tables.
 
 ## API surface
 
