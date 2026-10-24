@@ -12,6 +12,7 @@
     "build/**",
     ".git/**"
   ],
+  "signal": "SIGTERM",
   "delay": "300ms",
   "exec": "node --env-file-if-exists=.env server.js"
 }

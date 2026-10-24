@@ -62,3 +62,24 @@ The no-Docker Terraform AWS staging reference, OIDC-restricted/manual deployment
 ## Phase 04.6 engineering QA and launch status
 
 [Master QA/launch handoff](docs/phase04/04.6_FINAL_QA_HANDOFF.md), [QA case triage](docs/phase04/04.6_CASE_TRIAGE.csv), [launch gates](docs/phase04/04.6_LAUNCH_DECISION.md) and [reviewable acceptance matrix](docs/phase04/04.6_EXECUTION_MATRIX.csv) cover all nine P4-054–062 engineering workstreams. New real Chromium anonymous axe/keyboard/responsive, HTTP negative, native DB, case count integrity and bounded local performance CI exist. **Formal production readiness remains NO GO** until live staging, provider/owner passkeys, verified restore/rollback, real content/privacy/legal, WCAG assistive technology, security review and explicit owner approval.
+
+## Windows development process lifecycle
+
+`npm run dev` uses a small supervisor around Nodemon. On Windows it watches
+the original npm/terminal process chain, so closing WebStorm's terminal also
+stops Nodemon and its Node/Vite children. Nodemon still restarts on changes to
+server files. The server also closes HTTP, Vite, database and studio resources
+on SIGINT/SIGTERM, with a timeout to avoid leaving port 3000 occupied.
+
+**One-time cleanup for processes left behind by older versions:** in a *new*
+PowerShell terminal run `Get-NetTCPConnection -LocalPort 3000 -State Listen`;
+inspect each owning PID with `Get-CimInstance Win32_Process -Filter
+"ProcessId = <PID>"`, and only if its command line points to your portfolio
+server run `taskkill /PID <PID> /T /F`. Never kill unrelated processes.
+
+After pulling the fix, run `npm ci`, `npm run dev`, then use Ctrl+C in
+the **same** terminal (or WebStorm's Run/Stop controls). Verify with
+`Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction
+SilentlyContinue`: no rows means the port is free. You can also request
+`http://localhost:3000/healthz` from a new tab to avoid mistaking a cached
+page for a running server.
