@@ -226,13 +226,14 @@ export function createStudioRouter() {
   });
   router.post("/login/start", json, wrap(beginLogin));
   router.post("/login/verify", json, wrap(verifyLogin));
-  const needsOwner = wrap(async (req, _res) => {
-    const session = await studioSession(req);
-    if (!session) throw failures();
-    req.studioOwner = session;
-  });
-  // Ensure owner checks complete before a mutation can reach its handler.
-  const owner = (req, res, next) => Promise.resolve(needsOwner(req, res, next)).then(() => next()).catch(next);
+  // Authorization must finish BEFORE calling next(): no mutation may bypass this check.
+  const owner = (req, _res, next) => {
+    studioSession(req).then((session) => {
+      if (!session) throw failures();
+      req.studioOwner = session;
+      next();
+    }).catch(next);
+  };
   router.post("/logout", owner, wrap(async (req, res) => {
     await studioPool().query("DELETE FROM portfolio_studio_sessions WHERE token_digest=$1", [hash(req.studioOwner.token)]);
     res.set("Set-Cookie", COOKIE + "=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0");
