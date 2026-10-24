@@ -41,7 +41,7 @@ await check("P4-057-RESEARCH-SSR","/research",{status:200,contains:/<h1/});
 if(mode==="cms"){
  await check("P4-058-CMS-ANON-MUTATION","/api/v1/admin/content",{status:401,method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contentType:"project",payload:{title:"malicious"}})});
  await check("P4-058-CMS-INVALID-PAGINATION","/api/v1/public/projects?limit=99999",{status:422,contains:/Unprocessable|INVALID_PAGINATION/});
- await check("P4-058-CMS-INVALID-JSON","/api/v1/admin/content",{status:401,method:"POST",headers:{"Content-Type":"application/json"},body:'{"broken":',excludes:/SyntaxError|\n\s+at /});
+ await check("P4-058-CMS-INVALID-JSON","/api/v1/admin/content",{status:400,method:"POST",headers:{"Content-Type":"application/json"},body:'{"broken":',excludes:/SyntaxError|\n\s+at /});
  await check("P4-060-SITEMAP-PUBLISHED-ONLY","/sitemap.xml",{status:200,contains:/<urlset/,excludes:/PRIVATE_RESEARCH_CONTEXT|private-project|secret-new-slug/});
  await check("P4-058-PRIVATE-PREVIEW-DENIED","/api/v1/admin/content/00000000-0000-4000-8000-000000000000/preview",{status:401});
  await check("P4-058-PRIVATE-MEDIA-DENIED","/api/v1/admin/media",{status:401});
