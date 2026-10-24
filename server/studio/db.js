@@ -15,9 +15,6 @@ export function studioPool() {
   });
   return pool;
 }
-export function mediaDirectory() {
-  return path.resolve(process.env.PORTFOLIO_UPLOAD_DIR || "data/uploads");
-}
 export async function initializeStudio() {
   if (initialized) return initialized;
   const db = studioPool();
