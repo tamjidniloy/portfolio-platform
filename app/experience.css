@@ -540,3 +540,16 @@ html[data-color-mode="dark"] .studio-appearance-guide .theme-control{--exp-ink:#
 html[data-color-mode="dark"] .studio-login-steps {color:#d6c7e9;}
 html[data-color-mode="dark"] .studio-login-box>span {color:#d6bfff;}
 html[data-color-mode="dark"] .studio-login-box .studio-field small {color:#d7cce5;}
+
+/* Owner editor cards and chips follow the same appearance tokens. */
+.studio-quick-card{display:block;text-align:left;padding:24px;border:1px solid #e2ddea;background:#fcfbff;border-radius:12px;margin:0 0 20px;cursor:pointer;color:#282032;transition:transform .2s,border-color .2s}
+.studio-quick-card:hover{transform:translateY(-2px);border-color:#9778dd}
+.studio-quick-card strong{display:block;font-size:16px;margin-bottom:9px}
+.studio-quick-card span{display:block;color:#645e71;font-size:13px;line-height:1.65}
+.studio-how{line-height:2;color:#575167;font-size:14px}
+.studio-skill-pill{border:1px solid #cec3e2;border-radius:40px;padding:10px 15px;background:#f5f1fd;color:#4d347e}
+.studio-skill-input{flex:1;min-width:0;border:1px solid #dcd9e6;border-radius:9px;padding:14px}
+html[data-color-mode="dark"] .studio-quick-card{background:#282736;color:#fbf7ff;border-color:#474155}
+html[data-color-mode="dark"] .studio-quick-card:hover{border-color:#ba9ee9}
+html[data-color-mode="dark"] .studio-quick-card span,html[data-color-mode="dark"] .studio-how{color:#c9bfd7}
+html[data-color-mode="dark"] .studio-skill-pill{background:#342e45;color:#e9d9ff;border-color:#5d4d75}
