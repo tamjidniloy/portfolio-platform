@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Link, redirect, useLoaderData } from "react-router";
 import { getStudioContent, studioSession } from "../../server/studio/index.js";
 
@@ -39,7 +39,7 @@ async function api(path, method, body, headers = {}) {
   return data;
 }
 function Field({ label, hint, value = "", onChange, textarea = false, type = "text", placeholder = "", maxLength = 140, wide = false }) {
-  const id = label.toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-" + (wide ? "wide" : "field");
+  const id = useId();
   return <div className={"studio-field" + (wide ? " wide" : "")}>
     <label htmlFor={id}>{label}</label>
     {textarea ? <textarea id={id} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} maxLength={maxLength} rows={4}/> :
