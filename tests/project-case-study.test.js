@@ -56,7 +56,7 @@ test("transformation comparison images respect the existing image safety contrac
   data.projects = [project({ beforeCover: "/media/" + "a".repeat(32) + ".webp",
     afterCover: "https://images.example.test/result.webp" })];
   const normalized = validatePortfolio(data).projects[0];
-  assert.match(normalized.beforeCover, /^\\/media\\//);
+  assert.equal(normalized.beforeCover.startsWith("/media/"), true);
   assert.equal(normalized.afterCover, "https://images.example.test/result.webp");
   data.projects[0].afterCover = "/admin/login";
   assert.throws(() => validatePortfolio(data), /project.afterCover/);
