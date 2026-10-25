@@ -12,6 +12,13 @@ export function validateContact(input) {
   if (!input || typeof input !== "object" || Array.isArray(input)) {
     throw new StudioError(422, "Please complete the contact form.");
   }
+  // Validate the original strings before trimming: leading/trailing CRLF must
+  // never be silently accepted in fields later used in email headings.
+  for (const field of ["name", "email", "subject"]) {
+    if (typeof input[field] === "string" && /[\r\n]/.test(input[field])) {
+      throw new StudioError(422, "Remove line breaks from name, email and subject.");
+    }
+  }
   const name = typeof input.name === "string" ? input.name.trim() : "";
   const email = typeof input.email === "string" ? input.email.trim().toLowerCase() : "";
   const subject = typeof input.subject === "string" ? input.subject.trim() : "";
