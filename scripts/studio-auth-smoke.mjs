@@ -71,6 +71,31 @@ try {
   assert.equal(login.status, 302, "Authenticated owner visiting login must redirect to admin");
   assert.equal(login.headers.get("location"), "/admin");
 
+  // End-to-end publishing: the same cookie that unlocked SSR must authorize
+  // optimistic-version updates, expose the new public text, and reject stale edits.
+  const initial = await db.query("SELECT payload, version FROM portfolio_studio_content WHERE id=1");
+  const published = { ...initial.rows[0].payload, name: "CI Published Developer" };
+  const update = await fetch(new URL("/api/studio/content", base), {
+    method: "PUT",
+    headers: {
+      Origin: new URL(base).origin, "X-Studio-Request": "1",
+      "Content-Type": "application/json", Cookie: cookie,
+    },
+    body: JSON.stringify({ content: published, version: Number(initial.rows[0].version) }),
+  });
+  assert.equal(update.status, 200, "Owner must be able to publish");
+  const changed = await fetch(new URL("/api/studio/public", base));
+  assert.equal((await changed.json()).name, "CI Published Developer", "Published content must be publicly visible");
+  const conflict = await fetch(new URL("/api/studio/content", base), {
+    method: "PUT",
+    headers: {
+      Origin: new URL(base).origin, "X-Studio-Request": "1",
+      "Content-Type": "application/json", Cookie: cookie,
+    },
+    body: JSON.stringify({ content: published, version: Number(initial.rows[0].version) }),
+  });
+  assert.equal(conflict.status, 409, "Optimistic concurrency prevents overwriting other edits");
+
   const replay = await post("/api/studio/login/verify", { challengeId: challenge.rows[0].id, code });
   assert.equal(replay.status, 401, "An OTP cannot be reused");
 
