@@ -77,12 +77,18 @@ try {
   assert.equal(await page.getByRole("dialog", { name: "Where to?" }).isVisible(), true);
   await page.keyboard.press("Escape");
   assert.equal(await page.getByRole("dialog", { name: "Where to?" }).count(), 0);
+  assert.equal(await page.getByRole("button", { name: "Open command deck" })
+    .evaluate((element) => document.activeElement === element), true,
+    "Closing the command deck restores keyboard focus");
   const caseAxe = await new AxeBuilder({ page }).analyze();
   assert.deepEqual(
     caseAxe.violations.filter((item) => ["critical", "serious"].includes(item.impact)).map((v) => v.id),
     [], "Project detail must have no critical or serious accessibility violations",
   );
 
+  const sitemap = await page.request.get(base + "/sitemap.xml");
+  assert.equal(sitemap.status(), 200, "Published portfolio has an XML sitemap");
+  assert.match(await sitemap.text(), /\/projects\/ci-case-study/, "Sitemap includes published project");
   const briefResponse = await page.goto(base + "/brief", { waitUntil: "networkidle" });
   assert.equal(briefResponse.status(), 200, "Professional brief renders with SSR");
   assert.equal(await page.getByRole("heading", { level: 1, name: "CI Published Developer" }).count(), 1);
