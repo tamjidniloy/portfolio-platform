@@ -5,6 +5,7 @@ import { CommandDeck } from "./command-deck.jsx";
 
 const navigation = [
   { href: "/#work", label: "Selected work" },
+  { href: "/brief", label: "Quick view" },
   { href: "/#about", label: "About" },
   { href: "/#expertise", label: "Expertise" },
   { href: "/#contact", label: "Contact" },
