@@ -42,6 +42,31 @@ function Narrative({ title, children }) {
   </div>;
 }
 
+function TransformationStudio({ project }) {
+  const [position, setPosition] = useState(50);
+  if (!project.beforeCover || !project.afterCover) return null;
+  return <section className="sig-comparison" aria-labelledby="sig-comparison-heading">
+    <p className="sig-eyebrow">TRANSFORMATION STUDIO / VISUAL PROCESS</p>
+    <h2 id="sig-comparison-heading">From concept to completion.</h2>
+    <p className="sig-comparison-intro">Drag or use the arrow keys to compare the original image with the finished creative output.</p>
+    <figure>
+      <div className="sig-comparison-stage">
+        <img src={project.afterCover} alt={"Finished result for " + project.title} loading="lazy" decoding="async"/>
+        <img className="sig-comparison-before" src={project.beforeCover} alt={"Original concept for " + project.title}
+          loading="lazy" decoding="async" style={{ clipPath: "inset(0 " + (100 - position) + "% 0 0)" }}/>
+        <span className="sig-comparison-divider" style={{ left: position + "%" }} aria-hidden="true"/>
+        <span className="sig-comparison-left-label" aria-hidden="true">BEFORE</span>
+        <span className="sig-comparison-right-label" aria-hidden="true">AFTER</span>
+      </div>
+      <figcaption>Two real images supplied by the portfolio owner. The interactive divider reveals the difference.</figcaption>
+    </figure>
+    <label htmlFor="sig-comparison-range" className="sig-comparison-range-label">Reveal original image: {position}%</label>
+    <input id="sig-comparison-range" type="range" min="0" max="100" step="1"
+      value={position} aria-valuetext={position + "% of the original image revealed"}
+      onChange={(event) => setPosition(Number(event.target.value))}/>
+  </section>;
+}
+
 function PerspectivePanel({ project }) {
   const views = [
     { id: "experience", label: "Experience" },
@@ -122,6 +147,7 @@ export default function ProjectDetail() {
           {project.cover ? <img src={project.cover} alt={"Cover image for " + project.title} fetchPriority="high" decoding="async"/> :
             <div className="sig-project-visual-fallback" aria-label="Project cover not supplied"><span aria-hidden="true">✳</span><p>{project.title}</p></div>}
         </div>
+        <TransformationStudio project={project}/>
         <PerspectivePanel project={project}/>
         {related.length > 0 && <section className="sig-related" aria-labelledby="sig-related-heading">
           <p className="sig-eyebrow">KEEP EXPLORING</p>
