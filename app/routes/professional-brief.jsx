@@ -36,7 +36,7 @@ export default function ProfessionalBrief() {
           </div>
         </div>
         <div className="sig-brief-layout">
-          <main className="sig-brief-main">
+          <div className="sig-brief-main">
             <section aria-labelledby="sig-brief-project-heading">
               <div className="sig-brief-section-title"><p className="sig-eyebrow">01 / SELECTED WORK</p><h2 id="sig-brief-project-heading">Projects.</h2></div>
               {projects.length ? projects.map((project) => <article className="sig-brief-project" key={project.id}>
@@ -56,7 +56,7 @@ export default function ProfessionalBrief() {
                 <p>{entry.description}</p>
               </article>)}
             </section>}
-          </main>
+          </div>
           <aside className="sig-brief-aside">
             <section aria-labelledby="sig-brief-skills-heading">
               <p className="sig-eyebrow">CAPABILITIES</p>
