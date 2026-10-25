@@ -81,6 +81,8 @@ jobs:
         run: node qa/browser-experience.mjs
       - name: SQA WCAG AA matrix (routes, breakpoints, color modes)
         run: node qa/accessibility-audit.mjs
+      - name: SQA Chromium paint, layout stability and response-time diagnostics
+        run: node qa/performance-lab.mjs
       - name: Dependency vulnerability audit
         run: npm audit --omit=dev --audit-level=high
       - name: Diagnostics on failure
