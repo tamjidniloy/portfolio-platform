@@ -57,6 +57,18 @@ jobs:
         run: node scripts/smoke.mjs
       - name: Password, OTP, dashboard and logout integration
         run: node scripts/studio-auth-smoke.mjs
+      - name: Verify public-content export and guarded import on a separate database
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run portfolio:export
+          bundle="$(find data/exports -type f -name 'portfolio-export-*.json' | head -1)"
+          test -n "$bundle"
+          sudo -u postgres createdb --owner=studio_ci studio_ci_transfer
+          export DATABASE_URL=postgresql://studio_ci:studio_ci_ephemeral@127.0.0.1:5432/studio_ci_transfer
+          npm run db:migrate
+          npm run portfolio:import -- "$bundle" --confirm-empty-portfolio
+          node -e "import('pg').then(async ({default:pg}) => { const db=new pg.Client({connectionString:process.env.DATABASE_URL}); await db.connect(); const a=await db.query('SELECT payload FROM portfolio_studio_content WHERE id=1'); const b=await db.query('SELECT count(*)::int AS n FROM portfolio_studio_owner'); if(a.rows[0]?.payload?.name!=='CI Published Developer'||b.rows[0].n!==0) process.exitCode=1; await db.end(); })"
       - name: Install isolated browser QA packages (not deployed)
         run: |
           npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund @playwright/test@1.56.1 @axe-core/playwright@4.10.2
