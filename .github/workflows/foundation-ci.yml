@@ -13,6 +13,9 @@ jobs:
       DATABASE_URL: postgresql://studio_ci:studio_ci_ephemeral@127.0.0.1:5432/studio_ci
       PORTFOLIO_PUBLIC_ORIGIN: http://127.0.0.1:3000
       PORTFOLIO_AUTH_SECRET: ci-only-not-for-deployment-64-character-auth-key-2026-example
+      RESEND_API_KEY: ci-not-a-real-api-key
+      PORTFOLIO_FROM_EMAIL: "Portfolio CI <ci@example.test>"
+      PORTFOLIO_UPLOAD_DIR: /tmp/devfolio-ci-uploads
       HOST: 127.0.0.1
       PORT: "3000"
     steps:
@@ -34,6 +37,12 @@ jobs:
           sudo pg_ctlcluster 16 main start || sudo pg_ctlcluster 16 main status
           sudo -u postgres psql -v ON_ERROR_STOP=1 -c "CREATE ROLE studio_ci LOGIN PASSWORD 'studio_ci_ephemeral';"
           sudo -u postgres createdb --owner=studio_ci studio_ci
+      - name: Apply versioned database migration twice (idempotency)
+        run: |
+          npm run db:migrate
+          npm run db:migrate
+          npm run db:status
+          npm run prod:check
       - name: Start production SSR on loopback
         shell: bash
         run: |
