@@ -23,7 +23,7 @@ const TABS = [
   { id: "appearance", label: "Appearance", icon: "◐", description: "Choose colors and headings for the site." },
 ];
 const defaults = {
-  projects: { title: "", category: "", description: "", outcome: "", role: "", challenge: "", approach: "", architecture: "", lessons: "", year: "", cover: "", stack: "", liveUrl: "", sourceUrl: "", featured: false },
+  projects: { title: "", category: "", description: "", outcome: "", role: "", challenge: "", approach: "", architecture: "", lessons: "", year: "", cover: "", beforeCover: "", afterCover: "", stack: "", liveUrl: "", sourceUrl: "", featured: false },
   experience: { role: "", company: "", period: "", description: "" },
   education: { degree: "", school: "", period: "", description: "" },
   services: { title: "", description: "" },
@@ -127,6 +127,11 @@ export default function Admin() {
           onChange={(value) => editItem(section, item.id, field.key, value)}/>)}</div>
         {section === "projects" && <>
           <ImageUploader label={"Project cover " + (index + 1)} value={item.cover} uploading={uploading} onUpload={(file) => upload(file, (value) => editItem(section, item.id, "cover", value))}/>
+          <div className="studio-comparison-editors">
+            <p className="studio-inline-note">Optional transformation comparison: upload original concept and final output. Both are required to display the interactive before/after viewer.</p>
+            <ImageUploader label={"Before image " + (index + 1)} value={item.beforeCover} uploading={uploading} onUpload={(file) => upload(file, (value) => editItem(section, item.id, "beforeCover", value))}/>
+            <ImageUploader label={"After image " + (index + 1)} value={item.afterCover} uploading={uploading} onUpload={(file) => upload(file, (value) => editItem(section, item.id, "afterCover", value))}/>
+          </div>
           <label className="studio-toggle"><input type="checkbox" checked={item.featured} onChange={(e) => editItem(section, item.id, "featured", e.target.checked)}/> Feature this project first</label>
         </>}
       </div>)}
