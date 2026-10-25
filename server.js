@@ -60,10 +60,14 @@ app.get("/sitemap.xml", async (_request, response) => {
     response.status(404).type("text/plain").send("Portfolio has not been published.");
     return;
   }
+  const origin = publicOrigin().replaceAll("&", "&amp;");
+  const routes = ["/", "/brief", "/lab",
+    ...content.projects.map((project) => "/projects/" + encodeURIComponent(project.id)),
+  ];
   response.type("application/xml").send(
     '<?xml version="1.0" encoding="UTF-8"?>' +
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' +
-    '<url><loc>' + publicOrigin().replaceAll("&", "&amp;") + '/</loc></url>' +
+    routes.map((route) => '<url><loc>' + origin + route + '</loc></url>').join("") +
     '</urlset>',
   );
 });
