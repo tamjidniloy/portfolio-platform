@@ -70,6 +70,20 @@ try {
     [], "Project detail must have no critical or serious accessibility violations",
   );
 
+  const briefResponse = await page.goto(base + "/brief", { waitUntil: "networkidle" });
+  assert.equal(briefResponse.status(), 200, "Professional brief renders with SSR");
+  assert.equal(await page.getByRole("heading", { level: 1, name: "CI Published Developer" }).count(), 1);
+  assert.equal(await page.getByRole("link", { name: /CI Project Atlas/ }).count() > 0, true);
+  const labResponse = await page.goto(base + "/lab", { waitUntil: "networkidle" });
+  assert.equal(labResponse.status(), 200, "Interactive Creative Lab renders with SSR");
+  assert.equal(await page.getByRole("heading", { level: 1 }).count(), 1);
+  assert.match(await page.getByRole("status").first().innerText(), /contrast ratio/);
+  await page.getByRole("button", { name: /Play motion/ }).click();
+  assert.equal(await page.getByText("Position: end").count(), 1, "Motion experiment responds to interaction");
+  const labAxe = await new AxeBuilder({ page }).analyze();
+  assert.deepEqual(labAxe.violations.filter((item) => ["critical","serious"].includes(item.impact)).map((v) => v.id), [],
+    "Creative Lab must have no critical or serious accessibility violations");
+
   await page.goto(base + "/admin/login", { waitUntil: "networkidle" });
   const password = page.getByLabel("Password", { exact: true });
   assert.equal(await password.getAttribute("type"), "password");
