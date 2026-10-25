@@ -7,6 +7,7 @@ import { createDatabaseReadiness } from "./server/database.js";
 import { createReadinessHandler, livenessHandler } from "./server/probes.js";
 import { initializeStudio, getStudioContent, createStudioRouter, serveStudioImage, closeStudio } from "./server/studio/index.js";
 import { mediaStoreReady } from "./server/studio/media.js";
+import { studioPool } from "./server/studio/db.js";
 import { pruneStudioRecords } from "./server/studio/migrations.js";
 
 // Composition root: HTTP middleware and SSR only. Domain code lives in server/studio.
@@ -65,7 +66,15 @@ app.get("/sitemap.xml", async (_request, response) => {
 
 let vite;
 if (config.isProduction) {
-  app.use(express.static("build/client", { index: false }));
+  app.use(express.static("build/client", {
+    index: false,
+    setHeaders(response, filename) {
+      // React Router/Vite fingerprinted assets can be safely cached across deploys.
+      if (/[/\\\\]assets[/\\\\]/.test(filename) && /[-.][A-Za-z0-9_-]{8,}\\./.test(filename)) {
+        response.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+      }
+    },
+  }));
   app.use(createRequestHandler({
     build: await import("./build/server/index.js"),
     mode: "production",
@@ -82,7 +91,7 @@ if (config.isProduction) {
 
 // Preserve existing portfolio_studio_* tables and content; initialization is idempotent.
 await initializeStudio();
-const dbForMaintenance = (await import("./server/studio/db.js")).studioPool();
+const dbForMaintenance = studioPool();
 if (dbForMaintenance) {
   await pruneStudioRecords(dbForMaintenance);
 }
