@@ -13,7 +13,8 @@ const MAX_BYTES = 55 * 1024 * 1024;
 const usage = "Usage: npm run portfolio:export OR npm run portfolio:import -- <bundle.json> --confirm-empty-portfolio";
 
 function imageNames(content) {
-  const urls = [content.avatar, ...content.projects.map((project) => project.cover)];
+  const urls = [content.avatar, ...content.projects.flatMap((project) =>
+    [project.cover, project.beforeCover, project.afterCover])];
   return [...new Set(urls.filter((value) => value?.startsWith("/media/")).map((value) => value.slice(7)))];
 }
 
@@ -58,7 +59,9 @@ async function importBundle(file) {
   const content = validatePortfolio(bundle.content);
   const entries = Object.entries(bundle.images);
   const expected = imageNames(content);
-  if (entries.length !== expected.length || entries.length > 31) throw new Error("Bundle image references are inconsistent.");
+  // At most one avatar and three images per project (cover, before, after).
+  // This bound is consistent with the published content contract (30 projects).
+  if (entries.length !== expected.length || entries.length > 91) throw new Error("Bundle image references are inconsistent.");
   const imageBuffers = [];
   let totalBytes = 0;
   for (const [name, entry] of entries) {
