@@ -8,6 +8,7 @@ services:
     plan: 0.5c-512mb
     region: singapore
     branch: main
+    autoDeployTrigger: checksPass
     buildCommand: npm ci && npm run build
     preDeployCommand: npm run db:migrate
     startCommand: npm start
@@ -43,5 +44,8 @@ databases:
   - name: devfolio-postgres
     plan: 0.1c-256mb
     region: singapore
+    postgresMajorVersion: "16"
+    diskSizeGB: 5
+    ipAllowList: []
     databaseName: devfolio_prod
     user: devfolio_owner
