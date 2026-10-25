@@ -23,7 +23,7 @@ const TABS = [
   { id: "appearance", label: "Appearance", icon: "◐", description: "Choose colors and headings for the site." },
 ];
 const defaults = {
-  projects: { title: "", category: "", description: "", outcome: "", year: "", cover: "", stack: "", liveUrl: "", sourceUrl: "", featured: false },
+  projects: { title: "", category: "", description: "", outcome: "", role: "", challenge: "", approach: "", architecture: "", lessons: "", year: "", cover: "", beforeCover: "", afterCover: "", stack: "", liveUrl: "", sourceUrl: "", featured: false },
   experience: { role: "", company: "", period: "", description: "" },
   education: { degree: "", school: "", period: "", description: "" },
   services: { title: "", description: "" },
@@ -127,6 +127,11 @@ export default function Admin() {
           onChange={(value) => editItem(section, item.id, field.key, value)}/>)}</div>
         {section === "projects" && <>
           <ImageUploader label={"Project cover " + (index + 1)} value={item.cover} uploading={uploading} onUpload={(file) => upload(file, (value) => editItem(section, item.id, "cover", value))}/>
+          <div className="studio-comparison-editors">
+            <p className="studio-inline-note">Optional transformation comparison: upload original concept and final output. Both are required to display the interactive before/after viewer.</p>
+            <ImageUploader label={"Before image " + (index + 1)} value={item.beforeCover} uploading={uploading} onUpload={(file) => upload(file, (value) => editItem(section, item.id, "beforeCover", value))}/>
+            <ImageUploader label={"After image " + (index + 1)} value={item.afterCover} uploading={uploading} onUpload={(file) => upload(file, (value) => editItem(section, item.id, "afterCover", value))}/>
+          </div>
           <label className="studio-toggle"><input type="checkbox" checked={item.featured} onChange={(e) => editItem(section, item.id, "featured", e.target.checked)}/> Feature this project first</label>
         </>}
       </div>)}
@@ -195,7 +200,12 @@ export default function Admin() {
             { key: "year", label: "Year", placeholder: "2026", maxLength: 30 },
             { key: "stack", label: "Technologies used", placeholder: "React, Node.js, PostgreSQL", maxLength: 260 },
             { key: "description", label: "Project description", wide: true, textarea: true, maxLength: 1500 },
+            { key: "role", label: "Your contribution (optional)", placeholder: "What was your actual responsibility?", wide: true, maxLength: 160 },
+            { key: "challenge", label: "The challenge (optional)", placeholder: "The real problem, constraints and user needs.", wide: true, textarea: true, maxLength: 1400 },
+            { key: "approach", label: "Design and implementation approach (optional)", placeholder: "How you addressed the problem; why you chose this approach.", wide: true, textarea: true, maxLength: 1400 },
+            { key: "architecture", label: "Technical architecture (optional)", placeholder: "Real components, data flows, tradeoffs and security boundaries. Never include secrets.", wide: true, textarea: true, maxLength: 1800 },
             { key: "outcome", label: "Result or impact (optional)", placeholder: "What changed because of this work? Use real outcomes only.", wide: true, maxLength: 280 },
+            { key: "lessons", label: "Lessons learned (optional)", placeholder: "What would you improve or do differently?", wide: true, textarea: true, maxLength: 1400 },
             { key: "liveUrl", label: "Live demo URL", placeholder: "https://…" },
             { key: "sourceUrl", label: "Source code URL", placeholder: "https://github.com/…" },
           ], "Add your work, upload images and choose which projects appear first.")}

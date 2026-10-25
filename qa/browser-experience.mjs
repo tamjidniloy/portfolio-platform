@@ -13,6 +13,11 @@ const browser = await chromium.launch({
 try {
   const context = await browser.newContext({ reducedMotion: "reduce", colorScheme: "dark" });
   const page = await context.newPage();
+  // Keep ephemeral CI case-study images deterministic and independent of third-party hosts.
+  const pixel = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/Iu8AAAAASUVORK5CYII=", "base64");
+  await page.route("https://images.example.test/**", (route) =>
+    route.fulfill({ status: 200, contentType: "image/png", body: pixel }));
+
 
   for (const [width,height] of [[320,700],[390,844],[768,1024],[1440,900],[1920,1080]]) {
     await page.setViewportSize({ width, height });
@@ -48,6 +53,55 @@ try {
   const accessible = await new AxeBuilder({ page }).analyze();
   const severe = accessible.violations.filter((item) => ["critical","serious"].includes(item.impact));
   assert.deepEqual(severe.map((v) => v.id + ": " + v.nodes[0]?.failureSummary), [], "Public landing page serious WCAG failures");
+
+  // Auth smoke publishes this real-CMS fixture to disposable CI PostgreSQL first.
+  await page.keyboard.press("Control+k");
+  assert.equal(await page.getByRole("dialog", { name: "Where to?" }).isVisible(), true, "Keyboard command opens the searchable deck");
+  await page.getByRole("combobox", { name: "Search pages and projects" }).fill("CI Project Atlas");
+  await page.getByRole("option", { name: /CI Project Atlas/ }).click();
+  await page.waitForURL(/\/projects\/ci-case-study$/, { timeout: 10000 });
+  assert.match(page.url(), /\/projects\/ci-case-study$/, "A published project opens a dedicated case study route");
+  assert.equal(await page.getByRole("heading", { level: 1, name: "CI Project Atlas" }).count(), 1);
+  assert.equal(await page.getByRole("heading", { name: "From concept to completion." }).count(), 1);
+  const comparison = page.locator("#sig-comparison-range");
+  assert.equal(await comparison.inputValue(), "50");
+  await comparison.focus();
+  await page.keyboard.press("ArrowRight");
+  assert.equal(await comparison.inputValue(), "51", "Transformation slider responds to keyboard");
+
+  await page.getByRole("tab", { name: /Engineering/ }).click();
+  assert.match(await page.getByRole("tabpanel").innerText(), /SSR pages read published CMS content/);
+  await page.getByRole("tab", { name: /Impact/ }).click();
+  assert.match(await page.getByRole("tabpanel").innerText(), /Verified project navigation/);
+  await page.keyboard.press("Control+k");
+  assert.equal(await page.getByRole("dialog", { name: "Where to?" }).isVisible(), true);
+  await page.keyboard.press("Escape");
+  assert.equal(await page.getByRole("dialog", { name: "Where to?" }).count(), 0);
+  assert.equal(await page.getByRole("button", { name: "Open command deck" })
+    .evaluate((element) => document.activeElement === element), true,
+    "Closing the command deck restores keyboard focus");
+  const caseAxe = await new AxeBuilder({ page }).analyze();
+  assert.deepEqual(
+    caseAxe.violations.filter((item) => ["critical", "serious"].includes(item.impact)).map((v) => v.id),
+    [], "Project detail must have no critical or serious accessibility violations",
+  );
+
+  const sitemap = await page.request.get(base + "/sitemap.xml");
+  assert.equal(sitemap.status(), 200, "Published portfolio has an XML sitemap");
+  assert.match(await sitemap.text(), /\/projects\/ci-case-study/, "Sitemap includes published project");
+  const briefResponse = await page.goto(base + "/brief", { waitUntil: "networkidle" });
+  assert.equal(briefResponse.status(), 200, "Professional brief renders with SSR");
+  assert.equal(await page.getByRole("heading", { level: 1, name: "CI Published Developer" }).count(), 1);
+  assert.equal(await page.getByRole("link", { name: /CI Project Atlas/ }).count() > 0, true);
+  const labResponse = await page.goto(base + "/lab", { waitUntil: "networkidle" });
+  assert.equal(labResponse.status(), 200, "Interactive Creative Lab renders with SSR");
+  assert.equal(await page.getByRole("heading", { level: 1 }).count(), 1);
+  assert.match(await page.getByRole("status").first().innerText(), /contrast ratio/);
+  await page.getByRole("button", { name: /Play motion/ }).click();
+  assert.equal(await page.getByText("Position: end").count(), 1, "Motion experiment responds to interaction");
+  const labAxe = await new AxeBuilder({ page }).analyze();
+  assert.deepEqual(labAxe.violations.filter((item) => ["critical","serious"].includes(item.impact)).map((v) => v.id), [],
+    "Creative Lab must have no critical or serious accessibility violations");
 
   await page.goto(base + "/admin/login", { waitUntil: "networkidle" });
   const password = page.getByLabel("Password", { exact: true });

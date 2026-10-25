@@ -27,6 +27,10 @@ function text(value, field, max, required = false) {
   if (typeof value !== "string" || value.length > max || (required && !value.trim())) invalid(field);
   return value.trim();
 }
+function optionalText(value, field, max) {
+  if (value === undefined || value === null) return "";
+  return text(value, field, max);
+}
 function link(value, field, image = false) {
   const input = text(value, field, 2048);
   if (!input) return "";
@@ -79,8 +83,17 @@ export function validatePortfolio(input) {
     description: text(p.description, "project.description", 1500),
     // Optional proof of results; older saved projects remain valid.
     outcome: text(typeof p.outcome === "string" ? p.outcome : "", "project.outcome", 280),
+    // Optional case-study fields. Historical published JSON remains readable.
+    role: optionalText(p.role, "project.role", 160),
+    challenge: optionalText(p.challenge, "project.challenge", 1400),
+    approach: optionalText(p.approach, "project.approach", 1400),
+    architecture: optionalText(p.architecture, "project.architecture", 1800),
+    lessons: optionalText(p.lessons, "project.lessons", 1400),
     year: text(p.year, "project.year", 30),
     cover: link(p.cover, "project.cover", true),
+    // Owner-managed transformation comparisons; absent fields preserve legacy content.
+    beforeCover: link(p.beforeCover === undefined ? "" : p.beforeCover, "project.beforeCover", true),
+    afterCover: link(p.afterCover === undefined ? "" : p.afterCover, "project.afterCover", true),
     stack: text(p.stack, "project.stack", 260),
     liveUrl: link(p.liveUrl, "project.liveUrl"),
     sourceUrl: link(p.sourceUrl, "project.sourceUrl"),

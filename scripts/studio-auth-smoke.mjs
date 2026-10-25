@@ -74,7 +74,24 @@ try {
   // End-to-end publishing: the same cookie that unlocked SSR must authorize
   // optimistic-version updates, expose the new public text, and reject stale edits.
   const initial = await db.query("SELECT payload, version FROM portfolio_studio_content WHERE id=1");
-  const published = { ...initial.rows[0].payload, name: "CI Published Developer" };
+  // CI-only sample proves the CMS-to-SSR case-study path without adding fake production data.
+  const example = {
+    id: "ci-case-study", title: "CI Project Atlas", category: "Engineering",
+    description: "An integration fixture for project storytelling.",
+    year: "2026", cover: "", stack: "React, Node.js", liveUrl: "",
+    sourceUrl: "", featured: true,
+    beforeCover: "https://images.example.test/ci-before.png",
+    afterCover: "https://images.example.test/ci-after.png",
+    role: "UI and quality assurance", challenge: "Make complex work understandable.",
+    approach: "Choose progressive disclosure instead of overwhelming visitors.",
+    architecture: "SSR pages read published CMS content through the existing service boundary.",
+    outcome: "Verified project navigation and detail rendering.",
+    lessons: "Test the visitor journey in a real browser.",
+  };
+  const published = {
+    ...initial.rows[0].payload, name: "CI Published Developer",
+    projects: [...initial.rows[0].payload.projects, example],
+  };
   const update = await fetch(new URL("/api/studio/content", base), {
     method: "PUT",
     headers: {
@@ -86,6 +103,10 @@ try {
   assert.equal(update.status, 200, "Owner must be able to publish");
   const changed = await fetch(new URL("/api/studio/public", base));
   assert.equal((await changed.json()).name, "CI Published Developer", "Published content must be publicly visible");
+  const projectPage = await fetch(new URL("/projects/ci-case-study", base), { redirect: "manual" });
+  assert.equal(projectPage.status, 200, "Published case studies must support direct SSR deep links");
+  assert.match(await projectPage.text(), /CI Project Atlas/, "SSR case-study HTML must contain real CMS data");
+
   const conflict = await fetch(new URL("/api/studio/content", base), {
     method: "PUT",
     headers: {

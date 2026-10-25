@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { ThemeControl } from "./theme-control.jsx";
+import { CommandDeck } from "./command-deck.jsx";
 
 const navigation = [
   { href: "/#work", label: "Selected work" },
+  { href: "/brief", label: "Quick view" },
+  { href: "/lab", label: "Creative lab" },
   { href: "/#about", label: "About" },
   { href: "/#expertise", label: "Expertise" },
   { href: "/#contact", label: "Contact" },
 ];
 
-export function PublicShell({ children, name = "Your Name", accent = "violet" }) {
+export function PublicShell({ children, name = "Your Name", accent = "violet", projects = [] }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -37,6 +40,7 @@ export function PublicShell({ children, name = "Your Name", accent = "violet" })
           </nav>
 
           <div className="header-actions">
+            <CommandDeck projects={projects}/>
             <ThemeControl compact />
             <a href="/#contact" className="header-connect">Let's talk <span aria-hidden="true">↗</span></a>
             <Link className="header-login" to="/admin/login">Owner login <span aria-hidden="true">↗</span></Link>
