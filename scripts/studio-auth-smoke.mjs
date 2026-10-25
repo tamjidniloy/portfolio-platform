@@ -101,6 +101,10 @@ try {
   assert.equal(update.status, 200, "Owner must be able to publish");
   const changed = await fetch(new URL("/api/studio/public", base));
   assert.equal((await changed.json()).name, "CI Published Developer", "Published content must be publicly visible");
+  const projectPage = await fetch(new URL("/projects/ci-case-study", base), { redirect: "manual" });
+  assert.equal(projectPage.status, 200, "Published case studies must support direct SSR deep links");
+  assert.match(await projectPage.text(), /CI Project Atlas/, "SSR case-study HTML must contain real CMS data");
+
   const conflict = await fetch(new URL("/api/studio/content", base), {
     method: "PUT",
     headers: {
