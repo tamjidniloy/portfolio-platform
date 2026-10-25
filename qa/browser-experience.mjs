@@ -54,6 +54,7 @@ try {
   assert.equal(await page.getByRole("dialog", { name: "Where to?" }).isVisible(), true, "Keyboard command opens the searchable deck");
   await page.getByRole("combobox", { name: "Search pages and projects" }).fill("CI Project Atlas");
   await page.getByRole("option", { name: /CI Project Atlas/ }).click();
+  await page.waitForURL(/\/projects\/ci-case-study$/, { timeout: 10000 });
   assert.match(page.url(), /\/projects\/ci-case-study$/, "A published project opens a dedicated case study route");
   assert.equal(await page.getByRole("heading", { level: 1, name: "CI Project Atlas" }).count(), 1);
   await page.getByRole("tab", { name: /Engineering/ }).click();
