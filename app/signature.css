@@ -152,3 +152,85 @@ html[data-color-mode="light"] .portfolio-site {
 @media (prefers-reduced-motion: reduce) {
   .sig-related-grid a { transition: none; }
 }
+
+/* Professional Quick View: compact and information-first, intentionally free of
+   spectacle to support time-limited hiring and technical reviews. */
+.sig-brief { background: var(--exp-bg); color: var(--exp-ink); padding-block: clamp(45px,6vw,100px) 110px; }
+.sig-brief-intro { display: flex; justify-content: space-between; align-items: end; gap: clamp(25px,5vw,80px); padding-bottom: clamp(50px,7vw,90px); border-bottom: 1px solid var(--exp-line); }
+.sig-brief-intro>div:first-child { max-width: 780px; }
+.sig-brief-intro h1 { font-size: clamp(53px,8.5vw,124px); line-height: 1.02; letter-spacing: -.07em; margin: 0 0 13px; overflow-wrap: anywhere; }
+.sig-brief-role { font-size: clamp(21px,2.5vw,33px); font-weight: 650; margin: 0 0 20px; color: var(--exp-accent-strong); }
+.sig-brief-bio { max-width: 65ch; color: var(--exp-muted); font-size: 17px; line-height: 1.8; margin: 0 0 15px; white-space: pre-wrap; }
+.sig-brief-location { color: var(--exp-subtle); font-size: 13px; }
+.sig-brief-actions { display: grid; justify-items: start; gap: 12px; flex-shrink: 0; }
+.sig-brief-actions a { color: var(--exp-ink); text-decoration: none; font-size: 13px; font-weight: 740; padding: 9px 0; border-bottom: 1px solid var(--exp-line); }
+.sig-brief-actions a:hover { color: var(--exp-accent-strong); border-bottom-color: var(--exp-accent); }
+.sig-brief-layout { display: grid; grid-template-columns: minmax(0,1.65fr) minmax(230px,.75fr); gap: clamp(50px,7vw,120px); padding-top: clamp(55px,8vw,110px); }
+.sig-brief-main { display: grid; gap: 70px; }
+.sig-brief-section-title h2 { font-size: clamp(38px,4.5vw,64px); letter-spacing: -.065em; margin: 0 0 30px; }
+.sig-brief-project,.sig-brief-experience { padding-block: 26px 35px; border-top: 1px solid var(--exp-line); }
+.sig-brief-project-meta { display: flex; justify-content: space-between; gap: 20px; color: var(--exp-subtle); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+.sig-brief-project h3 { font-size: clamp(23px,2.6vw,36px); letter-spacing: -.045em; margin: 13px 0 12px; }
+.sig-brief-project h3 a { color: var(--exp-ink); text-decoration: none; }
+.sig-brief-project h3 a:hover { color: var(--exp-accent-strong); }
+.sig-brief-project p,.sig-brief-experience p { max-width: 74ch; color: var(--exp-muted); font-size: 14px; line-height: 1.75; margin: 10px 0; white-space: pre-wrap; }
+.sig-brief-project p strong { color: var(--exp-ink); }
+.sig-brief-stack { font-size: 12px!important; color: var(--exp-subtle)!important; }
+.sig-brief-experience h3 { margin: 4px 0 3px; font-size: 24px; letter-spacing: -.035em; }
+.sig-brief-experience strong { color: var(--exp-accent-strong); font-size: 14px; }
+.sig-brief-aside { display: grid; align-content: start; gap: 48px; }
+.sig-brief-aside section { border-top: 1px solid var(--exp-line); padding-top: 24px; }
+.sig-brief-aside h2 { font-size: 26px; letter-spacing: -.045em; margin: 0 0 20px; }
+.sig-brief-skills { display: flex; flex-wrap: wrap; gap: 9px; }
+.sig-brief-skills span { font-size: 12px; background: var(--exp-bg-raised); border: 1px solid var(--exp-line); padding: 7px 11px; border-radius: 999px; }
+.sig-brief-socials { display: grid; align-items: start; gap: 9px; }
+.sig-brief-socials a { color: var(--exp-accent-strong); font-size: 13px; text-decoration: none; padding-block: 5px; }
+.sig-brief-socials a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.sig-brief-empty { color: var(--exp-muted); }
+
+/* Creative Lab: working experiments, not decorative mock interactions. */
+.sig-lab-page { background: var(--exp-bg); color: var(--exp-ink); padding-bottom: clamp(80px,9vw,150px); }
+.sig-lab-hero { padding: clamp(75px,10vw,155px) 0; background: radial-gradient(circle at 87% 40%,color-mix(in srgb,var(--exp-accent) 15%,transparent),transparent 55%),var(--exp-hero); }
+.sig-lab-hero h1 { font-size: clamp(51px,9vw,130px); line-height: 1.02; letter-spacing: -.08em; max-width: 1050px; margin: 0 0 23px; text-wrap: balance; }
+.sig-lab-hero h1 em { font-family: Georgia,serif; font-weight: 500; color: var(--exp-accent-strong); }
+.sig-lab-hero p:last-child { max-width: 67ch; font-size: clamp(16px,1.5vw,21px); color: var(--exp-muted); line-height: 1.75; }
+.sig-lab-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: clamp(20px,3vw,35px); margin-top: clamp(40px,6vw,90px); }
+.sig-lab-card { background: var(--exp-bg-raised); border: 1px solid var(--exp-line); border-radius: 20px; padding: clamp(22px,3.5vw,45px); min-width: 0; }
+.sig-lab-card h2 { font-size: clamp(29px,3vw,42px); letter-spacing: -.055em; line-height: 1.1; margin: 0 0 14px; }
+.sig-lab-card>p:not(.sig-eyebrow):not(.sig-lab-footnote) { font-size: 14px; line-height: 1.7; color: var(--exp-muted); max-width: 58ch; }
+.sig-lab-color-controls { display: flex; flex-wrap: wrap; gap: 15px; margin: 25px 0; }
+.sig-lab-color-controls label { flex: 1; min-width: 150px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: 12px; color: var(--exp-ink); font-weight: 700; }
+.sig-lab-color-controls input { width: 48px; height: 42px; border: 1px solid var(--exp-line); padding: 3px; border-radius: 8px; background: transparent; }
+.sig-lab-color-controls code { font-size: 11px; color: var(--exp-muted); }
+.sig-contrast-preview { min-height: 185px; display: grid; place-content: center; gap: 10px; padding: 20px; border-radius: 12px; margin: 15px 0 20px; overflow-wrap: anywhere; }
+.sig-contrast-preview strong { font-size: clamp(23px,2.5vw,35px); line-height: 1.1; letter-spacing: -.04em; }
+.sig-contrast-preview span { font-size: 14px; }
+.sig-lab-results { display: grid; gap: 5px; color: var(--exp-muted); font-size: 12px; }
+.sig-lab-results strong { display: block; font-size: 24px; color: var(--exp-ink); margin-bottom: 6px; }
+.sig-lab-results strong small { font-size: 12px; font-weight: 500; color: var(--exp-subtle); }
+.sig-lab-footnote { color: var(--exp-subtle); font-size: 12px; line-height: 1.65; margin: 27px 0 0; }
+.sig-lab-select { display: grid; gap: 9px; color: var(--exp-ink); font-size: 13px; font-weight: 750; margin-block: 30px; }
+.sig-lab-select select { width: 100%; min-height: 48px; color: var(--exp-ink); background: var(--exp-bg); border: 1px solid var(--exp-line); padding: 9px; border-radius: 9px; }
+.sig-motion-track { height: 80px; border-radius: 999px; padding: 10px; border: 1px solid var(--exp-line); background: var(--exp-bg); position: relative; margin-bottom: 22px; }
+.sig-motion-puck { display: block; position: relative; width: 60px; height: 58px; background: var(--exp-accent); border-radius: 999px; transition-property: left; transition-duration: 900ms; }
+.sig-lab-action { display: flex; align-items: center; justify-content: space-between; gap: 15px; flex-wrap: wrap; }
+.sig-lab-action button { min-height: 46px; border: 0; border-radius: 8px; background: var(--exp-accent); color: var(--exp-on-accent); font-weight: 720; font-size: 14px; padding: 9px 16px; }
+.sig-lab-action span { font-size: 12px; color: var(--exp-subtle); }
+.sig-lab-type { grid-column: 1/-1; }
+.sig-lab-slider { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 13px; font-weight: 720; margin: 30px 0; }
+.sig-lab-slider input { flex: 1; min-width: 140px; accent-color: var(--exp-accent-strong); }
+.sig-type-preview { min-height: 250px; display: flex; align-items: center; padding: clamp(20px,5vw,70px); border: 1px solid var(--exp-line); border-radius: 15px; background: var(--exp-bg); color: var(--exp-ink); font-weight: 740; line-height: 1.04; letter-spacing: -.07em; overflow-wrap: anywhere; }
+@media (max-width: 920px) {
+  .sig-brief-intro { align-items: start; flex-direction: column; }
+  .sig-brief-layout { grid-template-columns: 1fr; }
+  .sig-brief-aside { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 720px) {
+  .sig-lab-grid { grid-template-columns: 1fr; }
+  .sig-lab-type { grid-column: auto; }
+  .sig-type-preview { min-height: 180px; }
+  .sig-brief-aside { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sig-motion-puck { transition-duration: 0ms!important; }
+}
