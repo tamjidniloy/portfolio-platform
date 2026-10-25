@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLoaderData } from "react-router";
+import { Link, useLoaderData } from "react-router";
 import { getStudioContent } from "../../server/studio/index.js";
 import { contactDeliveryEnabled } from "../../server/studio/contact.js";
 import { PublicShell } from "../components/public-shell.jsx";
@@ -64,11 +64,12 @@ function ProjectCard({ project, index }) {
     </div>
     <div className="exp-project-details">
       <div><p className="exp-project-type">{project.category || "Selected work"}{project.year ? " · " + project.year : ""}</p>
-        <h3>{project.title}</h3><p className="exp-project-description">{project.description}</p>
+        <h3><Link className="sig-case-link" to={"/projects/" + encodeURIComponent(project.id)}>{project.title}</Link></h3><p className="exp-project-description">{project.description}</p>
         {project.outcome && <p className="exp-project-outcome"><strong>OUTCOME</strong>{project.outcome}</p>}</div>
       {project.stack && <span className="exp-project-stack">{project.stack}</span>}
     </div>
     <div className="exp-project-links">
+      <Link to={"/projects/" + encodeURIComponent(project.id)}>Explore case study <Arrow diagonal/></Link>
       {project.liveUrl && <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">Live project <Arrow diagonal/></a>}
       {project.sourceUrl && <a href={project.sourceUrl} target="_blank" rel="noopener noreferrer">Source code <Arrow diagonal/></a>}
     </div>
@@ -205,7 +206,7 @@ export default function Home() {
   const projects = [...c.projects].sort((a, b) => Number(b.featured) - Number(a.featured));
   const expertise = c.skills.slice(0, 12);
 
-  return <PublicShell name={c.name} accent={c.accent}>
+  return <PublicShell name={c.name} accent={c.accent} projects={projects}>
     <section className="exp-hero" aria-labelledby="hero-heading">
       <div className="exp-hero-grid" aria-hidden="true"/>
       <div className="exp-hero-halo" aria-hidden="true"/>
