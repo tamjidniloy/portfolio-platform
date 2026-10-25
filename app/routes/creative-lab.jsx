@@ -64,7 +64,7 @@ function MotionExperiment() {
         {EASINGS.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}
       </select>
     </label>
-    <div className="sig-motion-track" aria-label="Motion demonstration track">
+    <div className="sig-motion-track">
       <span className="sig-motion-puck" style={{ left: forward ? "calc(100% - 60px)" : "0", transitionTimingFunction: current.curve }}/>
     </div>
     <div className="sig-lab-action">
