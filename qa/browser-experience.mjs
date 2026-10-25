@@ -50,6 +50,27 @@ try {
   const motion = await page.locator(".exp-art-sphere").evaluate((element) => getComputedStyle(element).animationName);
   assert.equal(motion, "none", "Reduced-motion preference disables continuous hero animation");
 
+  // The preceding disposable authenticated integration fixture publishes real
+  // strings through the CMS. Verify visual features against those records only.
+  const journeyTitles = await page.locator(".journey-card h3").allTextContents();
+  assert.deepEqual(journeyTitles, ["BSc in CSE", "Junior Developer"],
+    "Mixed education and work timeline must be chronological");
+  assert.equal(await page.getByRole("img", { name: "Python" }).count(), 1,
+    "Skill logo ribbon must expose the authentic technology name accessibly");
+  assert.equal(await page.getByRole("img", { name: "React.js" }).count(), 1);
+  assert.equal(await page.getByRole("img", { name: "TypeScript" }).count(), 1);
+  assert.equal(await page.locator(".exp-art-sphere img").count(), 1,
+    "Owner's published portrait must appear in the enhanced cinematic hero");
+  assert.equal(await page.getByRole("form", { name: "Send a portfolio enquiry" }).count(), 1,
+    "Portfolio contact form is visible");
+  assert.equal(await page.getByRole("button", { name: /Send message/ }).isEnabled(), true,
+    "Verified configured delivery can accept a visitor enquiry");
+  const pauseMotion = page.getByRole("button", { name: "Pause technology animation" });
+  await pauseMotion.click();
+  assert.equal(await page.getByRole("button", { name: "Resume technology animation" }).count(), 1);
+  const reducedRibbon = await page.locator(".folio-logo-track").evaluate((element) => getComputedStyle(element).animationName);
+  assert.equal(reducedRibbon, "none", "Logo strip respects reduced motion");
+
   const accessible = await new AxeBuilder({ page }).analyze();
   const severe = accessible.violations.filter((item) => ["critical","serious"].includes(item.impact));
   assert.deepEqual(severe.map((v) => v.id + ": " + v.nodes[0]?.failureSummary), [], "Public landing page serious WCAG failures");

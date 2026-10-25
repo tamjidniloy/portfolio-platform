@@ -3,6 +3,8 @@ import { Link, useLoaderData } from "react-router";
 import { getStudioContent } from "../../server/studio/index.js";
 import { contactDeliveryEnabled } from "../../server/studio/contact.js";
 import { PublicShell } from "../components/public-shell.jsx";
+import { TechnologyRibbon } from "../components/technology-ribbon.jsx";
+import { JourneyTimeline } from "../components/journey-timeline.jsx";
 
 export async function loader() {
   return Response.json({
@@ -135,7 +137,7 @@ function ContactActions({ email }) {
 }
 
 
-function ContactForm() {
+function ContactForm({ deliveryEnabled, contactEmail }) {
   const [fields, setFields] = useState({ name: "", email: "", subject: "", message: "", website: "", consent: false });
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
@@ -151,6 +153,17 @@ function ContactForm() {
     setError("");
     setStatus("");
     try {
+      if (!deliveryEnabled) {
+        if (!contactEmail) {
+          setError("Messages are temporarily unavailable. Please use the professional links below.");
+          return;
+        }
+        const mailSubject = encodeURIComponent(fields.subject);
+        const mailBody = encodeURIComponent("From: " + fields.name + " (" + fields.email + ")\n\n" + fields.message);
+        window.location.href = "mailto:" + contactEmail + "?subject=" + mailSubject + "&body=" + mailBody;
+        setStatus("Your email app was opened with a draft. Please send it from there to complete your message.");
+        return;
+      }
       const result = await fetch("/api/studio/contact", {
         method: "POST", credentials: "same-origin",
         headers: { "Content-Type": "application/json", "X-Studio-Request": "1" },
@@ -191,10 +204,14 @@ function ContactForm() {
       <input type="checkbox" checked={fields.consent} onChange={(e) => update("consent", e.target.checked)} required/>
       <span>I agree to send my details for the purpose of receiving a reply. See the <a href="/privacy">privacy notice</a>.</span>
     </label>
-    <button className="exp-button exp-button-light exp-send-button" type="submit" disabled={busy}>
-      {busy ? "Sending…" : "Send enquiry"} <Arrow diagonal/>
+    <button className="exp-button exp-button-light exp-send-button" type="submit" disabled={busy || !contactEmail}>
+      {busy ? "Sending…" : deliveryEnabled ? "Send message" : contactEmail ? "Open email draft" : "Messaging unavailable"} <Arrow diagonal/>
     </button>
-    <p className="exp-form-caption">Your enquiry goes directly to my inbox. No account needed.</p>
+    <p className="exp-form-caption" role="note">
+      {deliveryEnabled ? "Your message is securely forwarded to my inbox. No account required."
+        : contactEmail ? "Email delivery is not configured on this site. This opens a draft in your email app; you must send it yourself."
+        : "The owner has not yet published a contact address. The form will become available once contact details are configured."}
+    </p>
     {status && <p className="exp-form-success" role="status">{status}</p>}
     {error && <p className="exp-form-error" role="alert">{error} You can use the direct email link above.</p>}
   </form>;
@@ -226,14 +243,24 @@ export default function Home() {
             <span className="exp-asterisk" aria-hidden="true">✳</span>
             <span>{c.title} <span aria-hidden="true">/</span> {c.location}</span>
           </div>
+          <div className="folio-hero-evidence" role="group" aria-label="Published portfolio at a glance">
+            <div><strong>{String(c.projects.length).padStart(2, "0")}</strong><span>Published projects</span></div>
+            <div><strong>{String(c.skills.length).padStart(2, "0")}</strong><span>Technologies & skills</span></div>
+            <div><strong>{String(c.experience.length).padStart(2, "0")}</strong><span>Professional roles</span></div>
+          </div>
         </div>
         <div className="exp-hero-art">
           <div className="exp-art-orbit exp-art-orbit-one" aria-hidden="true"/>
           <div className="exp-art-orbit exp-art-orbit-two" aria-hidden="true"/>
           <div className="exp-art-orbit exp-art-orbit-three" aria-hidden="true"/>
+          <div className="folio-portrait-glow" aria-hidden="true"/>
+          <span className="folio-orbit-satellite folio-orbit-satellite-one" aria-hidden="true"/>
+          <span className="folio-orbit-satellite folio-orbit-satellite-two" aria-hidden="true"/>
           <div className="exp-art-sphere">
-            {c.avatar ? <img alt={"Portrait of " + c.name} src={c.avatar} fetchPriority="high" /> : <span className="exp-art-monogram" aria-hidden="true">✳</span>}
+            {c.avatar ? <img alt={"Portrait of " + c.name} src={c.avatar} fetchPriority="high" decoding="async" /> : <span className="exp-art-monogram" aria-hidden="true">✳</span>}
           </div>
+          <div className="folio-hero-note"><span className="folio-note-status" aria-hidden="true"/> <small>CURRENT FOCUS</small><strong>{c.title}</strong></div>
+          <div className="folio-code-medallion" aria-hidden="true">&lt;/&gt;</div>
           <div className="exp-art-info"><span aria-hidden="true">✳</span><div>CREATIVE THINKING<br/><strong>ENGINEERED WITH PURPOSE</strong></div></div>
           <p className="exp-art-serial">PORTFOLIO / {new Date().getFullYear()}</p>
         </div>
@@ -241,14 +268,7 @@ export default function Home() {
       <div className="exp-hero-end exp-contained"><span>SCROLL TO EXPLORE <span aria-hidden="true">↓</span></span><span>DESIGN × DEVELOPMENT × DETAIL</span></div>
     </section>
 
-    <div className="exp-marquee" aria-hidden="true">
-      <div className="exp-marquee-track" aria-hidden="true">
-        {[0, 1].map((repeat) => <div key={repeat} className="exp-marquee-sequence">
-          {(c.skills.length ? c.skills : ["CREATIVE PROBLEM SOLVING", "DESIGN-LED ENGINEERING", "HUMAN-CENTERED EXPERIENCES", "CURIOUS BY DEFAULT"]).map((skill, index) =>
-            <span key={index} className="exp-marquee-item"><span aria-hidden="true">✳</span>{skill}</span>)}
-        </div>)}
-      </div>
-    </div>
+    <TechnologyRibbon skills={c.skills.slice(0, 20)}/>
 
     <SelectedWork projects={projects} heading={c.projectsHeading}/>
 
@@ -301,19 +321,7 @@ export default function Home() {
       </div>
     </section>
 
-    {(c.experience.length > 0 || c.education.length > 0) && <section id="journey" className="exp-section exp-journey">
-      <div className="exp-contained">
-        <EditorialTitle number="04" eyebrow="The journey">Experience that shapes the work.</EditorialTitle>
-        <div className="exp-journey-grid">
-          {c.experience.length > 0 && <div><h3>Experience</h3><div className="exp-timeline">{c.experience.map((item) => <article key={item.id}>
-            <p className="exp-overline">{item.period}</p><h4>{item.role}</h4><strong>{item.company}</strong><p>{item.description}</p>
-          </article>)}</div></div>}
-          {c.education.length > 0 && <div><h3>Education</h3><div className="exp-timeline">{c.education.map((item) => <article key={item.id}>
-            <p className="exp-overline">{item.period}</p><h4>{item.degree}</h4><strong>{item.school}</strong><p>{item.description}</p>
-          </article>)}</div></div>}
-        </div>
-      </div>
-    </section>}
+    <JourneyTimeline experience={c.experience} education={c.education}/>
 
     <section id="contact" className="exp-contact" aria-labelledby="contact-heading">
       <div className="exp-contact-light exp-contact-light-one" aria-hidden="true"/>
@@ -324,7 +332,7 @@ export default function Home() {
         <h2 id="contact-heading">{c.contactHeadline}</h2>
         <p className="exp-contact-description">Whether it's a full-time role, a collaboration or a project worth exploring, I'd love to hear about it.</p>
         <ContactActions email={c.email}/>
-        {contactFormEnabled && c.email && <ContactForm/>}
+        <ContactForm deliveryEnabled={contactFormEnabled && Boolean(c.email)} contactEmail={c.email}/>
         {c.socials.some((social) => social.url) && <div className="exp-socials"><span className="exp-overline">ELSEWHERE ON THE INTERNET</span>
           <div>{c.socials.filter((social) => social.url).map((social) => <a key={social.id} href={social.url} target="_blank" rel="noopener noreferrer">{social.label} <Arrow diagonal/></a>)}</div>
         </div>}
