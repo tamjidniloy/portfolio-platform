@@ -90,6 +90,17 @@ try {
   };
   const published = {
     ...initial.rows[0].payload, name: "CI Published Developer",
+    email: "ci-contact@example.test",
+    avatar: "https://images.example.test/ci-portrait.png",
+    skills: ["Python", "React.js", "TypeScript"],
+    education: [{
+      id: "ci-education", degree: "BSc in CSE", school: "Example Institute",
+      period: "2023 - 2027", description: "Test-only academic record",
+    }],
+    experience: [{
+      id: "ci-experience", role: "Junior Developer", company: "Example Agency",
+      period: "2025 - 2026", description: "Test-only work record",
+    }],
     projects: [...initial.rows[0].payload.projects, example],
   };
   const update = await fetch(new URL("/api/studio/content", base), {
