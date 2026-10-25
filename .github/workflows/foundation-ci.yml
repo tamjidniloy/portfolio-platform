@@ -57,6 +57,10 @@ jobs:
         run: node scripts/smoke.mjs
       - name: Password, OTP, dashboard and logout integration
         run: node scripts/studio-auth-smoke.mjs
+      - name: SQA negative-path HTTP security, privacy and misuse tests
+        run: node qa/security-http.mjs
+      - name: SQA bounded concurrent SSR reliability (ephemeral CI only)
+        run: node qa/load-smoke.mjs
       - name: Verify public-content export and guarded import on a separate database
         shell: bash
         run: |
@@ -75,6 +79,8 @@ jobs:
           google-chrome --version
       - name: Responsive, theme, accessibility and login browser checks
         run: node qa/browser-experience.mjs
+      - name: SQA WCAG AA matrix (routes, breakpoints, color modes)
+        run: node qa/accessibility-audit.mjs
       - name: Dependency vulnerability audit
         run: npm audit --omit=dev --audit-level=high
       - name: Diagnostics on failure
