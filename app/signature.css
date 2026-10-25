@@ -234,3 +234,26 @@ html[data-color-mode="light"] .portfolio-site {
 @media (prefers-reduced-motion: reduce) {
   .sig-motion-puck { transition-duration: 0ms!important; }
 }
+
+/* Authentic owner-supplied transformation comparison */
+.sig-comparison { margin-top: clamp(85px,10vw,145px); }
+.sig-comparison h2 { font-size: clamp(36px,6vw,75px); line-height: 1.06; letter-spacing: -.07em; margin: 0 0 17px; }
+.sig-comparison-intro { max-width: 67ch; color: var(--exp-muted); font-size: 16px; line-height: 1.7; }
+.sig-comparison figure { margin: 30px 0 15px; }
+.sig-comparison-stage { position: relative; width: 100%; aspect-ratio: 16/9; min-height: 175px; overflow: hidden;
+  border-radius: clamp(12px,2vw,21px); background: var(--exp-bg-soft); border: 1px solid var(--exp-line); }
+.sig-comparison-stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.sig-comparison-before { z-index: 1; }
+.sig-comparison-divider { position: absolute; top: 0; bottom: 0; width: 3px; z-index: 2; transform: translateX(-50%); background: #fff; box-shadow: 0 0 15px #10102095; pointer-events: none; }
+.sig-comparison-divider:after { content: "↔"; display: grid; place-items: center; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  width: 42px; height: 42px; border-radius: 50%; background: #fff; color: #15202c; font-weight: 750; font-size: 22px; }
+.sig-comparison-left-label,.sig-comparison-right-label { position: absolute; bottom: 14px; z-index: 3; padding: 5px 11px; background: #0b1425cc; color: #fff;
+  font-size: 11px; font-weight: 800; border-radius: 6px; letter-spacing: .08em; pointer-events: none; }
+.sig-comparison-left-label { left: 14px; }
+.sig-comparison-right-label { right: 14px; }
+.sig-comparison figcaption { margin-top: 14px; font-size: 12px; color: var(--exp-subtle); line-height: 1.6; }
+.sig-comparison-range-label { display: block; color: var(--exp-ink); font-size: 13px; font-weight: 730; margin: 22px 0 12px; }
+.sig-comparison input[type="range"] { display: block; width: 100%; min-height: 32px; accent-color: var(--exp-accent-strong); cursor: ew-resize; }
+.studio-comparison-editors { margin-top: 18px; padding: 15px 18px; background: #f7f4fd; border: 1px dashed #cfc7df; border-radius: 11px; }
+.studio-comparison-editors .studio-inline-note { margin: 0 0 15px; }
+html[data-color-mode="dark"] .studio-comparison-editors { background: #222432; border-color: #504b61; }
