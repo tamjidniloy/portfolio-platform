@@ -48,7 +48,7 @@ function TransformationStudio({ project }) {
   return <section className="sig-comparison" aria-labelledby="sig-comparison-heading">
     <p className="sig-eyebrow">TRANSFORMATION STUDIO / VISUAL PROCESS</p>
     <h2 id="sig-comparison-heading">From concept to completion.</h2>
-    <p className="sig-comparison-intro">Drag or use the arrow keys to compare the original image with the finished creative output.</p>
+    <p className="sig-comparison-intro">Use the comparison slider or arrow keys to explore the original image and final creative output.</p>
     <figure>
       <div className="sig-comparison-stage">
         <img src={project.afterCover} alt={"Finished result for " + project.title} loading="lazy" decoding="async"/>
