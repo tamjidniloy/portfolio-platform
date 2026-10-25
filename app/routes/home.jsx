@@ -5,7 +5,11 @@ import { contactDeliveryEnabled } from "../../server/studio/contact.js";
 import { PublicShell } from "../components/public-shell.jsx";
 
 export async function loader() {
-  return Response.json({ ...(await getStudioContent()), contactFormEnabled: contactDeliveryEnabled() }, { headers: { "Cache-Control": "no-store" } });
+  return Response.json({
+    ...(await getStudioContent()),
+    contactFormEnabled: contactDeliveryEnabled(),
+    canonicalOrigin: process.env.PORTFOLIO_PUBLIC_ORIGIN || "http://127.0.0.1:3000",
+  }, { headers: { "Cache-Control": "no-store" } });
 }
 
 export function meta({ data }) {
@@ -19,6 +23,14 @@ export function meta({ data }) {
     { property: "og:description", content: description },
     { property: "og:type", content: "website" },
     { name: "theme-color", content: "#11121b" },
+    ...(data?.canonicalOrigin ? [
+      { tagName: "link", rel: "canonical", href: data.canonicalOrigin + "/" },
+      { property: "og:url", content: data.canonicalOrigin + "/" },
+    ] : []),
+    ...(c?.avatar ? [{
+      property: "og:image",
+      content: c.avatar.startsWith("/media/") ? (data?.canonicalOrigin || "") + c.avatar : c.avatar,
+    }] : []),
     ...(c?.name === "Your Name" ? [{ name: "robots", content: "noindex, nofollow" }] : []),
   ];
 }
