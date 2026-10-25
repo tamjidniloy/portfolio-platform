@@ -91,6 +91,9 @@ export function validatePortfolio(input) {
     lessons: optionalText(p.lessons, "project.lessons", 1400),
     year: text(p.year, "project.year", 30),
     cover: link(p.cover, "project.cover", true),
+    // Owner-managed transformation comparisons; absent fields preserve legacy content.
+    beforeCover: link(p.beforeCover === undefined ? "" : p.beforeCover, "project.beforeCover", true),
+    afterCover: link(p.afterCover === undefined ? "" : p.afterCover, "project.afterCover", true),
     stack: text(p.stack, "project.stack", 260),
     liveUrl: link(p.liveUrl, "project.liveUrl"),
     sourceUrl: link(p.sourceUrl, "project.sourceUrl"),
