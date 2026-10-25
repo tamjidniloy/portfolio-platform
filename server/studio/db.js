@@ -28,7 +28,7 @@ export async function initializeStudio() {
       await applyStudioMigrations(db);
     }
     await mkdir(mediaDirectory(), { recursive: true });
-  })();;
+  })();
   try { await initialized; } catch (error) { initialized = null; throw error; }
   return db;
 }
