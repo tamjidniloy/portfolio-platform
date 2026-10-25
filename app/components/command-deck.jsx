@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router";
 
 const COMMON_DESTINATIONS = [
   { href: "/#work", title: "Selected work", category: "Navigation" },
+  { href: "/brief", title: "Professional quick view", category: "Navigation" },
   { href: "/#about", title: "About", category: "Navigation" },
   { href: "/#expertise", title: "Expertise", category: "Navigation" },
   { href: "/#journey", title: "Experience", category: "Navigation" },
