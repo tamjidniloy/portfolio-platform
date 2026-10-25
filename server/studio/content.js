@@ -79,6 +79,12 @@ export function validatePortfolio(input) {
     description: text(p.description, "project.description", 1500),
     // Optional proof of results; older saved projects remain valid.
     outcome: text(typeof p.outcome === "string" ? p.outcome : "", "project.outcome", 280),
+    // Optional case-study fields. Historical published JSON remains readable.
+    role: text(typeof p.role === "string" ? p.role : "", "project.role", 160),
+    challenge: text(typeof p.challenge === "string" ? p.challenge : "", "project.challenge", 1400),
+    approach: text(typeof p.approach === "string" ? p.approach : "", "project.approach", 1400),
+    architecture: text(typeof p.architecture === "string" ? p.architecture : "", "project.architecture", 1800),
+    lessons: text(typeof p.lessons === "string" ? p.lessons : "", "project.lessons", 1400),
     year: text(p.year, "project.year", 30),
     cover: link(p.cover, "project.cover", true),
     stack: text(p.stack, "project.stack", 260),
