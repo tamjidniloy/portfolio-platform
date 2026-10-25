@@ -13,6 +13,11 @@ const browser = await chromium.launch({
 try {
   const context = await browser.newContext({ reducedMotion: "reduce", colorScheme: "dark" });
   const page = await context.newPage();
+  // Keep ephemeral CI case-study images deterministic and independent of third-party hosts.
+  const pixel = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/Iu8AAAAASUVORK5CYII=", "base64");
+  await page.route("https://images.example.test/**", (route) =>
+    route.fulfill({ status: 200, contentType: "image/png", body: pixel }));
+
 
   for (const [width,height] of [[320,700],[390,844],[768,1024],[1440,900],[1920,1080]]) {
     await page.setViewportSize({ width, height });
@@ -57,6 +62,13 @@ try {
   await page.waitForURL(/\/projects\/ci-case-study$/, { timeout: 10000 });
   assert.match(page.url(), /\/projects\/ci-case-study$/, "A published project opens a dedicated case study route");
   assert.equal(await page.getByRole("heading", { level: 1, name: "CI Project Atlas" }).count(), 1);
+  assert.equal(await page.getByRole("heading", { name: "From concept to completion." }).count(), 1);
+  const comparison = page.locator("#sig-comparison-range");
+  assert.equal(await comparison.inputValue(), "50");
+  await comparison.focus();
+  await page.keyboard.press("ArrowRight");
+  assert.equal(await comparison.inputValue(), "51", "Transformation slider responds to keyboard");
+
   await page.getByRole("tab", { name: /Engineering/ }).click();
   assert.match(await page.getByRole("tabpanel").innerText(), /SSR pages read published CMS content/);
   await page.getByRole("tab", { name: /Impact/ }).click();
