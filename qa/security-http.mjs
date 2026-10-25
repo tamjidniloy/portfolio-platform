@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 // Read-only / deliberately invalid requests; safe only for the disposable CI
 // environment. Never send load / mutation probes to a public production domain.
 const base = process.env.SMOKE_URL || "http://127.0.0.1:3000";
-if (new URL(base).hostname !== "127.0.0.1" || process.env.NODE_ENV !== "production") {
+if (new URL(base).hostname !== "127.0.0.1" || process.env.CI !== "true") {
   throw new Error("Security negative-path tests require production-mode CI on loopback.");
 }
 const origin = new URL(base).origin;
