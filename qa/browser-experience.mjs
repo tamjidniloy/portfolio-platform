@@ -49,6 +49,27 @@ try {
   const severe = accessible.violations.filter((item) => ["critical","serious"].includes(item.impact));
   assert.deepEqual(severe.map((v) => v.id + ": " + v.nodes[0]?.failureSummary), [], "Public landing page serious WCAG failures");
 
+  // Auth smoke publishes this real-CMS fixture to disposable CI PostgreSQL first.
+  await page.keyboard.press("Control+k");
+  assert.equal(await page.getByRole("dialog", { name: "Where to?" }).isVisible(), true, "Keyboard command opens the searchable deck");
+  await page.getByRole("combobox", { name: "Search pages and projects" }).fill("CI Project Atlas");
+  await page.getByRole("option", { name: /CI Project Atlas/ }).click();
+  assert.match(page.url(), /\/projects\/ci-case-study$/, "A published project opens a dedicated case study route");
+  assert.equal(await page.getByRole("heading", { level: 1, name: "CI Project Atlas" }).count(), 1);
+  await page.getByRole("tab", { name: /Engineering/ }).click();
+  assert.match(await page.getByRole("tabpanel").innerText(), /SSR pages read published CMS content/);
+  await page.getByRole("tab", { name: /Impact/ }).click();
+  assert.match(await page.getByRole("tabpanel").innerText(), /Verified project navigation/);
+  await page.keyboard.press("Control+k");
+  assert.equal(await page.getByRole("dialog", { name: "Where to?" }).isVisible(), true);
+  await page.keyboard.press("Escape");
+  assert.equal(await page.getByRole("dialog", { name: "Where to?" }).count(), 0);
+  const caseAxe = await new AxeBuilder({ page }).analyze();
+  assert.deepEqual(
+    caseAxe.violations.filter((item) => ["critical", "serious"].includes(item.impact)).map((v) => v.id),
+    [], "Project detail must have no critical or serious accessibility violations",
+  );
+
   await page.goto(base + "/admin/login", { waitUntil: "networkidle" });
   const password = page.getByLabel("Password", { exact: true });
   assert.equal(await password.getAttribute("type"), "password");
