@@ -10,7 +10,8 @@ export async function loader({ params }) {
   return Response.json({ project, profile: {
     name: content.name, title: content.title, accent: content.accent,
     email: content.email, resumeUrl: content.resumeUrl,
-  }, related: content.projects.filter((item) => item.id !== project.id).slice(0, 3) },
+  }, related: content.projects.filter((item) => item.id !== project.id).slice(0, 3),
+    searchableProjects: content.projects },
   { headers: { "Cache-Control": "no-store" } });
 }
 
@@ -97,8 +98,8 @@ function PerspectivePanel({ project }) {
 }
 
 export default function ProjectDetail() {
-  const { project, profile, related } = useLoaderData();
-  return <PublicShell name={profile.name} accent={profile.accent} projects={related}>
+  const { project, profile, related, searchableProjects } = useLoaderData();
+  return <PublicShell name={profile.name} accent={profile.accent} projects={searchableProjects}>
     <article className="sig-project-page">
       <header className="sig-project-hero">
         <div className="exp-contained">
