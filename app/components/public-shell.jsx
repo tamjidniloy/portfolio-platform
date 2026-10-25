@@ -8,7 +8,7 @@ const navigation = [
   { href: "/brief", label: "Quick view" },
   { href: "/lab", label: "Creative lab" },
   { href: "/#about", label: "About" },
-  { href: "/#expertise", label: "Expertise" },
+  { href: "/#journey", label: "Experience" },
   { href: "/#contact", label: "Contact" },
 ];
 
