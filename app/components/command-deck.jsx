@@ -18,6 +18,7 @@ export function CommandDeck({ projects = [] }) {
   const [selected, setSelected] = useState(0);
   const inputRef = useRef(null);
   const launchRef = useRef(null);
+  const openRef = useRef(false);
   const navigate = useNavigate();
 
   const entries = useMemo(() => [
@@ -38,12 +39,17 @@ export function CommandDeck({ projects = [] }) {
   }, [entries, query]);
 
   useEffect(() => {
+    openRef.current = open;
+  }, [open]);
+
+  useEffect(() => {
     function shortcuts(event) {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
         setOpen((before) => !before);
-      } else if (event.key === "Escape") {
+      } else if (event.key === "Escape" && openRef.current) {
         setOpen(false);
+        launchRef.current?.focus();
       }
     }
     window.addEventListener("keydown", shortcuts);
