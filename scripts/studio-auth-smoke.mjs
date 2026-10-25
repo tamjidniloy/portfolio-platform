@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { createHmac } from "node:crypto";
 import { initializeStudio, closeStudio, studioPool, createInitialOwner } from "../server/studio/index.js";
+import { applyStudioMigrations } from "../server/studio/migrations.js";
 
 // CI-only ephemeral PostgreSQL integration check: simulate a verified OTP and ensure
 // its resulting HttpOnly cookie grants the React Router SSR admin loader access.
@@ -30,6 +31,10 @@ try {
   const owners = await db.query("SELECT id FROM portfolio_studio_owner");
   assert.equal(owners.rowCount, 0, "Use a fresh disposable CI database for auth smoke tests");
   await createInitialOwner(email, password);
+  // Repeat the migration on existing real owner state: migration must never replace credentials.
+  await applyStudioMigrations(db);
+  const preserved = await db.query("SELECT email FROM portfolio_studio_owner");
+  assert.equal(preserved.rows[0]?.email, email, "Migration must preserve the existing owner");
 
   const wrongPassword = await post("/api/studio/login/start", { email, password: "not-the-password" });
   assert.equal(wrongPassword.status, 401, "Wrong password must not start owner login");
