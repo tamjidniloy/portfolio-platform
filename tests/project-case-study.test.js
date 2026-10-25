@@ -22,6 +22,8 @@ test("existing project content remains valid and case study fields default to em
   assert.equal(result.projects[0].approach, "");
   assert.equal(result.projects[0].architecture, "");
   assert.equal(result.projects[0].lessons, "");
+  assert.equal(result.projects[0].beforeCover, "");
+  assert.equal(result.projects[0].afterCover, "");
 });
 
 test("owner can publish authentic X-Ray experience, engineering and impact details", () => {
@@ -47,4 +49,17 @@ test("case study narrative is bounded and cannot bypass input validation", () =>
   data.projects[0].architecture = "";
   data.projects[0].role = ["not valid"];
   assert.throws(() => validatePortfolio(data), /project.role/);
+});
+
+test("transformation comparison images respect the existing image safety contract", () => {
+  const data = structuredClone(DEFAULT_PORTFOLIO);
+  data.projects = [project({ beforeCover: "/media/" + "a".repeat(32) + ".webp",
+    afterCover: "https://images.example.test/result.webp" })];
+  const normalized = validatePortfolio(data).projects[0];
+  assert.match(normalized.beforeCover, /^\\/media\\//);
+  assert.equal(normalized.afterCover, "https://images.example.test/result.webp");
+  data.projects[0].afterCover = "/admin/login";
+  assert.throws(() => validatePortfolio(data), /project.afterCover/);
+  data.projects[0].afterCover = "javascript:alert(1)";
+  assert.throws(() => validatePortfolio(data), /project.afterCover/);
 });
