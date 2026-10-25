@@ -8,7 +8,7 @@ import { createReadinessHandler, livenessHandler } from "./server/probes.js";
 import { initializeStudio, getStudioContent, createStudioRouter, serveStudioImage, closeStudio } from "./server/studio/index.js";
 import { mediaStoreReady } from "./server/studio/media.js";
 import { studioPool } from "./server/studio/db.js";
-import { pruneStudioRecords } from "./server/studio/migrations.js";
+import { pruneStudioRecords, assertStudioSchema } from "./server/studio/migrations.js";
 
 // Composition root: HTTP middleware and SSR only. Domain code lives in server/studio.
 const config = readConfig(process.env);
@@ -32,7 +32,11 @@ app.use((_request, response, next) => {
 });
 
 app.get("/healthz", livenessHandler);
-app.get("/readyz", createReadinessHandler(async () => (await database.check()) && (await mediaStoreReady())));
+app.get("/readyz", createReadinessHandler(async () => {
+  if (!(await database.check()) || !(await mediaStoreReady())) return false;
+  await assertStudioSchema(studioPool());
+  return true;
+}));
 app.use("/api/studio", createStudioRouter());
 app.get("/media/:name", (request, response) => void serveStudioImage(request, response));
 
