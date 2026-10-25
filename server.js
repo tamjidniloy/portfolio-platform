@@ -6,6 +6,8 @@ import { readConfig } from "./server/config.js";
 import { createDatabaseReadiness } from "./server/database.js";
 import { createReadinessHandler, livenessHandler } from "./server/probes.js";
 import { initializeStudio, getStudioContent, createStudioRouter, serveStudioImage, closeStudio } from "./server/studio/index.js";
+import { mediaStoreReady } from "./server/studio/media.js";
+import { pruneStudioRecords } from "./server/studio/migrations.js";
 
 // Composition root: HTTP middleware and SSR only. Domain code lives in server/studio.
 const config = readConfig(process.env);
@@ -29,7 +31,7 @@ app.use((_request, response, next) => {
 });
 
 app.get("/healthz", livenessHandler);
-app.get("/readyz", createReadinessHandler(database.check));
+app.get("/readyz", createReadinessHandler(async () => (await database.check()) && (await mediaStoreReady())));
 app.use("/api/studio", createStudioRouter());
 app.get("/media/:name", (request, response) => void serveStudioImage(request, response));
 
@@ -80,6 +82,14 @@ if (config.isProduction) {
 
 // Preserve existing portfolio_studio_* tables and content; initialization is idempotent.
 await initializeStudio();
+const dbForMaintenance = (await import("./server/studio/db.js")).studioPool();
+if (dbForMaintenance) {
+  await pruneStudioRecords(dbForMaintenance);
+}
+const housekeeping = setInterval(() => {
+  if (dbForMaintenance) pruneStudioRecords(dbForMaintenance).catch(() => console.error("Studio housekeeping failed."));
+}, 60 * 60 * 1000);
+housekeeping.unref();
 const server = app.listen(config.port, config.host, () => {
   console.info(`DEVFOLIO OS listening on ${config.host}:${config.port} (${config.mode})`);
 });
@@ -98,6 +108,7 @@ async function shutdown(reason = "signal") {
     server.close((error) => error ? reject(error) : resolve());
     server.closeIdleConnections?.();
   });
+  clearInterval(housekeeping);
   const results = await Promise.allSettled([serverClosed, database.close(), closeStudio(), vite?.close()]);
   const failed = results.some((result) => result.status === "rejected");
   if (failed) console.error("DEVFOLIO OS: one or more resources failed to close cleanly.");
