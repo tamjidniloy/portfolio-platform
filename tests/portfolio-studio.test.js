@@ -4,6 +4,8 @@ import { DEFAULT_PORTFOLIO, validatePortfolio } from "../server/studio/content.j
 import { makePasswordHash, matchesPassword, cookieToken } from "../server/studio/index.js";
 import { allowedOrigin } from "../server/studio/auth.js";
 import { mediaDirectory } from "../server/studio/media.js";
+import { readConfig } from "../server/config.js";
+import { STUDIO_SCHEMA_VERSION, assertStudioSchema } from "../server/studio/migrations.js";
 import { validateContact, contactDeliveryEnabled } from "../server/studio/contact.js";
 
 test("default portfolio satisfies the published content contract", () => {
@@ -104,4 +106,39 @@ test("public contact form is enabled only with configured verified delivery", ()
   assert.equal(contactDeliveryEnabled({
     RESEND_API_KEY: "configured", PORTFOLIO_FROM_EMAIL: "Portfolio <verified@example.com>",
   }), true);
+});
+
+test("production rejects absent or unsafe deployment settings without exposing secrets", () => {
+  const values = {
+    NODE_ENV: "production",
+    DATABASE_URL: "postgresql://example:fake@127.0.0.1:5432/test",
+    PORTFOLIO_PUBLIC_ORIGIN: "https://portfolio.example.test",
+    PORTFOLIO_AUTH_SECRET: "a".repeat(64),
+    PORTFOLIO_UPLOAD_DIR: "/var/data/uploads",
+    RESEND_API_KEY: "fake",
+    PORTFOLIO_FROM_EMAIL: "Portfolio <login@example.test>",
+  };
+  assert.equal(readConfig(values).isProduction, true);
+  assert.throws(() => readConfig({ ...values, DATABASE_URL: "" }), /DATABASE_URL/);
+  assert.throws(() => readConfig({ ...values, PORTFOLIO_PUBLIC_ORIGIN: "http://portfolio.example.test" }), /HTTPS/);
+  assert.throws(() => readConfig({ ...values, PORTFOLIO_AUTH_SECRET: "guess" }), /AUTH_SECRET/);
+  assert.throws(() => readConfig({ ...values, PORTFOLIO_UPLOAD_DIR: "data/uploads" }), /absolute/);
+  assert.throws(() => readConfig({ ...values, RESEND_API_KEY: "" }), /RESEND_API_KEY/);
+  assert.throws(() => readConfig({ ...values, PORTFOLIO_DEV_PRINT_OTP: "true" }), /DEV_PRINT_OTP/);
+});
+
+test("production schema check fails closed when migrations are missing", async () => {
+  assert.equal(STUDIO_SCHEMA_VERSION, 1);
+  await assert.rejects(
+    assertStudioSchema({ query: async () => ({ rows: [] }) }),
+    /schema version mismatch/,
+  );
+  const queries = [];
+  await assertStudioSchema({
+    query: async (sql) => {
+      queries.push(sql);
+      return { rows: [{ version: 1 }] };
+    },
+  });
+  assert.equal(queries.length, 2);
 });
