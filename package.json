@@ -1,6 +1,6 @@
 {
   "name": "devfolio-os",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -11,12 +11,18 @@
     "build": "react-router build",
     "start": "cross-env NODE_ENV=production node server.js",
     "lint": "eslint app server scripts tests server.js vite.config.js react-router.config.js eslint.config.js",
-    "check:syntax": "node --check server.js && node --check server/studio/db.js && node --check server/studio/auth.js && node --check server/studio/http.js && node --check server/studio/media.js && node --check server/studio/errors.js && node --check scripts/smoke.mjs && node --check scripts/studio-auth-smoke.mjs",
+    "check:syntax": "node --check server.js && node --check server/studio/db.js && node --check server/studio/auth.js && node --check server/studio/http.js && node --check server/studio/media.js && node --check server/studio/errors.js && node --check scripts/smoke.mjs && node --check scripts/studio-auth-smoke.mjs && node --check server/studio/migrations.js && node --check scripts/db-migrate.mjs && node --check scripts/db-status.mjs && node --check scripts/portfolio-transfer.mjs && node --check scripts/production-smoke.mjs",
     "test": "node --test tests/*.test.js",
     "check": "npm run check:syntax && npm run lint && npm test && npm run build",
     "smoke": "node scripts/smoke.mjs",
     "portfolio:setup": "node --env-file-if-exists=.env scripts/portfolio-setup.mjs",
-    "portfolio:change-password": "node --env-file-if-exists=.env scripts/portfolio-change-password.mjs"
+    "portfolio:change-password": "node --env-file-if-exists=.env scripts/portfolio-change-password.mjs",
+    "db:migrate": "node --env-file-if-exists=.env scripts/db-migrate.mjs",
+    "db:status": "node --env-file-if-exists=.env scripts/db-status.mjs",
+    "prod:check": "node --env-file-if-exists=.env -e \"import('./server/config.js').then(({readConfig})=>{readConfig({...process.env,NODE_ENV:'production'});console.log('Production environment validation passed.');})\"",
+    "portfolio:export": "node --env-file-if-exists=.env scripts/portfolio-transfer.mjs export",
+    "portfolio:import": "node --env-file-if-exists=.env scripts/portfolio-transfer.mjs import",
+    "smoke:production": "node scripts/production-smoke.mjs"
   },
   "dependencies": {
     "@react-router/express": "7.18.4",

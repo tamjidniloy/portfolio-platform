@@ -1,11 +1,25 @@
 import { randomBytes } from "node:crypto";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile, unlink } from "node:fs/promises";
 import path from "node:path";
 import { StudioError } from "./errors.js";
 
 // Uploaded files live outside version control. Back up data/uploads together with PostgreSQL.
 export function mediaDirectory() {
   return path.resolve(process.env.PORTFOLIO_UPLOAD_DIR || "data/uploads");
+}
+
+// Health checks verify the configured runtime volume is writable.
+export async function mediaStoreReady() {
+  const filename = ".write-check-" + randomBytes(12).toString("hex");
+  const target = path.join(mediaDirectory(), filename);
+  try {
+    await writeFile(target, "ok", { flag: "wx", mode: 0o600 });
+    await unlink(target);
+    return true;
+  } catch {
+    await unlink(target).catch(() => {});
+    return false;
+  }
 }
 
 const fileType = (buffer) => {

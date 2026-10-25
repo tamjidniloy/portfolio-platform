@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { createHmac } from "node:crypto";
 import { initializeStudio, closeStudio, studioPool, createInitialOwner } from "../server/studio/index.js";
+import { applyStudioMigrations } from "../server/studio/migrations.js";
 
 // CI-only ephemeral PostgreSQL integration check: simulate a verified OTP and ensure
 // its resulting HttpOnly cookie grants the React Router SSR admin loader access.
@@ -30,6 +31,10 @@ try {
   const owners = await db.query("SELECT id FROM portfolio_studio_owner");
   assert.equal(owners.rowCount, 0, "Use a fresh disposable CI database for auth smoke tests");
   await createInitialOwner(email, password);
+  // Repeat the migration on existing real owner state: migration must never replace credentials.
+  await applyStudioMigrations(db);
+  const preserved = await db.query("SELECT email FROM portfolio_studio_owner");
+  assert.equal(preserved.rows[0]?.email, email, "Migration must preserve the existing owner");
 
   const wrongPassword = await post("/api/studio/login/start", { email, password: "not-the-password" });
   assert.equal(wrongPassword.status, 401, "Wrong password must not start owner login");
@@ -65,6 +70,31 @@ try {
   const login = await fetch(new URL("/admin/login", base), { headers: { Cookie: cookie }, redirect: "manual" });
   assert.equal(login.status, 302, "Authenticated owner visiting login must redirect to admin");
   assert.equal(login.headers.get("location"), "/admin");
+
+  // End-to-end publishing: the same cookie that unlocked SSR must authorize
+  // optimistic-version updates, expose the new public text, and reject stale edits.
+  const initial = await db.query("SELECT payload, version FROM portfolio_studio_content WHERE id=1");
+  const published = { ...initial.rows[0].payload, name: "CI Published Developer" };
+  const update = await fetch(new URL("/api/studio/content", base), {
+    method: "PUT",
+    headers: {
+      Origin: new URL(base).origin, "X-Studio-Request": "1",
+      "Content-Type": "application/json", Cookie: cookie,
+    },
+    body: JSON.stringify({ content: published, version: Number(initial.rows[0].version) }),
+  });
+  assert.equal(update.status, 200, "Owner must be able to publish");
+  const changed = await fetch(new URL("/api/studio/public", base));
+  assert.equal((await changed.json()).name, "CI Published Developer", "Published content must be publicly visible");
+  const conflict = await fetch(new URL("/api/studio/content", base), {
+    method: "PUT",
+    headers: {
+      Origin: new URL(base).origin, "X-Studio-Request": "1",
+      "Content-Type": "application/json", Cookie: cookie,
+    },
+    body: JSON.stringify({ content: published, version: Number(initial.rows[0].version) }),
+  });
+  assert.equal(conflict.status, 409, "Optimistic concurrency prevents overwriting other edits");
 
   const replay = await post("/api/studio/login/verify", { challengeId: challenge.rows[0].id, code });
   assert.equal(replay.status, 401, "An OTP cannot be reused");
