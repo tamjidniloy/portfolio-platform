@@ -6,6 +6,7 @@ This release increment extends the **existing** React Router 7 SSR / Express 5 /
 
 - **Home (/)**: established editorial portfolio with a midnight / slate visual layer, featured work and project links.
 - **Project X-Ray (/projects/:projectId)**: real CMS case studies with Experience, Engineering, and Impact views. Perspectives appear only when related content is actually present.
+- **Transformation Studio**: an accessible keyboard-operated before/after image reveal on case-study pages, visible only when the owner publishes both images through Studio.
 - **Professional Quick View (/brief)**: a concise professional overview for recruiters and hiring managers.
 - **Creative Lab (/lab)**: working experiments in WCAG contrast, animation timing and editorial typography.
 - **Command Deck**: keyboard-driven search and navigation. Open with Ctrl/Cmd+K or the visible button, use arrows and Enter to select, Escape to close.
@@ -14,7 +15,7 @@ No new external services are required.
 
 ## Owner Studio workflow
 
-Open **Projects** in the owner CMS. Five additional optional fields capture your actual contribution, challenge, approach, architecture and lessons. Existing Result/impact fields also appear in case studies. Publish using the existing authorization and versioned update workflow.
+Open **Projects** in the owner CMS. Five additional optional fields capture your actual contribution, challenge, approach, architecture and lessons. The existing Result/impact field also appears in case studies. Two optional image uploads (Before / After) power an interactive visual comparison. Only use authentic licensed/owned media. Publish using the existing authorization and versioned update workflow.
 
 Historical project records still work; missing optional fields remain empty. The project content lives in the existing JSONB model, so this increment requires **no database schema migration**.
 
@@ -37,7 +38,7 @@ The CI workflow also checks real PostgreSQL initialization and auth session beha
 This PR is a **reviewable implementation increment**, not a complete 15-feature project or production sign-off. The following remain separately scoped:
 
 - Interactive graphical architecture explorer (current case study provides textual architecture detail)
-- Original media transformation comparison studio
+- Video-based transformation timeline and more extensive media processing (a basic before/after image comparison is already included)
 - Publishing-backed technical journal
 - Privacy- and cost-controlled AI portfolio guide
 - Full field performance validation and manual real-device acceptance
