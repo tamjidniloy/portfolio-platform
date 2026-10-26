@@ -47,7 +47,7 @@
 .folio-hero-evidence>div:first-child { padding-left: 0; border-left: 0; }
 .folio-hero-evidence strong { font-size: clamp(23px,2.6vw,37px); line-height: 1.15; font-weight: 760; letter-spacing: -.055em; }
 .folio-hero-evidence span { color: var(--exp-subtle); font-size: clamp(10px,.85vw,12px); line-height: 1.45; }
-.portfolio-site .exp-hero-art { min-height: clamp(460px,43vw,650px); perspective: 900px; }
+.portfolio-site .exp-hero-art { min-height: clamp(460px,43vw,650px); perspective: 900px; margin-bottom: clamp(40px,5vw,78px); }
 .portfolio-site .exp-art-sphere {
   width: min(84%,520px);
   aspect-ratio: 1;
@@ -83,8 +83,10 @@
 }
 .folio-orbit-satellite-one { top:8%;right:15%; }
 .folio-orbit-satellite-two { bottom:19%;left:5%;width:13px;height:13px;animation-delay:-3s; }
+/* Align the card's right edge just 14px over the portrait's left boundary.
+   This keeps most of the card outside the face, even as the art scales. */
 .folio-hero-note {
-  position: absolute; top:27%; left:-2%; z-index:7;
+  position: absolute; top:25%; left:calc(50% - min(42%, 260px) - min(43%, 235px) + 14px); z-index:7;
   width: min(43%,235px); display:grid; gap:3px;
   padding: 18px 20px;
   background:color-mix(in srgb,var(--exp-bg-raised) 91%,transparent);
@@ -105,8 +107,10 @@
   font-size:clamp(16px,2vw,25px);font-weight:800;letter-spacing:-.07em;
   animation:folio-medallion 7s ease-in-out infinite alternate;
 }
+/* The second card begins just 18px above the portrait's lower edge,
+   so it appears attached beneath the photograph rather than over the shirt. */
 .portfolio-site .exp-art-info {
-  z-index:8;left:auto;right:0;bottom:12%;padding:17px 22px;
+  z-index:8;left:auto;right:3%;top:calc(50% + min(42%, 260px) - 18px);bottom:auto;padding:17px 22px;
   box-shadow:0 20px 50px #150a3330;border-radius:17px;
 }
 .portfolio-site .exp-art-serial { top:5%;right:0; }
@@ -279,23 +283,32 @@
   .portfolio-site .exp-hero-inner {grid-template-columns:minmax(0,1fr) minmax(0,.93fr);}
   .portfolio-site .exp-hero h1 {font-size:clamp(49px,5.8vw,78px);}
   .portfolio-site .exp-hero-art {min-height:490px;}
-  .folio-hero-note {left:0;}
+  /* Desktop positioning follows the portrait instead of a fixed viewport edge. */
 }
 @media(max-width:900px) {
   .portfolio-site .exp-hero-inner {grid-template-columns:1fr;gap:40px;padding-top:65px;}
   .portfolio-site .exp-hero h1 {font-size:clamp(55px,9vw,86px);max-width:850px;}
   .portfolio-site .exp-hero-art {width:min(660px,100%);min-height:570px;margin-inline:auto;}
   .portfolio-site .exp-art-sphere {width:min(82%,500px);}
-  .folio-hero-note {left:3%;}
+  .folio-hero-note {
+    width:min(34%,180px);
+    left:max(-25px, calc(50% - min(41%, 250px) - min(34%, 180px) + 14px));
+  }
+  .portfolio-site .exp-art-info {top:calc(50% + min(41%, 250px) - 18px);right:2%;}
 }
 @media(max-width:700px) {
   .portfolio-site .exp-hero-inner {gap:22px;padding-top:55px;padding-bottom:55px;}
   .portfolio-site .exp-hero h1 {font-size:clamp(45px,10.8vw,71px);}
   .portfolio-site .exp-hero-art {min-height:clamp(350px,86vw,515px);width:min(100%,560px);}
   .portfolio-site .exp-art-sphere {width:min(76%,430px);}
-  .folio-hero-note {width:45%;left:0;top:20%;padding:12px;}
+  /* On narrow screens, keep the note fully onscreen while overlapping only
+     the outside edge of the portrait as space permits. */
+  .folio-hero-note {width:min(36%,160px);left:0;top:20%;padding:12px;}
   .folio-code-medallion {right:0;top:16%;}
-  .portfolio-site .exp-art-info {right:0;bottom:7%;font-size:9px;padding:12px;}
+  .portfolio-site .exp-art-info {
+    right:0;top:calc(50% + min(38%, 215px) - 18px);bottom:auto;
+    max-width: min(68%, 235px);font-size:9px;padding:12px;
+  }
   .folio-hero-evidence {gap:0;}
   .folio-hero-evidence>div {padding-inline:8px;}
   .folio-logo-band {min-height:79px;}
@@ -318,7 +331,7 @@
   .folio-hero-note {top:14%;left:0;max-width:170px;}
   .folio-hero-note strong {font-size:11px;}
   .portfolio-site .exp-hero-art {min-height:340px;}
-  .portfolio-site .exp-art-info {bottom:3%;max-width:200px;}
+  .portfolio-site .exp-art-info {top:calc(50% + min(38%, 215px) - 18px);bottom:auto;max-width:200px;}
   .journey-card-icon {display:none;}
   .folio-hero-evidence span {font-size:10px;}
 }
