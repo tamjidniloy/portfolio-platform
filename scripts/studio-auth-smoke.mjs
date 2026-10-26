@@ -47,6 +47,22 @@ try {
     [owner.rows[0].id, codeDigest],
   );
 
+  // Security regression: guessed codes and expired challenges must never mint cookies.
+  const guessed = await post("/api/studio/login/verify", { challengeId: challenge.rows[0].id, code: "999999" });
+  assert.equal(guessed.status, 401, "Incorrect OTP is rejected");
+  assert.equal(guessed.headers.get("set-cookie"), null, "Wrong OTP cannot establish a session");
+  const previousAttempts = await db.query("SELECT attempts,consumed_at FROM portfolio_studio_challenges WHERE id=$1", [challenge.rows[0].id]);
+  assert.equal(previousAttempts.rows[0].attempts, 1, "Wrong OTP consumes one attempt");
+  assert.equal(previousAttempts.rows[0].consumed_at, null);
+
+  const expired = await db.query(
+    "INSERT INTO portfolio_studio_challenges(owner_id,code_digest,expires_at) VALUES($1,$2,now()-interval '1 minute') RETURNING id",
+    [owner.rows[0].id, codeDigest],
+  );
+  const expiredAttempt = await post("/api/studio/login/verify", { challengeId: expired.rows[0].id, code });
+  assert.equal(expiredAttempt.status, 401, "Expired OTP is rejected");
+  assert.equal(expiredAttempt.headers.get("set-cookie"), null);
+
   const verified = await post("/api/studio/login/verify", { challengeId: challenge.rows[0].id, code });
   assert.equal(verified.status, 200, "A correct OTP must be accepted");
   assert.equal((await verified.json()).authenticated, true);
@@ -80,8 +96,8 @@ try {
     description: "An integration fixture for project storytelling.",
     year: "2026", cover: "", stack: "React, Node.js", liveUrl: "",
     sourceUrl: "", featured: true,
-    beforeCover: "https://images.example.test/ci-before.png",
-    afterCover: "https://images.example.test/ci-after.png",
+    beforeCover: "/media/" + "a".repeat(32) + ".png",
+    afterCover: "/media/" + "b".repeat(32) + ".png",
     role: "UI and quality assurance", challenge: "Make complex work understandable.",
     approach: "Choose progressive disclosure instead of overwhelming visitors.",
     architecture: "SSR pages read published CMS content through the existing service boundary.",

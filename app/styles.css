@@ -25,3 +25,8 @@ img{max-width:100%;display:block}
 /* Non-home legacy pages retain readable layout if visited directly. */
 .section-content{width:min(960px,calc(100% - 48px));margin:0 auto;padding:100px 0;line-height:1.7}.section-content h1{font-size:clamp(40px,6vw,70px);letter-spacing:-.07em;line-height:1.1}.section-content a{color:#7656dd}.section-content label{display:block;margin:15px 0 8px}.section-content input,.section-content textarea,.section-content select{width:100%;max-width:600px;padding:12px;border:1px solid #d6d0e5;border-radius:8px}.section-content button{padding:12px 17px;margin:10px 10px 10px 0;border:0;border-radius:8px;background:#7656dd;color:#fff}.site{min-height:100vh;display:flex;flex-direction:column}.main-content{flex:1}.error-layout{width:min(620px,calc(100% - 40px));margin:10vh auto}.button-link{display:inline-block;padding:12px 20px;border-radius:8px;background:#7656dd;color:#fff;text-decoration:none}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important}}
+
+/* Pre-deployment WCAG AA audit: readable owner-login explanatory text.
+   Studio login stays visually consistent in both site appearance modes. */
+.studio-login-box>p { color: #575269; }
+.studio-login-help { color: #5c5567; }

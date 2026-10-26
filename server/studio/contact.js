@@ -12,6 +12,13 @@ export function validateContact(input) {
   if (!input || typeof input !== "object" || Array.isArray(input)) {
     throw new StudioError(422, "Please complete the contact form.");
   }
+  // Validate the original strings before trimming: leading/trailing CRLF must
+  // never be silently accepted in fields later used in email headings.
+  for (const field of ["name", "email", "subject"]) {
+    if (typeof input[field] === "string" && /[\r\n]/.test(input[field])) {
+      throw new StudioError(422, "Remove line breaks from name, email and subject.");
+    }
+  }
   const name = typeof input.name === "string" ? input.name.trim() : "";
   const email = typeof input.email === "string" ? input.email.trim().toLowerCase() : "";
   const subject = typeof input.subject === "string" ? input.subject.trim() : "";
@@ -27,6 +34,33 @@ export function validateContact(input) {
   return { name, email, subject, message };
 }
 
+// Isolated provider boundary for deterministic delivery-contract tests.
+// Never treat an HTTP failure as successful message delivery.
+export async function deliverContactViaResend({ recipient, payload, fetcher = fetch, env = process.env }) {
+  const body = [
+    "New portfolio enquiry",
+    "From: " + payload.name,
+    "Email: " + payload.email,
+    "Subject: " + payload.subject,
+    "",
+    payload.message,
+  ].join("\n");
+  const emailResponse = await fetcher("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { Authorization: "Bearer " + env.RESEND_API_KEY, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      from: env.PORTFOLIO_FROM_EMAIL,
+      to: [recipient],
+      reply_to: payload.email,
+      subject: "Portfolio enquiry: " + payload.subject,
+      text: body,
+    }),
+    signal: AbortSignal.timeout(10000),
+  });
+  if (!emailResponse.ok) throw new StudioError(503, "The message could not be delivered. Please email directly instead.");
+  return true;
+}
+
 export async function submitContact(request, response) {
   // Always validate and rate-limit before contacting an external email service.
   const payload = validateContact(request.body);
@@ -36,28 +70,6 @@ export async function submitContact(request, response) {
   if (!content.email || !contactDeliveryEnabled()) {
     throw new StudioError(503, "The contact form is unavailable. Please use the direct email link instead.");
   }
-  const body = [
-    "New portfolio enquiry",
-    "From: " + payload.name,
-    "Email: " + payload.email,
-    "Subject: " + payload.subject,
-    "",
-    payload.message,
-  ].join("\n");
-  const emailResponse = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: { Authorization: "Bearer " + process.env.RESEND_API_KEY, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      from: process.env.PORTFOLIO_FROM_EMAIL,
-      to: [content.email],
-      reply_to: payload.email,
-      subject: "Portfolio enquiry: " + payload.subject,
-      text: body,
-    }),
-    signal: AbortSignal.timeout(10000),
-  });
-  if (!emailResponse.ok) {
-    throw new StudioError(503, "The message could not be delivered. Please email directly instead.");
-  }
+  await deliverContactViaResend({ recipient: content.email, payload });
   response.status(202).json({ sent: true });
 }
