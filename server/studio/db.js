@@ -1,14 +1,18 @@
 import pg from "pg";
-import { mkdir } from "node:fs/promises";
+import path from "node:path";
+import { mkdir, readFile } from "node:fs/promises";
 import { DEFAULT_PORTFOLIO } from "./content.js";
 import { applyStudioMigrations, assertStudioSchema } from "./migrations.js";
 import { mediaDirectory } from "./media.js";
 
-// PostgreSQL is the source of truth. This module owns its connection pool and schema initialization.
+// PostgreSQL is the source of truth for normal production. The separate, read-only
+// family preview runs only from the user's exported PUBLIC portfolio snapshot.
 let pool;
 let initialized;
+let previewContent;
 
 export function studioPool() {
+  if (process.env.PORTFOLIO_PREVIEW_MODE === "true") return null;
   if (!process.env.DATABASE_URL) return null;
   pool ||= new pg.Pool({
     connectionString: process.env.DATABASE_URL, max: 5, connectionTimeoutMillis: 2500,
@@ -17,6 +21,7 @@ export function studioPool() {
   return pool;
 }
 export async function initializeStudio() {
+  if (process.env.PORTFOLIO_PREVIEW_MODE === "true") return null;
   if (initialized) return initialized;
   const db = studioPool();
   if (!db) return null;
@@ -33,6 +38,10 @@ export async function initializeStudio() {
   return db;
 }
 export async function getStudioContent() {
+  if (process.env.PORTFOLIO_PREVIEW_MODE === "true") {
+    previewContent ||= JSON.parse(await readFile(path.resolve("preview/content.json"), "utf8"));
+    return { content: previewContent, version: 1 };
+  }
   const db = studioPool();
   if (!db) return { content: DEFAULT_PORTFOLIO, version: 0 };
   await initializeStudio();

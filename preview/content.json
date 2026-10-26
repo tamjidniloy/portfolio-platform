@@ -1,0 +1,93 @@
+{
+  "bio": "A space for the work, ideas and projects that define my approach. Explore what I'm building.",
+  "name": "Tamjid Niloy",
+  "email": "",
+  "title": "Software Developer",
+  "accent": "violet",
+  "avatar": "/media/deb7ece215030573b46829ba127e2980.png",
+  "skills": [
+    "Pyhton",
+    "Node.js",
+    "Express.js",
+    "React.js",
+    "HTML",
+    "CSS",
+    "JavaScript",
+    "TypeScript"
+  ],
+  "eyebrow": "INDEPENDENT SOFTWARE DEVELOPER",
+  "socials": [
+    {
+      "id": "d7aec50a-da69-4265-bc1b-a2df53b527e2",
+      "url": "https://github.com/tamjidniloy",
+      "label": "GitHub"
+    },
+    {
+      "id": "98f3059d-f01e-45ec-8857-e1ec593f4f5c",
+      "url": "https://www.linkedin.com/in/tamjid-niloy/",
+      "label": "LinkedIn"
+    },
+    {
+      "id": "5081405d-d91b-4c76-b46d-cde0d8a9762a",
+      "url": "https://www.facebook.com/tamjid.niloy22",
+      "label": "Facebook"
+    }
+  ],
+  "headline": "Thoughtful code. Remarkable experiences.",
+  "location": "Based anywhere · Working worldwide",
+  "projects": [
+    {
+      "id": "4763cca3-8c5e-4fca-8406-125d8650000a",
+      "year": "2026",
+      "cover": "",
+      "stack": "React.js, Node.js, Express.js",
+      "title": "E-commerce platform",
+      "liveUrl": "",
+      "category": "Full stack",
+      "featured": true,
+      "sourceUrl": "https://github.com/tamjidniloy/E-Commerce-Platform-REST-API.git",
+      "description": "This is my first rest API project"
+    },
+    {
+      "id": "9c963ef1-cb62-4904-b111-a0db81ba96a2",
+      "year": "2025",
+      "cover": "",
+      "stack": "C# and Entity Framework",
+      "title": "Hospital Management System",
+      "liveUrl": "",
+      "category": "C#",
+      "featured": false,
+      "sourceUrl": "https://github.com/tamjidniloy/Hospital-Management-System.git",
+      "description": "Hospital Management System developed using C# and Entity Framework to simulate a real-world healthcare environment. The system manages core hospital operations such as appointments, prescriptions, billing, medicines, and medical tests using a structured, database-driven approach while applying Object-Oriented Programming (OOP) principles."
+    }
+  ],
+  "services": [
+    {
+      "id": "0d156cd5-887c-4f54-8a82-65b1f5036e0f",
+      "title": "Assistant Progrmammer",
+      "description": "I served my self as a junior assistant programmer to built various kinds of small projects and software."
+    }
+  ],
+  "available": true,
+  "education": [
+    {
+      "id": "e739cceb-8ae8-4ef7-a4cd-30d7d566ae1a",
+      "degree": "BSC in CSE",
+      "period": "2023-2027",
+      "school": "AIUB",
+      "description": ""
+    }
+  ],
+  "resumeUrl": "",
+  "experience": [
+    {
+      "id": "b381af50-1dc0-4eda-b192-64fd2507f50c",
+      "role": "Junior Assistant programmer",
+      "period": "2025-2026",
+      "company": "DataSoft",
+      "description": "I was a junior assistant programmer to develop various types of e-commerce and management system type software."
+    }
+  ],
+  "contactHeadline": "Have something in mind?",
+  "projectsHeading": "Selected work"
+}
