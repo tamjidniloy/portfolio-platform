@@ -29,6 +29,32 @@ try {
     assert.ok(overflowing <= 2, "No horizontal overflow at " + width + "px; exceeded by " + overflowing);
     const main = await page.locator("main#main").count();
     assert.equal(main, 1, "Main content landmark exists");
+    // The two floating cards must remain attached to their portrait edges
+    // rather than drifting onto the face or away from the image at breakpoints.
+    const placement = await page.evaluate(() => {
+      const box = (selector) => {
+        const { left, top, right, bottom } = document.querySelector(selector).getBoundingClientRect();
+        return { left, top, right, bottom };
+      };
+      return {
+        photo: box(".exp-art-sphere"),
+        focus: box(".folio-hero-note"),
+        purpose: box(".exp-art-info"),
+      };
+    });
+    assert.ok(placement.focus.right < (placement.photo.left + placement.photo.right) / 2,
+      "Current Focus remains on the left edge of the portrait at " + width + "px");
+    if (width >= 1180) {
+      const overlap = placement.focus.right - placement.photo.left;
+      assert.ok(overlap >= -30 && overlap <= 48,
+        "Focus card should barely touch the portrait's left edge at " + width + "px; offset " + overlap);
+    }
+    const lowerOffset = placement.purpose.top - placement.photo.bottom;
+    assert.ok(lowerOffset >= -40 && lowerOffset <= 28,
+      "Creative Thinking card should touch the lower portrait edge at " + width + "px; offset " + lowerOffset);
+    assert.ok(placement.purpose.right <= width + 2 && placement.focus.right > 0,
+      "Floating cards must remain reachable in the viewport at " + width + "px");
+
   }
 
   await page.setViewportSize({ width: 390, height: 844 });
